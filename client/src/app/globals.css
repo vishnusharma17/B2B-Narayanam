@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --gold: #D4AF37;
+  --dark: #111111;
+  --cream: #F9F6F1;
+  --wine: #7A1E1E;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  font-family: var(--font-inter);
+  color: #111;
+}
+
+h1,h2,h3,h4 {
+  font-family: var(--font-playfair);
+}
+
+button {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+section {
+  overflow: hidden;
+}
