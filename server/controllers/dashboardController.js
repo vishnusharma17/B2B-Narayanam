@@ -1,7 +1,7 @@
-import Category from "../models/Category.js";
+import Category from "../models/CategoryModel.js";
 import Enquiry from "../models/Enquiry.js";
-import Order from "../models/Order.js";
-import Product from "../models/Product.js";
+import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
 import Testimonial from "../models/Testimonial.js";
 
 export const getDashboardStats = async (req, res) => {

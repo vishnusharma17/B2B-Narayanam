@@ -1,39 +1,82 @@
 import Banner from "../models/Banner.js";
 
+// CREATE BANNER
 export const createBanner = async (req, res) => {
   try {
-    const banner = await Banner.create(req.body);
+    let imageUrl = "";
 
-    res.json({
+    // Uploaded Image
+    if (req.file) {
+      imageUrl = `http://localhost:5004/${req.file.path.replace(/\\/g, "/")}`;
+    }
+
+    const banner = await Banner.create({
+      title: req.body.title,
+      subtitle: req.body.subtitle,
+      link: req.body.link,
+      image: imageUrl,
+    });
+
+    res.status(201).json({
       success: true,
+      message: "Banner created successfully",
       data: banner,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
+// GET ALL BANNERS
 export const getBanners = async (req, res) => {
   try {
-    const banners = await Banner.find({ active: true });
+    const banners = await Banner.find({
+      active: true,
+    }).sort({
+      createdAt: -1,
+    });
 
-    res.json({
+    res.status(200).json({
       success: true,
       data: banners,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
+// DELETE BANNER
 export const deleteBanner = async (req, res) => {
   try {
-    await Banner.findByIdAndDelete(req.params.id);
+    const banner = await Banner.findByIdAndDelete(req.params.id);
 
-    res.json({
+    if (!banner) {
+      return res.status(404).json({
+        success: false,
+        message: "Banner not found",
+      });
+    }
+
+    res.status(200).json({
       success: true,
+      message: "Banner deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

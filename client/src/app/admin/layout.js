@@ -29,13 +29,32 @@ export default function AdminLayout({ children }) {
       path: "/admin/products",
     },
     {
-      name: "Orders",
-      path: "/admin/orders",
-    },
-    {
       name: "Categories",
       path: "/admin/categories",
     },
+    {
+      name: "Orders",
+      path: "/admin/orders",
+    },
+
+    // NEW HOMEPAGE MANAGEMENT
+    {
+      name: "Hero Banners",
+      path: "/admin/banners",
+    },
+    {
+      name: "Shop Roles",
+      path: "/admin/shop-roles",
+    },
+    {
+      name: "Fashion Stories",
+      path: "/admin/fashion-stories",
+    },
+    {
+      name: "Wardrobe Picks",
+      path: "/admin/wardrobe-picks",
+    },
+
     {
       name: "Reviews",
       path: "/admin/reviews",

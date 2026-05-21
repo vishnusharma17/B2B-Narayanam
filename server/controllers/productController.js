@@ -1,44 +1,18 @@
-import Product from "../models/Product.js";
-// GET ALL PRODUCTS
+import Product from "../models/productModel.js";
 
+// GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 5;
-    const search = req.query.search || "";
-    const category = req.query.category || "";
-    const sort = req.query.sort ? req.query.sort : "-createdAt";
+    const products = await Product.find()
+      .populate("category")
+      .sort({ createdAt: -1 });
 
-    const skip = (page - 1) * limit;
-
-    let filter = {};
-
-    if (search) {
-      filter.name = { $regex: search, $options: "i" };
-    }
-
-    if (category) {
-      filter.category = category;
-    }
-
-    const total = await Product.countDocuments(filter);
-
-    const products = await Product.find(filter)
-      .select("name price_min price_max images moq slug category")
-      .sort(sort)
-      .skip(skip)
-      .limit(limit);
-
-    res.json({
+    res.status(200).json({
       success: true,
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
       data: products,
     });
   } catch (error) {
-    console.log("ERROR:", error);
+    console.log(error);
 
     res.status(500).json({
       success: false,
@@ -46,70 +20,91 @@ export const getProducts = async (req, res) => {
     });
   }
 };
-// GET SINGLE PRODUCT
-export const getProduct = async (req, res) => {
-  try {
-    const product = await Product.findOne({ slug: req.params.slug });
-
-    if (!product) return res.status(404).json({ message: "Not found" });
-
-    res.json(product);
-  } catch (error) {
-    res.status(500).json({ error: "Server Error" });
-  }
-};
 
 // CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
-    const { name, category, price_min, price_max, moq, images, description } =
-      req.body;
+    const mainImageFile = req.files?.mainImage?.[0];
 
-    // ✅ validation
-    if (!name || !price_min || !price_max || !moq) {
-      return res.status(400).json({
-        success: false,
-        message: "Required fields missing",
-      });
-    }
+    const galleryFiles = req.files?.galleryImages || [];
 
-    // ✅ slug generate
-    const slug = name.toLowerCase().split(" ").join("-");
+    const mainImage = mainImageFile
+      ? `http://localhost:5004/uploads/products/${mainImageFile.filename}`
+      : "";
+
+    const galleryImages = galleryFiles.map(
+      (file) => `http://localhost:5004/uploads/products/${file.filename}`,
+    );
 
     const product = await Product.create({
-      name,
-      slug,
-      category,
-      price_min,
-      price_max,
-      moq,
-      images,
-      description,
+      ...req.body,
+
+      sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
+
+      colors: req.body.colors ? JSON.parse(req.body.colors) : [],
+
+      mainImage,
+      galleryImages,
     });
 
     res.status(201).json({
       success: true,
+      message: "Product created successfully",
       data: product,
     });
   } catch (error) {
-    res.status(500).json({ success: false });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 // UPDATE PRODUCT
 export const updateProduct = async (req, res) => {
   try {
-    const { id } = req.params;
+    let mainImage = req.body.mainImage;
 
-    const updatedData = req.body;
+    // FIXED → old gallery images preserve
+    let galleryImages = req.body.existingGalleryImages || [];
 
-    if (updatedData.name) {
-      updatedData.slug = updatedData.name.toLowerCase().split(" ").join("-");
+    // single string case fix
+    if (typeof galleryImages === "string") {
+      galleryImages = [galleryImages];
     }
 
-    const product = await Product.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    });
+    // update main image
+    if (req.files?.mainImage?.[0]) {
+      mainImage = `http://localhost:5004/uploads/products/${req.files.mainImage[0].filename}`;
+    }
+
+    // add new gallery images
+    if (req.files?.galleryImages?.length > 0) {
+      const newGalleryImages = req.files.galleryImages.map(
+        (file) => `http://localhost:5004/uploads/products/${file.filename}`,
+      );
+
+      galleryImages = [...galleryImages, ...newGalleryImages];
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...req.body,
+
+        sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
+
+        colors: req.body.colors ? JSON.parse(req.body.colors) : [],
+
+        mainImage,
+        galleryImages,
+      },
+      {
+        new: true,
+      },
+    );
 
     if (!product) {
       return res.status(404).json({
@@ -118,21 +113,25 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
+      message: "Product updated successfully",
       data: product,
     });
   } catch (error) {
-    res.status(500).json({ success: false });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 // DELETE PRODUCT
 export const deleteProduct = async (req, res) => {
   try {
-    const { id } = req.params;
-
-    const product = await Product.findByIdAndDelete(id);
+    const product = await Product.findByIdAndDelete(req.params.id);
 
     if (!product) {
       return res.status(404).json({
@@ -141,58 +140,236 @@ export const deleteProduct = async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
-      message: "Product deleted",
+      message: "Product deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({ success: false });
-  }
-};
-export const getFeaturedProducts = async (req, res) => {
-  try {
-    const products = await Product.find({
-      featured: true,
-    });
+    console.log(error);
 
-    res.json({
-      success: true,
-      data: products,
-    });
-  } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
 };
+
+// GET SINGLE PRODUCT
+export const getSingleProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate("category");
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// GET PRODUCT BY SLUG
+export const getProductBySlug = async (req, res) => {
+  try {
+    const product = await Product.findOne({
+      slug: req.params.slug,
+    }).populate("category");
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// GET RELATED PRODUCTS
+export const getRelatedProducts = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+
+    if (!categoryId || categoryId === "undefined" || categoryId === "null") {
+      const fallbackProducts = await Product.find()
+        .populate("category")
+        .limit(8)
+        .sort({
+          createdAt: -1,
+        });
+
+      return res.status(200).json({
+        success: true,
+        data: fallbackProducts,
+      });
+    }
+
+    let products = await Product.find({
+      category: categoryId,
+    })
+      .populate("category")
+      .sort({
+        createdAt: -1,
+      });
+
+    if (products.length === 0) {
+      products = await Product.find().populate("category").limit(8).sort({
+        createdAt: -1,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// GET TRENDING PRODUCTS
 export const getTrendingProducts = async (req, res) => {
   try {
     const products = await Product.find({
-      trending: true,
-    });
+      isTrending: true,
+    })
+      .populate("category")
+      .sort({
+        createdAt: -1,
+      })
+      .limit(10);
 
-    res.json({
+    res.status(200).json({
       success: true,
       data: products,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
 };
-export const getRelatedProducts = async (req, res) => {
+// GET BEST SELLER PRODUCTS
+export const getBestSellerProducts = async (req, res) => {
   try {
     const products = await Product.find({
-      category: req.params.category,
-    }).limit(5);
+      isBestSeller: true,
+    })
+      .populate("category")
+      .sort({
+        createdAt: -1,
+      })
+      .limit(10);
 
-    res.json({
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+export const updateProductViews = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        $inc: { views: 1 },
+      },
+      { new: true },
+    );
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+export const getMostViewedProducts = async (req, res) => {
+  try {
+    const products = await Product.find().sort({ views: -1 }).limit(8);
+
+    res.status(200).json({
       success: true,
       data: products,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// LIVE SEARCH PRODUCTS
+export const searchProducts = async (req, res) => {
+  try {
+    const keyword = req.query.q;
+
+    if (!keyword) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+      });
+    }
+
+    const products = await Product.find({
+      name: {
+        $regex: keyword,
+        $options: "i",
+      },
+    })
+      .select("name slug mainImage price_min")
+      .limit(8);
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
       message: error.message,
     });
   }

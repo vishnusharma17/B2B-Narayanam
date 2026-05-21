@@ -5,9 +5,13 @@ const wishlistSchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
+      required: true,
     },
 
-    sessionId: String,
+    sessionId: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

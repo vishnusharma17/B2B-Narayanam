@@ -1,5 +1,5 @@
 import PDFDocument from "pdfkit";
-import Order from "../models/Order.js";
+import Order from "../models/orderModel.js";
 
 export const generateInvoice = async (req, res) => {
   try {

@@ -2,29 +2,83 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    customerName: String,
-    phone: String,
-    email: String,
-    companyName: String,
+    customerName: {
+      type: String,
+      required: true,
+    },
+
+    phone: {
+      type: String,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+    },
+
+    companyName: {
+      type: String,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      required: true,
+    },
+
+    // IMPORTANT FIX
+    sessionId: {
+      type: String,
+      default: null,
+    },
+
+    paymentMethod: {
+      type: String,
+      default: "COD",
+    },
+
+    paymentStatus: {
+      type: String,
+      default: "pending",
+    },
+
+    paymentId: {
+      type: String,
+      default: "",
+    },
 
     products: [
       {
         productId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
+          required: true,
         },
 
-        quantity: Number,
+        quantity: {
+          type: Number,
+          required: true,
+        },
+
+        size: {
+          type: String,
+          default: "",
+        },
       },
     ],
 
-    totalAmount: Number,
+    totalAmount: {
+      type: Number,
+      required: true,
+    },
 
     status: {
       type: String,
       enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
+
     returnRequest: {
       type: Boolean,
       default: false,
@@ -43,6 +97,7 @@ const orderSchema = new mongoose.Schema(
     deliveredAt: {
       type: Date,
     },
+
     trackingId: {
       type: String,
       default: "",
