@@ -67,6 +67,18 @@ export default function AdminLayout({ children }) {
       name: "Enquiries",
       path: "/admin/enquiries",
     },
+    {
+      name: "WholeSale",
+      path: "/admin/wholesale",
+    },
+    {
+      name: "About",
+      path: "/admin/about",
+    },
+    {
+      name: "contact",
+      path: "/admin/contact",
+    },
   ];
 
   if (loading) {

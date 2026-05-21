@@ -3,13 +3,102 @@ import Product from "../models/productModel.js";
 // GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+    // QUERY PARAMS
+    const page = Number(req.query.page) || 1;
+
+    const limit = Number(req.query.limit) || 12;
+
+    const search = req.query.search || "";
+
+    const category = req.query.category || "";
+
+    const color = req.query.color || "";
+
+    const sort = req.query.sort || "";
+
+    const maxPrice = Number(req.query.maxPrice) || 100000;
+
+    const discount = Number(req.query.discount) || 0;
+
+    // SKIP
+    const skip = (page - 1) * limit;
+
+    // FILTER OBJECT
+    let filters = {};
+
+    // SEARCH
+    if (search) {
+      filters.name = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    // CATEGORY
+    if (category) {
+      filters.category = category;
+    }
+
+    // COLOR
+    if (color) {
+      filters.colors = {
+        $in: [color],
+      };
+    }
+
+    // PRICE
+    filters.price_min = {
+      $lte: maxPrice,
+    };
+
+    // DISCOUNT
+    if (discount > 0) {
+      filters.discount_percentage = {
+        $gte: discount,
+      };
+    }
+
+    // SORTING
+    let sortOption = {
+      createdAt: -1,
+    };
+
+    if (sort === "lowToHigh") {
+      sortOption = {
+        price_min: 1,
+      };
+    }
+
+    if (sort === "highToLow") {
+      sortOption = {
+        price_min: -1,
+      };
+    }
+
+    // TOTAL PRODUCTS
+    const totalProducts = await Product.countDocuments(filters);
+
+    // PRODUCTS
+    const products = await Product.find(filters)
       .populate("category")
-      .sort({ createdAt: -1 });
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
+
       data: products,
+
+      pagination: {
+        currentPage: page,
+
+        totalPages: Math.ceil(totalProducts / limit),
+
+        totalProducts,
+
+        productsPerPage: limit,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -43,6 +132,12 @@ export const createProduct = async (req, res) => {
 
       colors: req.body.colors ? JSON.parse(req.body.colors) : [],
 
+      isTrending: req.body.isTrending === "true",
+
+      isBestSeller: req.body.isBestSeller === "true",
+
+      isLimitedStock: req.body.isLimitedStock === "true",
+
       mainImage,
       galleryImages,
     });
@@ -65,22 +160,25 @@ export const createProduct = async (req, res) => {
 // UPDATE PRODUCT
 export const updateProduct = async (req, res) => {
   try {
-    let mainImage = req.body.mainImage;
+    const existingProduct = await Product.findById(req.params.id);
 
-    // FIXED → old gallery images preserve
-    let galleryImages = req.body.existingGalleryImages || [];
-
-    // single string case fix
-    if (typeof galleryImages === "string") {
-      galleryImages = [galleryImages];
+    if (!existingProduct) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
     }
 
-    // update main image
+    // MAIN IMAGE
+    let mainImage = existingProduct.mainImage;
+
     if (req.files?.mainImage?.[0]) {
       mainImage = `http://localhost:5004/uploads/products/${req.files.mainImage[0].filename}`;
     }
 
-    // add new gallery images
+    // GALLERY IMAGES
+    let galleryImages = existingProduct.galleryImages || [];
+
     if (req.files?.galleryImages?.length > 0) {
       const newGalleryImages = req.files.galleryImages.map(
         (file) => `http://localhost:5004/uploads/products/${file.filename}`,
@@ -89,16 +187,21 @@ export const updateProduct = async (req, res) => {
       galleryImages = [...galleryImages, ...newGalleryImages];
     }
 
-    const product = await Product.findByIdAndUpdate(
+    const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
         ...req.body,
 
-        sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
+        sizes: req.body.sizes
+          ? JSON.parse(req.body.sizes)
+          : existingProduct.sizes,
 
-        colors: req.body.colors ? JSON.parse(req.body.colors) : [],
+        colors: req.body.colors
+          ? JSON.parse(req.body.colors)
+          : existingProduct.colors,
 
         mainImage,
+
         galleryImages,
       },
       {
@@ -106,17 +209,10 @@ export const updateProduct = async (req, res) => {
       },
     );
 
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
-
     res.status(200).json({
       success: true,
       message: "Product updated successfully",
-      data: product,
+      data: updatedProduct,
     });
   } catch (error) {
     console.log(error);
@@ -254,6 +350,7 @@ export const getRelatedProducts = async (req, res) => {
     });
   }
 };
+
 // GET TRENDING PRODUCTS
 export const getTrendingProducts = async (req, res) => {
   try {
@@ -279,6 +376,7 @@ export const getTrendingProducts = async (req, res) => {
     });
   }
 };
+
 // GET BEST SELLER PRODUCTS
 export const getBestSellerProducts = async (req, res) => {
   try {
@@ -304,6 +402,33 @@ export const getBestSellerProducts = async (req, res) => {
     });
   }
 };
+
+// GET LIMITED STOCK PRODUCTS
+export const getLimitedStockProducts = async (req, res) => {
+  try {
+    const products = await Product.find({
+      isLimitedStock: true,
+    })
+      .populate("category")
+      .sort({
+        createdAt: -1,
+      })
+      .limit(8);
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const updateProductViews = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(
@@ -325,6 +450,7 @@ export const updateProductViews = async (req, res) => {
     });
   }
 };
+
 export const getMostViewedProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ views: -1 }).limit(8);
@@ -340,6 +466,7 @@ export const getMostViewedProducts = async (req, res) => {
     });
   }
 };
+
 // LIVE SEARCH PRODUCTS
 export const searchProducts = async (req, res) => {
   try {

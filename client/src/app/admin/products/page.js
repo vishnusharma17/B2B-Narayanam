@@ -24,6 +24,7 @@ const initialFormState = {
   galleryImages: [],
   isTrending: false,
   isBestSeller: false,
+  isLimitedStock: false,
 };
 
 export default function AdminProductsPage() {
@@ -142,6 +143,7 @@ export default function AdminProductsPage() {
       galleryImages: product.galleryImages || [],
       isTrending: product.isTrending || false,
       isBestSeller: product.isBestSeller || false,
+      isLimitedStock: product.isLimitedStock || false,
     });
 
     setTimeout(() => {
@@ -173,38 +175,61 @@ export default function AdminProductsPage() {
       const formPayload = new FormData();
 
       Object.keys(formData).forEach((key) => {
+        // MAIN IMAGE
         if (key === "mainImage") {
           if (formData.mainImage instanceof File) {
             formPayload.append("mainImage", formData.mainImage);
           }
-        } else if (key === "galleryImages") {
+        }
+
+        // GALLERY IMAGES
+        else if (key === "galleryImages") {
           formData.galleryImages.forEach((img) => {
             if (img instanceof File) {
               formPayload.append("galleryImages", img);
             }
           });
-        } else if (Array.isArray(formData[key])) {
+        }
+
+        // ARRAYS
+        else if (Array.isArray(formData[key])) {
           formPayload.append(key, JSON.stringify(formData[key]));
-        } else {
+        }
+
+        // CATEGORY FIX
+        else if (key === "category") {
+          if (formData.category && formData.category !== "") {
+            formPayload.append("category", formData.category);
+          }
+        }
+
+        // NORMAL FIELDS
+        else {
           formPayload.append(key, formData[key]);
         }
       });
 
+      // DESCRIPTION
       if (descriptionRef.current) {
         formPayload.set("description", descriptionRef.current.innerHTML);
       }
 
+      // UPDATE
       if (editingId) {
         await API.put(`/products/${editingId}`, formPayload, getAuthHeaders());
 
         toast.success("Product updated successfully");
-      } else {
+      }
+
+      // CREATE
+      else {
         await API.post("/products", formPayload, getAuthHeaders());
 
         toast.success("Product created successfully");
       }
 
       resetForm();
+
       fetchProducts();
     } catch (error) {
       console.log(error);
@@ -310,6 +335,22 @@ export default function AdminProductsPage() {
             <span>Show in Best Seller Section</span>
           </div>
 
+          {/* LIMITED STOCK */}
+          <div className="md:col-span-2 flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={formData.isLimitedStock}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  isLimitedStock: e.target.checked,
+                }))
+              }
+            />
+
+            <span>Show in Limited Stock Section</span>
+          </div>
+
           {/* MAIN IMAGE */}
           <input
             type="file"
@@ -351,18 +392,18 @@ export default function AdminProductsPage() {
             <div
               key={product._id}
               className="
-                  bg-white
-                  p-4
-                  sm:p-5
-                  rounded-2xl
-                  shadow
-                  flex
-                  flex-col
-                  lg:flex-row
-                  lg:justify-between
-                  lg:items-center
-                  gap-5
-                "
+                bg-white
+                p-4
+                sm:p-5
+                rounded-2xl
+                shadow
+                flex
+                flex-col
+                lg:flex-row
+                lg:justify-between
+                lg:items-center
+                gap-5
+              "
             >
               {/* LEFT */}
               <div className="flex gap-4 items-start sm:items-center">
@@ -370,14 +411,14 @@ export default function AdminProductsPage() {
                   src={product.mainImage}
                   alt={product.name}
                   className="
-                      w-20
-                      h-20
-                      sm:w-24
-                      sm:h-24
-                      object-cover
-                      rounded-xl
-                      bg-gray-100
-                    "
+                    w-20
+                    h-20
+                    sm:w-24
+                    sm:h-24
+                    object-cover
+                    rounded-xl
+                    bg-gray-100
+                  "
                 />
 
                 <div>
@@ -390,15 +431,17 @@ export default function AdminProductsPage() {
                   </p>
 
                   <p className="text-sm text-gray-500 mt-1">
-                    Views:{" "}
-                    <span className="font-semibold text-black">
+                    Views:
+                    <span className="font-semibold text-black ml-1">
                       {product.views || 0}
                     </span>
                   </p>
 
                   <p className="text-sm text-gray-500 mt-1">
-                    Stock:{" "}
-                    <span className="font-medium">{product.stock || 0}</span>
+                    Stock:
+                    <span className="font-medium ml-1">
+                      {product.stock || 0}
+                    </span>
                   </p>
 
                   {/* BADGES */}
@@ -412,6 +455,12 @@ export default function AdminProductsPage() {
                     {product.isBestSeller && (
                       <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-medium">
                         Best Seller
+                      </span>
+                    )}
+
+                    {product.isLimitedStock && (
+                      <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
+                        Limited Stock
                       </span>
                     )}
 
@@ -429,16 +478,16 @@ export default function AdminProductsPage() {
                 <button
                   onClick={() => handleEdit(product)}
                   className="
-                      flex-1
-                      lg:flex-none
-                      bg-blue-500
-                      hover:bg-blue-600
-                      transition
-                      text-white
-                      px-5
-                      py-3
-                      rounded-xl
-                    "
+                    flex-1
+                    lg:flex-none
+                    bg-blue-500
+                    hover:bg-blue-600
+                    transition
+                    text-white
+                    px-5
+                    py-3
+                    rounded-xl
+                  "
                 >
                   Edit
                 </button>
@@ -446,16 +495,16 @@ export default function AdminProductsPage() {
                 <button
                   onClick={() => handleDelete(product._id)}
                   className="
-                      flex-1
-                      lg:flex-none
-                      bg-red-500
-                      hover:bg-red-600
-                      transition
-                      text-white
-                      px-5
-                      py-3
-                      rounded-xl
-                    "
+                    flex-1
+                    lg:flex-none
+                    bg-red-500
+                    hover:bg-red-600
+                    transition
+                    text-white
+                    px-5
+                    py-3
+                    rounded-xl
+                  "
                 >
                   Delete
                 </button>

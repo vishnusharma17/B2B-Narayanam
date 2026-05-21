@@ -1,44 +1,69 @@
 import ContactSettings from "../models/ContactSettings.js";
 
-// Get contact settings
+// GET
 export const getContactSettings = async (req, res) => {
   try {
-    const settings = await ContactSettings.findOne();
+    let data = await ContactSettings.findOne();
 
-    res.json({
+    if (!data) {
+      data = await ContactSettings.create({});
+    }
+
+    res.status(200).json({
       success: true,
-      data: settings,
+      data,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
 };
 
-// Update contact settings
+// UPDATE
 export const updateContactSettings = async (req, res) => {
   try {
-    let settings = await ContactSettings.findOne();
+    let data = await ContactSettings.findOne();
 
-    if (!settings) {
-      settings = await ContactSettings.create(req.body);
-    } else {
-      settings = await ContactSettings.findByIdAndUpdate(
-        settings._id,
-        req.body,
-        {
-          new: true,
-        },
-      );
+    let heroImage = req.body.existingHeroImage || "";
+
+    // IMAGE UPLOAD
+    if (req.file) {
+      heroImage = `http://localhost:5004/uploads/${req.file.filename}`;
     }
 
-    res.json({
+    const payload = {
+      heroTitle: req.body.heroTitle,
+
+      heroSubtitle: req.body.heroSubtitle,
+
+      heroImage,
+
+      phone: req.body.phone,
+
+      email: req.body.email,
+
+      location: req.body.location,
+
+      whatsapp: req.body.whatsapp,
+    };
+
+    if (!data) {
+      data = await ContactSettings.create(payload);
+    } else {
+      data = await ContactSettings.findByIdAndUpdate(data._id, payload, {
+        new: true,
+      });
+    }
+
+    res.status(200).json({
       success: true,
-      data: settings,
+      data,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }

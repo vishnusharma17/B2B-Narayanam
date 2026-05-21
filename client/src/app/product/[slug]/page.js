@@ -6,6 +6,7 @@ import {
   ShieldCheck,
   ShoppingBag,
   Truck,
+  X,
 } from "lucide-react";
 
 import { useParams, useRouter } from "next/navigation";
@@ -15,6 +16,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import ProductCard from "../../../components/product/ProductCard";
+
 import API from "../../../lib/api";
 
 export default function ProductDetailPage() {
@@ -36,6 +38,8 @@ export default function ProductDetailPage() {
 
   const [showImagePreview, setShowImagePreview] = useState(false);
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (slug) {
       fetchProduct();
@@ -44,18 +48,20 @@ export default function ProductDetailPage() {
 
   const fetchProduct = async () => {
     try {
-      setProduct(null);
+      setLoading(true);
 
       const res = await API.get(`/products/slug/${slug}`);
 
       const productData = res.data.data;
 
+      // UPDATE VIEWS
       await API.put(`/products/views/${productData._id}`);
 
       setProduct(productData);
 
       setSelectedImage(productData.mainImage || "/placeholder-product.jpg");
 
+      // RELATED PRODUCTS
       const categoryId = productData.category?._id || productData.category;
 
       const relatedRes = await API.get(`/products/related/${categoryId}`);
@@ -64,6 +70,7 @@ export default function ProductDetailPage() {
         (item) => item._id !== productData._id,
       );
 
+      // FALLBACK PRODUCTS
       if (filtered.length === 0) {
         const allProducts = await API.get("/products");
 
@@ -75,8 +82,16 @@ export default function ProductDetailPage() {
       setRelatedProducts(filtered.slice(0, 4));
     } catch (error) {
       console.log(error);
+
+      toast.error("Failed to load product");
+    } finally {
+      setLoading(false);
     }
   };
+
+  // =========================
+  // ADD TO CART
+  // =========================
 
   const handleAddToCart = async () => {
     try {
@@ -105,9 +120,15 @@ export default function ProductDetailPage() {
         router.push("/cart");
       }, 500);
     } catch (error) {
+      console.log(error);
+
       toast.error("Cart failed");
     }
   };
+
+  // =========================
+  // WISHLIST
+  // =========================
 
   const handleWishlist = async () => {
     try {
@@ -126,9 +147,15 @@ export default function ProductDetailPage() {
 
       toast.success("Added to wishlist");
     } catch (error) {
+      console.log(error);
+
       toast.error("Wishlist failed");
     }
   };
+
+  // =========================
+  // BUY NOW
+  // =========================
 
   const handleBuyNow = () => {
     if (product.sizes?.length > 0 && !selectedSize) {
@@ -140,7 +167,11 @@ export default function ProductDetailPage() {
     );
   };
 
-  if (!product) {
+  // =========================
+  // LOADING
+  // =========================
+
+  if (loading || !product) {
     return (
       <div className="h-screen flex justify-center items-center text-xl">
         Loading Product...
@@ -148,73 +179,97 @@ export default function ProductDetailPage() {
     );
   }
 
-  const thumbnailImages = [product.mainImage, ...(product.galleryImages || [])];
+  // =========================
+  // FIXED THUMBNAILS
+  // =========================
+
+  const thumbnailImages = [
+    product.mainImage,
+    ...(product.galleryImages || []),
+  ].filter((img, index, self) => img && self.indexOf(img) === index);
 
   return (
     <div className="bg-[#faf7f2] min-h-screen pt-20 sm:pt-24">
-      {/* Breadcrumb */}
+      {/* BREADCRUMB */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 pt-6 text-sm text-gray-500">
         Home / Products / <span className="text-black">{product.name}</span>
       </div>
 
+      {/* MAIN SECTION */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-8 sm:py-12">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* LEFT */}
           <div className="lg:sticky lg:top-28">
-            {/* Main Image */}
-            <div className="bg-white rounded-3xl overflow-hidden shadow-sm border">
-              <img
-                src={selectedImage}
-                alt={product.name}
-                onClick={() => setShowImagePreview(true)}
+            <div className="flex flex-col-reverse md:flex-row gap-4">
+              {/* THUMBNAILS */}
+              <div
                 className="
-                  w-full
-                  h-[320px]
-                  sm:h-[450px]
-                  md:h-[600px]
-                  object-contain
-                  bg-white
-                  p-3
-                  hover:scale-105
-                  transition
-                  duration-500
-                  cursor-zoom-in
+                  flex
+                  md:flex-col
+                  gap-3
+                  overflow-x-auto
+                  md:overflow-y-auto
+                  md:max-h-[650px]
+                  scrollbar-hide
                 "
-              />
-            </div>
+              >
+                {thumbnailImages.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSelectedImage(img)}
+                    className={`
+                        min-w-[85px]
+                        w-[85px]
+                        h-[85px]
+                        rounded-2xl
+                        overflow-hidden
+                        border-2
+                        bg-white
+                        transition
+                        duration-300
+                        shadow-sm
+                        flex-shrink-0
+                        ${
+                          selectedImage === img
+                            ? "border-black scale-105 shadow-lg"
+                            : "border-gray-200 hover:border-gray-400"
+                        }
+                      `}
+                  >
+                    <img
+                      src={img}
+                      alt={`thumb-${index}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
 
-            {/* Thumbnails */}
-            <div className="flex gap-3 overflow-x-auto mt-5 pb-2">
-              {thumbnailImages.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setSelectedImage(img)}
-                  className={`
-                      min-w-[90px]
-                      h-[90px]
-                      rounded-2xl
-                      overflow-hidden
-                      border-2
-                      bg-white
-                      ${
-                        selectedImage === img
-                          ? "border-black"
-                          : "border-gray-200"
-                      }
-                    `}
-                >
-                  <img
-                    src={img}
-                    alt="thumb"
-                    className="
-                        w-full
-                        h-full
-                        object-contain
-                        p-1
-                      "
-                  />
-                </button>
-              ))}
+              {/* MAIN IMAGE */}
+              <div className="flex-1 bg-white rounded-3xl overflow-hidden shadow-sm border group relative">
+                <img
+                  src={selectedImage}
+                  alt={product.name}
+                  onClick={() => setShowImagePreview(true)}
+                  className="
+                    w-full
+                    h-[350px]
+                    sm:h-[500px]
+                    lg:h-[700px]
+                    object-contain
+                    bg-white
+                    p-4
+                    transition
+                    duration-700
+                    group-hover:scale-105
+                    cursor-zoom-in
+                  "
+                />
+
+                <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs px-3 py-2 rounded-full backdrop-blur">
+                  Click to Zoom
+                </div>
+              </div>
             </div>
           </div>
 
@@ -228,7 +283,7 @@ export default function ProductDetailPage() {
               {product.name}
             </h1>
 
-            {/* Price */}
+            {/* PRICE */}
             <div className="mt-6 flex items-center gap-4 flex-wrap">
               <span className="text-3xl font-semibold">
                 ₹{product.price_min}
@@ -247,7 +302,7 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Stock */}
+            {/* STOCK */}
             <div className="mt-4">
               {product.stock > 0 ? (
                 <span className="text-green-600 font-medium">In Stock</span>
@@ -256,7 +311,7 @@ export default function ProductDetailPage() {
               )}
             </div>
 
-            {/* Description */}
+            {/* DESCRIPTION */}
             <div
               className="mt-6 text-gray-600 leading-7 prose max-w-none"
               dangerouslySetInnerHTML={{
@@ -264,7 +319,7 @@ export default function ProductDetailPage() {
               }}
             />
 
-            {/* Sizes */}
+            {/* SIZES */}
             {product.sizes?.length > 0 && (
               <div className="mt-8">
                 <p className="font-medium mb-4">Select Size</p>
@@ -287,7 +342,7 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Quantity */}
+            {/* QUANTITY */}
             <div className="mt-8">
               <p className="font-medium mb-4">Quantity</p>
 
@@ -312,7 +367,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Buttons */}
+            {/* BUTTONS */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
               <button
                 onClick={handleAddToCart}
@@ -338,20 +393,23 @@ export default function ProductDetailPage() {
               </button>
             </div>
 
-            {/* Features */}
+            {/* FEATURES */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
               <div className="bg-white p-5 rounded-2xl text-center">
                 <Truck className="mx-auto mb-3" />
+
                 <p className="text-sm">Fast Delivery</p>
               </div>
 
               <div className="bg-white p-5 rounded-2xl text-center">
                 <ShieldCheck className="mx-auto mb-3" />
+
                 <p className="text-sm">Secure Payment</p>
               </div>
 
               <div className="bg-white p-5 rounded-2xl text-center">
                 <RotateCcw className="mx-auto mb-3" />
+
                 <p className="text-sm">Easy Returns</p>
               </div>
             </div>
@@ -359,7 +417,7 @@ export default function ProductDetailPage() {
         </div>
       </section>
 
-      {/* Related Products */}
+      {/* RELATED PRODUCTS */}
       {relatedProducts.length > 0 && (
         <section className="py-16 sm:py-20 px-4 md:px-10 bg-white">
           <div className="text-center mb-12">
@@ -380,22 +438,25 @@ export default function ProductDetailPage() {
         </section>
       )}
 
-      {/* Full Preview */}
+      {/* IMAGE PREVIEW */}
       {showImagePreview && (
-        <div
-          onClick={() => setShowImagePreview(false)}
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-        >
+        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
+          <button
+            onClick={() => setShowImagePreview(false)}
+            className="absolute top-5 right-5 text-white"
+          >
+            <X size={32} />
+          </button>
+
           <img
             src={selectedImage}
             alt={product.name}
             className="max-w-full max-h-full object-contain rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
           />
         </div>
       )}
 
-      {/* Sticky Mobile Buttons */}
+      {/* MOBILE STICKY BUTTONS */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-3 flex gap-3 sm:hidden z-40">
         <button
           onClick={handleWishlist}

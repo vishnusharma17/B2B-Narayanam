@@ -12,6 +12,12 @@ const wholesaleSchema = new mongoose.Schema(
         description: String,
       },
     ],
+    stats: [
+      {
+        value: String,
+        label: String,
+      },
+    ],
 
     processSteps: [String],
 

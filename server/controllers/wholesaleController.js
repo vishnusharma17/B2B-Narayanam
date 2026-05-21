@@ -14,14 +14,42 @@ export const getWholesaleSettings = async (req, res) => {
     });
   }
 };
-
 export const updateWholesaleSettings = async (req, res) => {
   try {
     let data = await WholesaleSettings.findOne();
 
+    // DEFAULT STATS
+    const defaultStats = [
+      {
+        value: "500+",
+        label: "Premium Designs",
+      },
+      {
+        value: "1200+",
+        label: "Retail Partners",
+      },
+      {
+        value: "PAN India",
+        label: "Fast Delivery",
+      },
+      {
+        value: "Low MOQ",
+        label: "Business Friendly",
+      },
+    ];
+
+    // AGAR STATS NAHI AAYE
+    if (!req.body.stats) {
+      req.body.stats = defaultStats;
+    }
+
+    // CREATE
     if (!data) {
       data = await WholesaleSettings.create(req.body);
-    } else {
+    }
+
+    // UPDATE
+    else {
       data = await WholesaleSettings.findByIdAndUpdate(data._id, req.body, {
         new: true,
       });

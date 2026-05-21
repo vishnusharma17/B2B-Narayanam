@@ -4,26 +4,57 @@ import {
   createProduct,
   deleteProduct,
   getBestSellerProducts,
+  getLimitedStockProducts,
   getMostViewedProducts,
   getProductBySlug,
   getProducts,
   getRelatedProducts,
   getTrendingProducts,
+  searchProducts,
   updateProduct,
   updateProductViews,
-  searchProducts,
 } from "../controllers/productController.js";
+
 import { protect } from "../middleware/authMiddleware.js";
+
 import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
 
+// ==========================
+// GET ROUTES
+// ==========================
+
+// ALL PRODUCTS
 router.get("/", getProducts);
+
+// SEARCH PRODUCTS
 router.get("/search", searchProducts);
-router.get("/slug/:slug", getProductBySlug);
-router.get("/related/:categoryId", getRelatedProducts);
+
+// BEST SELLERS
 router.get("/best-sellers", getBestSellerProducts);
+
+// TRENDING PRODUCTS
+router.get("/trending", getTrendingProducts);
+
+// LIMITED STOCK PRODUCTS
+router.get("/limited-stock", getLimitedStockProducts);
+
+// MOST VIEWED PRODUCTS
+router.get("/most-viewed", getMostViewedProducts);
+
+// PRODUCT BY SLUG
+router.get("/slug/:slug", getProductBySlug);
+
+// RELATED PRODUCTS
+router.get("/related/:categoryId", getRelatedProducts);
+
+// UPDATE PRODUCT VIEWS
+router.put("/views/:id", updateProductViews);
+
+// ==========================
 // CREATE PRODUCT
+// ==========================
 router.post(
   "/",
   protect,
@@ -40,7 +71,9 @@ router.post(
   createProduct,
 );
 
+// ==========================
 // UPDATE PRODUCT
+// ==========================
 router.put(
   "/:id",
   protect,
@@ -57,9 +90,9 @@ router.put(
   updateProduct,
 );
 
+// ==========================
+// DELETE PRODUCT
+// ==========================
 router.delete("/:id", protect, deleteProduct);
-router.get("/trending", getTrendingProducts);
-router.put("/views/:id", updateProductViews);
 
-router.get("/most-viewed", getMostViewedProducts);
 export default router;
