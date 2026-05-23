@@ -85,7 +85,7 @@ export const updateCartQuantity = async (req, res) => {
         quantity,
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     );
 

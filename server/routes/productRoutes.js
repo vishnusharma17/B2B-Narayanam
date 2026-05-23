@@ -15,7 +15,7 @@ import {
   updateProductViews,
 } from "../controllers/productController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import { isAdmin, protect } from "../middleware/authMiddleware.js";
 
 import upload from "../middleware/uploadMiddleware.js";
 
@@ -58,6 +58,7 @@ router.put("/views/:id", updateProductViews);
 router.post(
   "/",
   protect,
+  isAdmin,
   upload.fields([
     {
       name: "mainImage",
@@ -77,6 +78,7 @@ router.post(
 router.put(
   "/:id",
   protect,
+  isAdmin,
   upload.fields([
     {
       name: "mainImage",
@@ -93,6 +95,6 @@ router.put(
 // ==========================
 // DELETE PRODUCT
 // ==========================
-router.delete("/:id", protect, deleteProduct);
+router.delete("/:id", protect, isAdmin, deleteProduct);
 
 export default router;

@@ -36,6 +36,8 @@ export default function ProductDetailPage() {
 
   const [selectedSize, setSelectedSize] = useState("");
 
+  const [selectedColor, setSelectedColor] = useState("");
+
   const [showImagePreview, setShowImagePreview] = useState(false);
 
   const [loading, setLoading] = useState(true);
@@ -54,14 +56,16 @@ export default function ProductDetailPage() {
 
       const productData = res.data.data;
 
-      // UPDATE VIEWS
       await API.put(`/products/views/${productData._id}`);
 
       setProduct(productData);
 
       setSelectedImage(productData.mainImage || "/placeholder-product.jpg");
 
-      // RELATED PRODUCTS
+      if (productData.colors?.length > 0) {
+        setSelectedColor(productData.colors[0]);
+      }
+
       const categoryId = productData.category?._id || productData.category;
 
       const relatedRes = await API.get(`/products/related/${categoryId}`);
@@ -70,7 +74,6 @@ export default function ProductDetailPage() {
         (item) => item._id !== productData._id,
       );
 
-      // FALLBACK PRODUCTS
       if (filtered.length === 0) {
         const allProducts = await API.get("/products");
 
@@ -94,6 +97,15 @@ export default function ProductDetailPage() {
   // =========================
 
   const handleAddToCart = async () => {
+    const user = localStorage.getItem("userData");
+
+    if (!user) {
+      toast.error("Please login first");
+
+      router.push("/login");
+
+      return;
+    }
     try {
       if (product.sizes?.length > 0 && !selectedSize) {
         return toast.error("Please select size");
@@ -111,6 +123,7 @@ export default function ProductDetailPage() {
         productId: product._id,
         quantity,
         size: selectedSize,
+        color: selectedColor,
         sessionId,
       });
 
@@ -158,12 +171,21 @@ export default function ProductDetailPage() {
   // =========================
 
   const handleBuyNow = () => {
+    const user = localStorage.getItem("userData");
+
+    if (!user) {
+      toast.error("Please login first");
+
+      router.push("/login");
+
+      return;
+    }
     if (product.sizes?.length > 0 && !selectedSize) {
       return toast.error("Please select size");
     }
 
     router.push(
-      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}`,
+      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`,
     );
   };
 
@@ -180,7 +202,7 @@ export default function ProductDetailPage() {
   }
 
   // =========================
-  // FIXED THUMBNAILS
+  // IMAGES
   // =========================
 
   const thumbnailImages = [
@@ -211,6 +233,7 @@ export default function ProductDetailPage() {
                   md:overflow-y-auto
                   md:max-h-[650px]
                   scrollbar-hide
+                  pb-2
                 "
               >
                 {thumbnailImages.map((img, index) => (
@@ -218,35 +241,68 @@ export default function ProductDetailPage() {
                     key={index}
                     onClick={() => setSelectedImage(img)}
                     className={`
-                        min-w-[85px]
-                        w-[85px]
-                        h-[85px]
-                        rounded-2xl
-                        overflow-hidden
-                        border-2
-                        bg-white
-                        transition
-                        duration-300
-                        shadow-sm
-                        flex-shrink-0
-                        ${
-                          selectedImage === img
-                            ? "border-black scale-105 shadow-lg"
-                            : "border-gray-200 hover:border-gray-400"
-                        }
-                      `}
+                      relative
+                      min-w-[85px]
+                      w-[85px]
+                      h-[105px]
+                      rounded-2xl
+                      overflow-hidden
+                      border-2
+                      bg-white
+                      transition-all
+                      duration-300
+                      shadow-sm
+                      flex-shrink-0
+                      group
+
+                      ${
+                        selectedImage === img
+                          ? "border-black scale-105 shadow-xl"
+                          : "border-gray-200 hover:border-black"
+                      }
+                    `}
                   >
                     <img
                       src={img}
                       alt={`thumb-${index}`}
-                      className="w-full h-full object-cover"
+                      className="
+                        w-full
+                        h-full
+                        object-cover
+                        transition-transform
+                        duration-500
+                        group-hover:scale-110
+                      "
                     />
+
+                    {selectedImage === img && (
+                      <div
+                        className="
+                          absolute
+                          inset-0
+                          border-2
+                          border-black
+                          rounded-2xl
+                        "
+                      />
+                    )}
                   </button>
                 ))}
               </div>
 
               {/* MAIN IMAGE */}
-              <div className="flex-1 bg-white rounded-3xl overflow-hidden shadow-sm border group relative">
+              <div
+                className="
+                  flex-1
+                  bg-white
+                  rounded-3xl
+                  overflow-hidden
+                  shadow-sm
+                  border
+                  group
+                  relative
+                "
+              >
                 <img
                   src={selectedImage}
                   alt={product.name}
@@ -259,14 +315,51 @@ export default function ProductDetailPage() {
                     object-contain
                     bg-white
                     p-4
-                    transition
+                    transition-all
                     duration-700
+                    ease-in-out
                     group-hover:scale-105
                     cursor-zoom-in
                   "
                 />
 
-                <div className="absolute bottom-4 right-4 bg-black/70 text-white text-xs px-3 py-2 rounded-full backdrop-blur">
+                {/* IMAGE COUNT */}
+                <div
+                  className="
+                    absolute
+                    top-4
+                    left-4
+                    bg-black/70
+                    text-white
+                    text-xs
+                    px-3
+                    py-2
+                    rounded-full
+                    backdrop-blur
+                    z-20
+                  "
+                >
+                  {thumbnailImages.findIndex((img) => img === selectedImage) +
+                    1}
+                  /{thumbnailImages.length}
+                </div>
+
+                {/* ZOOM TEXT */}
+                <div
+                  className="
+                    absolute
+                    bottom-4
+                    right-4
+                    bg-black/70
+                    text-white
+                    text-xs
+                    px-3
+                    py-2
+                    rounded-full
+                    backdrop-blur
+                    z-20
+                  "
+                >
                   Click to Zoom
                 </div>
               </div>
@@ -318,6 +411,39 @@ export default function ProductDetailPage() {
                 __html: product.description,
               }}
             />
+
+            {/* COLORS */}
+            {product.colors?.length > 0 && (
+              <div className="mt-8">
+                <p className="font-medium mb-4">Select Color</p>
+
+                <div className="flex gap-3 flex-wrap">
+                  {product.colors.map((color) => (
+                    <button
+                      key={color}
+                      onClick={() => setSelectedColor(color)}
+                      className={`
+                        px-5
+                        py-2
+                        rounded-full
+                        border
+                        transition-all
+                        duration-300
+                        capitalize
+
+                        ${
+                          selectedColor === color
+                            ? "bg-black text-white border-black"
+                            : "bg-white hover:bg-black hover:text-white"
+                        }
+                      `}
+                    >
+                      {color}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* SIZES */}
             {product.sizes?.length > 0 && (
@@ -397,19 +523,16 @@ export default function ProductDetailPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
               <div className="bg-white p-5 rounded-2xl text-center">
                 <Truck className="mx-auto mb-3" />
-
                 <p className="text-sm">Fast Delivery</p>
               </div>
 
               <div className="bg-white p-5 rounded-2xl text-center">
                 <ShieldCheck className="mx-auto mb-3" />
-
                 <p className="text-sm">Secure Payment</p>
               </div>
 
               <div className="bg-white p-5 rounded-2xl text-center">
                 <RotateCcw className="mx-auto mb-3" />
-
                 <p className="text-sm">Easy Returns</p>
               </div>
             </div>

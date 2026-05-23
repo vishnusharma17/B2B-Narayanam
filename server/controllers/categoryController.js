@@ -108,7 +108,7 @@ export const updateCategory = async (req, res) => {
       req.params.id,
       updatedData,
       {
-        new: true,
+        returnDocument: "after",
       },
     );
 

@@ -91,7 +91,7 @@ export const updateEnquiry = async (req, res) => {
     const enquiry = await Enquiry.findByIdAndUpdate(
       id,
       req.body, // 👈 sab fields update ho jayengi
-      { new: true },
+      { returnDocument: "after" },
     );
 
     if (!enquiry) {

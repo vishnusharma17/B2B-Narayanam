@@ -67,7 +67,7 @@ export const updateAboutSettings = async (req, res) => {
       data = await AboutSettings.create(req.body);
     } else {
       data = await AboutSettings.findByIdAndUpdate(data._id, req.body, {
-        new: true,
+        returnDocument: "after",
       });
     }
 

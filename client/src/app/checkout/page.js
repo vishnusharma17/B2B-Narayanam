@@ -27,20 +27,29 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("COD");
 
   useEffect(() => {
+    const user = localStorage.getItem("userData");
+
+    if (!user) {
+      router.push("/login");
+
+      return;
+    }
     fetchProducts();
     fetchAddresses();
 
     localStorage.removeItem("lastPaymentId");
   }, []);
 
+  // =========================
   // FETCH PRODUCTS
+  // =========================
+
   const fetchProducts = async () => {
     try {
       const productId = searchParams.get("productId");
 
       const quantityParam = Number(searchParams.get("quantity")) || 1;
 
-      // CART FLOW
       if (type === "cart") {
         const sessionId = localStorage.getItem("sessionId");
 
@@ -57,10 +66,7 @@ export default function CheckoutPage() {
         }));
 
         setProducts(formattedProducts);
-      }
-
-      // DIRECT BUY NOW FLOW
-      else if (productId) {
+      } else if (productId) {
         const res = await API.get("/products");
 
         const product = (res.data.data || []).find(
@@ -79,34 +85,45 @@ export default function CheckoutPage() {
           ]);
         }
       }
-
-      // OLD BUY NOW FLOW
-      else if (type === "buyNow") {
-        const buyNowProduct = JSON.parse(localStorage.getItem("buyNowProduct"));
-
-        if (buyNowProduct) {
-          setProducts([
-            {
-              ...buyNowProduct,
-              price: Number(buyNowProduct.price),
-            },
-          ]);
-        }
-      }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // =========================
   // FETCH ADDRESSES
-  const fetchAddresses = () => {
-    const savedAddresses =
-      JSON.parse(localStorage.getItem("userAddresses")) || [];
+  // =========================
 
-    setAddresses(savedAddresses);
+  const fetchAddresses = async () => {
+    try {
+      const token = localStorage.getItem("userToken");
 
-    if (savedAddresses.length > 0) {
-      setSelectedAddress(savedAddresses[0]);
+      const res = await API.get("/address", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const fetchedAddresses = res.data.data || [];
+
+      setAddresses(fetchedAddresses);
+
+      localStorage.setItem("userAddresses", JSON.stringify(fetchedAddresses));
+
+      if (fetchedAddresses.length > 0) {
+        setSelectedAddress(fetchedAddresses[0]);
+      }
+    } catch (error) {
+      console.log(error);
+
+      const localAddresses =
+        JSON.parse(localStorage.getItem("userAddresses")) || [];
+
+      setAddresses(localAddresses);
+
+      if (localAddresses.length > 0) {
+        setSelectedAddress(localAddresses[0]);
+      }
     }
   };
 
@@ -129,7 +146,9 @@ export default function CheckoutPage() {
 
       const payload = {
         customerName: user.name,
+
         email: user.email,
+
         phone: selectedAddress.phone,
 
         address: `
@@ -138,7 +157,7 @@ ${selectedAddress.landmark},
 ${selectedAddress.city},
 ${selectedAddress.state},
 ${selectedAddress.pincode}
-            `,
+          `,
 
         products: products.map((item) => ({
           productId: item._id,
@@ -195,6 +214,8 @@ ${selectedAddress.pincode}
 
               router.push("/my-orders");
             } catch (error) {
+              console.log(error);
+
               toast.error("Order save failed");
             }
           },
@@ -217,7 +238,7 @@ ${selectedAddress.pincode}
     } catch (error) {
       console.log(error);
 
-      toast.error(error?.response?.data?.message || "Checkout failed");
+      toast.error("Checkout failed");
     } finally {
       setLoading(false);
     }
@@ -249,10 +270,10 @@ ${selectedAddress.pincode}
                 <div className="grid gap-4">
                   {addresses.map((address, index) => (
                     <div
-                      key={address.id}
+                      key={address._id}
                       onClick={() => setSelectedAddress(address)}
-                      className={`p-5 rounded-2xl border cursor-pointer ${
-                        selectedAddress?.id === address.id
+                      className={`p-5 rounded-2xl border cursor-pointer transition ${
+                        selectedAddress?._id === address._id
                           ? "border-black bg-[#F8F3EC]"
                           : "border-gray-200"
                       }`}
@@ -266,7 +287,7 @@ ${selectedAddress.pincode}
                       <p>{address.phone}</p>
 
                       {index === 0 && (
-                        <span className="text-green-600 text-sm flex items-center gap-1">
+                        <span className="text-green-600 text-sm flex items-center gap-1 mt-2">
                           <CheckCircle size={16} />
                           Default
                         </span>
@@ -290,6 +311,7 @@ ${selectedAddress.pincode}
                 className="w-full border p-4 rounded-xl"
               >
                 <option value="COD">Cash On Delivery</option>
+
                 <option value="Online Payment">Online Payment</option>
               </select>
             </div>
@@ -313,11 +335,13 @@ ${selectedAddress.pincode}
 
             <div className="flex justify-between mb-4">
               <span>Shipping</span>
+
               <span>Free</span>
             </div>
 
             <div className="flex justify-between text-xl font-bold">
               <span>Total</span>
+
               <span>₹{totalAmount}</span>
             </div>
 

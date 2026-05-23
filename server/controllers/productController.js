@@ -1,5 +1,5 @@
+import mongoose from "mongoose";
 import Product from "../models/productModel.js";
-
 // GET ALL PRODUCTS
 export const getProducts = async (req, res) => {
   try {
@@ -36,7 +36,9 @@ export const getProducts = async (req, res) => {
 
     // CATEGORY
     if (category) {
-      filters.category = category;
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        filters.category = category;
+      }
     }
 
     // COLOR
@@ -205,7 +207,7 @@ export const updateProduct = async (req, res) => {
         galleryImages,
       },
       {
-        new: true,
+        returnDocument: "after",
       },
     );
 
@@ -436,7 +438,7 @@ export const updateProductViews = async (req, res) => {
       {
         $inc: { views: 1 },
       },
-      { new: true },
+      { returnDocument: "after" },
     );
 
     res.status(200).json({

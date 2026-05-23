@@ -23,7 +23,7 @@ export const updateFooterSettings = async (req, res) => {
       data = await FooterSettings.create(req.body);
     } else {
       data = await FooterSettings.findByIdAndUpdate(data._id, req.body, {
-        new: true,
+        returnDocument: "after",
       });
     }
 

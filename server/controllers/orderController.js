@@ -143,7 +143,7 @@ export const updateOrderStatus = async (req, res) => {
     }
 
     const order = await Order.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
+      returnDocument: "after",
     });
 
     if (!order) {

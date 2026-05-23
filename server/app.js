@@ -11,6 +11,7 @@ import { errorHandler } from "./middleware/errorMiddleware.js";
 
 // Routes
 import aboutRoutes from "./routes/aboutRoutes.js";
+import addressRoutes from "./routes/addressRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
@@ -47,12 +48,11 @@ const limiter = rateLimit({
 });
 
 // Static uploads
-app.use("/uploads", express.static("uploads"));
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(limiter);
+// app.use(limiter);
 
 // ---------------- API Routes ---------------- //
 
@@ -100,6 +100,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/fashion-stories", fashionStoryRoutes);
 app.use("/api/shop-roles", shopRoleRoutes);
 app.use("/api/wardrobe-picks", wardrobePickRoutes);
+app.use("/api/address", addressRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("B2B Server Running 🚀");

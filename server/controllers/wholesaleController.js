@@ -51,7 +51,7 @@ export const updateWholesaleSettings = async (req, res) => {
     // UPDATE
     else {
       data = await WholesaleSettings.findByIdAndUpdate(data._id, req.body, {
-        new: true,
+        returnDocument: "after",
       });
     }
 

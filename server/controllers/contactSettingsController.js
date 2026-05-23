@@ -53,7 +53,7 @@ export const updateContactSettings = async (req, res) => {
       data = await ContactSettings.create(payload);
     } else {
       data = await ContactSettings.findByIdAndUpdate(data._id, payload, {
-        new: true,
+        returnDocument: "after",
       });
     }
 

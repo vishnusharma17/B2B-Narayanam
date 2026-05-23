@@ -1,11 +1,23 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
 import toast from "react-hot-toast";
 import API from "../../../lib/api";
 
 const AVAILABLE_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+
+const AVAILABLE_COLORS = [
+  "Black",
+  "White",
+  "Red",
+  "Blue",
+  "Green",
+  "Pink",
+  "Yellow",
+  "Purple",
+  "Orange",
+  "Brown",
+];
 
 const initialFormState = {
   name: "",
@@ -45,6 +57,22 @@ export default function AdminProductsPage() {
     fetchCategories();
   }, []);
 
+  // =========================
+  // SLUG
+  // =========================
+
+  const generateSlug = (text) => {
+    return text
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]+/g, "");
+  };
+
+  // =========================
+  // AUTH HEADERS
+  // =========================
+
   const getAuthHeaders = () => {
     const token = localStorage.getItem("adminToken");
 
@@ -55,6 +83,10 @@ export default function AdminProductsPage() {
       },
     };
   };
+
+  // =========================
+  // FETCH PRODUCTS
+  // =========================
 
   const fetchProducts = async () => {
     try {
@@ -70,6 +102,10 @@ export default function AdminProductsPage() {
     }
   };
 
+  // =========================
+  // FETCH CATEGORIES
+  // =========================
+
   const fetchCategories = async () => {
     try {
       const res = await API.get("/categories");
@@ -80,6 +116,10 @@ export default function AdminProductsPage() {
     }
   };
 
+  // =========================
+  // MAIN IMAGE
+  // =========================
+
   const handleMainImageUpload = (e) => {
     const file = e.target.files[0];
 
@@ -88,6 +128,10 @@ export default function AdminProductsPage() {
       mainImage: file,
     }));
   };
+
+  // =========================
+  // GALLERY
+  // =========================
 
   const handleGalleryUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -98,6 +142,10 @@ export default function AdminProductsPage() {
     }));
   };
 
+  // =========================
+  // SIZE TOGGLE
+  // =========================
+
   const handleSizeToggle = (size) => {
     setFormData((prev) => ({
       ...prev,
@@ -106,6 +154,10 @@ export default function AdminProductsPage() {
         : [...prev.sizes, size],
     }));
   };
+
+  // =========================
+  // COLOR ADD
+  // =========================
 
   const handleColorAdd = (color) => {
     if (formData.colors.includes(color)) return;
@@ -116,12 +168,20 @@ export default function AdminProductsPage() {
     }));
   };
 
+  // =========================
+  // REMOVE COLOR
+  // =========================
+
   const removeColor = (index) => {
     setFormData((prev) => ({
       ...prev,
       colors: prev.colors.filter((_, i) => i !== index),
     }));
   };
+
+  // =========================
+  // EDIT
+  // =========================
 
   const handleEdit = (product) => {
     setEditingId(product._id);
@@ -158,6 +218,10 @@ export default function AdminProductsPage() {
     });
   };
 
+  // =========================
+  // RESET
+  // =========================
+
   const resetForm = () => {
     setEditingId(null);
 
@@ -167,6 +231,10 @@ export default function AdminProductsPage() {
       descriptionRef.current.innerHTML = "";
     }
   };
+
+  // =========================
+  // SUBMIT
+  // =========================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -196,14 +264,14 @@ export default function AdminProductsPage() {
           formPayload.append(key, JSON.stringify(formData[key]));
         }
 
-        // CATEGORY FIX
+        // CATEGORY
         else if (key === "category") {
           if (formData.category && formData.category !== "") {
             formPayload.append("category", formData.category);
           }
         }
 
-        // NORMAL FIELDS
+        // NORMAL
         else {
           formPayload.append(key, formData[key]);
         }
@@ -237,6 +305,10 @@ export default function AdminProductsPage() {
       toast.error(error?.response?.data?.message || "Something went wrong");
     }
   };
+
+  // =========================
+  // DELETE
+  // =========================
 
   const handleDelete = async (id) => {
     try {
@@ -272,12 +344,18 @@ export default function AdminProductsPage() {
               placeholder={field}
               className="border p-3 rounded-xl"
               value={formData[field]}
-              onChange={(e) =>
+              onChange={(e) => {
+                const value = e.target.value;
+
                 setFormData((prev) => ({
                   ...prev,
-                  [field]: e.target.value,
-                }))
-              }
+                  [field]: value,
+
+                  ...(field === "name" && {
+                    slug: generateSlug(value),
+                  }),
+                }));
+              }}
             />
           ))}
 
@@ -301,6 +379,87 @@ export default function AdminProductsPage() {
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* SIZES */}
+          <div className="md:col-span-2">
+            <label className="block mb-3 font-semibold">Select Sizes</label>
+
+            <div className="flex flex-wrap gap-3">
+              {AVAILABLE_SIZES.map((size) => (
+                <button
+                  type="button"
+                  key={size}
+                  onClick={() => handleSizeToggle(size)}
+                  className={`
+                    px-5
+                    py-2
+                    rounded-xl
+                    border
+                    transition-all
+
+                    ${
+                      formData.sizes.includes(size)
+                        ? "bg-black text-white border-black"
+                        : "bg-white border-gray-300 hover:border-black"
+                    }
+                  `}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* COLORS */}
+          <div className="md:col-span-2">
+            <h3 className="font-semibold mb-3">Add Colors</h3>
+
+            <div className="flex flex-wrap gap-3 mb-4">
+              {AVAILABLE_COLORS.map((color) => (
+                <button
+                  type="button"
+                  key={color}
+                  onClick={() => handleColorAdd(color)}
+                  className="
+                    px-4
+                    py-2
+                    rounded-full
+                    border
+                    hover:bg-black
+                    hover:text-white
+                    transition
+                  "
+                >
+                  {color}
+                </button>
+              ))}
+            </div>
+
+            {/* SELECTED COLORS */}
+            <div className="flex flex-wrap gap-3">
+              {formData.colors.map((color, index) => (
+                <div
+                  key={index}
+                  className="
+                      bg-black
+                      text-white
+                      px-4
+                      py-2
+                      rounded-full
+                      flex
+                      items-center
+                      gap-2
+                    "
+                >
+                  {color}
+
+                  <button type="button" onClick={() => removeColor(index)}>
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* TRENDING */}
@@ -352,30 +511,59 @@ export default function AdminProductsPage() {
           </div>
 
           {/* MAIN IMAGE */}
-          <input
-            type="file"
-            onChange={handleMainImageUpload}
-            className="md:col-span-2"
-          />
-
-          {/* GALLERY */}
-          <input
-            type="file"
-            multiple
-            onChange={handleGalleryUpload}
-            className="md:col-span-2"
-          />
-
-          {/* DESCRIPTION */}
           <div className="md:col-span-2">
-            <div
-              ref={descriptionRef}
-              contentEditable
-              className="min-h-[220px] border rounded-xl p-4"
+            <label className="block mb-2 font-medium">Main Image</label>
+
+            <input
+              type="file"
+              onChange={handleMainImageUpload}
+              className="w-full border p-3 rounded-xl"
             />
           </div>
 
-          <button className="bg-black text-white py-3 rounded-xl md:col-span-2 hover:bg-gray-800 transition">
+          {/* GALLERY */}
+          <div className="md:col-span-2">
+            <label className="block mb-2 font-medium">Gallery Images</label>
+
+            <input
+              type="file"
+              multiple
+              onChange={handleGalleryUpload}
+              className="w-full border p-3 rounded-xl"
+            />
+          </div>
+
+          {/* DESCRIPTION */}
+          <div className="md:col-span-2">
+            <label className="block mb-2 font-medium">
+              Product Description
+            </label>
+
+            <div
+              ref={descriptionRef}
+              contentEditable
+              className="
+                min-h-[220px]
+                border
+                rounded-xl
+                p-4
+                outline-none
+              "
+            />
+          </div>
+
+          {/* BUTTON */}
+          <button
+            className="
+              bg-black
+              text-white
+              py-3
+              rounded-xl
+              md:col-span-2
+              hover:bg-gray-800
+              transition
+            "
+          >
             {editingId ? "Update Product" : "Create Product"}
           </button>
         </form>
@@ -443,6 +631,50 @@ export default function AdminProductsPage() {
                       {product.stock || 0}
                     </span>
                   </p>
+
+                  {/* SIZES */}
+                  {product.sizes?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {product.sizes.map((size, index) => (
+                        <span
+                          key={index}
+                          className="
+                              bg-gray-100
+                              text-black
+                              px-3
+                              py-1
+                              rounded-full
+                              text-xs
+                              font-medium
+                            "
+                        >
+                          {size}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* COLORS */}
+                  {product.colors?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {product.colors.map((color, index) => (
+                        <span
+                          key={index}
+                          className="
+                              bg-black
+                              text-white
+                              px-3
+                              py-1
+                              rounded-full
+                              text-xs
+                              font-medium
+                            "
+                        >
+                          {color}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   {/* BADGES */}
                   <div className="flex flex-wrap gap-2 mt-3">

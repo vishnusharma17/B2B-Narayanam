@@ -183,7 +183,12 @@ export default function AdminOrdersPage() {
                   >
                     <div className="flex items-center gap-4">
                       <img
-                        src={item.productId?.images?.[0]}
+                        src={
+                          item.productId?.mainImage ||
+                          item.productId?.galleryImages?.[0] ||
+                          "/placeholder-product.jpg"
+                        }
+                        alt={item.productId?.name}
                         className="w-16 h-16 object-cover rounded-xl"
                       />
 
