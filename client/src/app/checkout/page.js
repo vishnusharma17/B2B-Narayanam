@@ -1,43 +1,53 @@
 "use client";
 
 import { CheckCircle, CreditCard, MapPin, Truck } from "lucide-react";
-
 import { useRouter, useSearchParams } from "next/navigation";
-
 import { useEffect, useState } from "react";
-
 import toast from "react-hot-toast";
 import API from "../../lib/api";
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
-
   const router = useRouter();
 
   const type = searchParams.get("type");
 
   const [products, setProducts] = useState([]);
-
   const [loading, setLoading] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
-
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
+
+  // =========================
+  // INITIAL LOAD
+  // =========================
 
   useEffect(() => {
     const user = localStorage.getItem("userData");
 
     if (!user) {
       router.push("/login");
-
       return;
     }
-    fetchProducts();
-    fetchAddresses();
 
     localStorage.removeItem("lastPaymentId");
+
+    // LOCAL STORAGE ADDRESS
+    const localAddresses =
+      JSON.parse(localStorage.getItem("userAddresses")) || [];
+
+    console.log("LOCAL STORAGE ADDRESS:", localAddresses);
+
+    if (localAddresses.length > 0) {
+      setAddresses(localAddresses);
+
+      setSelectedAddress(localAddresses[0]);
+    }
+
+    fetchProducts();
+    fetchAddresses();
   }, []);
 
   // =========================
@@ -50,6 +60,7 @@ export default function CheckoutPage() {
 
       const quantityParam = Number(searchParams.get("quantity")) || 1;
 
+      // CART PRODUCTS
       if (type === "cart") {
         const sessionId = localStorage.getItem("sessionId");
 
@@ -66,7 +77,10 @@ export default function CheckoutPage() {
         }));
 
         setProducts(formattedProducts);
-      } else if (productId) {
+      }
+
+      // SINGLE PRODUCT
+      else if (productId) {
         const res = await API.get("/products");
 
         const product = (res.data.data || []).find(
@@ -86,7 +100,7 @@ export default function CheckoutPage() {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log("PRODUCT ERROR:", error);
     }
   };
 
@@ -98,42 +112,49 @@ export default function CheckoutPage() {
     try {
       const token = localStorage.getItem("userToken");
 
+      if (!token) return;
+
+      console.log("TOKEN:", token);
+
       const res = await API.get("/address", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
+      console.log("ADDRESS API RESPONSE:", res.data);
+
       const fetchedAddresses = res.data.data || [];
 
-      setAddresses(fetchedAddresses);
-
-      localStorage.setItem("userAddresses", JSON.stringify(fetchedAddresses));
-
       if (fetchedAddresses.length > 0) {
+        setAddresses(fetchedAddresses);
+
         setSelectedAddress(fetchedAddresses[0]);
+
+        localStorage.setItem("userAddresses", JSON.stringify(fetchedAddresses));
+
+        console.log("ADDRESS SET SUCCESS");
+      } else {
+        console.log("NO ADDRESS FROM API");
       }
     } catch (error) {
-      console.log(error);
-
-      const localAddresses =
-        JSON.parse(localStorage.getItem("userAddresses")) || [];
-
-      setAddresses(localAddresses);
-
-      if (localAddresses.length > 0) {
-        setSelectedAddress(localAddresses[0]);
-      }
+      console.log("ADDRESS ERROR:", error);
     }
   };
 
-  // TOTAL
+  // =========================
+  // TOTAL AMOUNT
+  // =========================
+
   const totalAmount = products.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
 
+  // =========================
   // PLACE ORDER
+  // =========================
+
   const placeOrder = async () => {
     if (!selectedAddress) {
       return toast.error("Please select address");
@@ -157,7 +178,7 @@ ${selectedAddress.landmark},
 ${selectedAddress.city},
 ${selectedAddress.state},
 ${selectedAddress.pincode}
-          `,
+        `,
 
         products: products.map((item) => ({
           productId: item._id,
@@ -170,7 +191,12 @@ ${selectedAddress.pincode}
         paymentMethod,
       };
 
-      // COD
+      console.log("ORDER PAYLOAD:", payload);
+
+      // =========================
+      // COD ORDER
+      // =========================
+
       if (paymentMethod === "COD") {
         await API.post("/orders", payload);
 
@@ -181,7 +207,10 @@ ${selectedAddress.pincode}
         return;
       }
 
+      // =========================
       // ONLINE PAYMENT
+      // =========================
+
       if (paymentMethod === "Online Payment") {
         const res = await API.post("/payment/create-order", {
           amount: totalAmount,
@@ -236,7 +265,7 @@ ${selectedAddress.pincode}
         razorpay.open();
       }
     } catch (error) {
-      console.log(error);
+      console.log("CHECKOUT ERROR:", error);
 
       toast.error("Checkout failed");
     } finally {
@@ -352,8 +381,12 @@ ${selectedAddress.pincode}
 
             <button
               onClick={placeOrder}
-              disabled={loading}
-              className="w-full mt-8 bg-black text-white py-4 rounded-full"
+              disabled={loading || !selectedAddress}
+              className={`w-full mt-8 py-4 rounded-full transition ${
+                loading || !selectedAddress
+                  ? "bg-gray-400 text-white cursor-not-allowed"
+                  : "bg-black text-white"
+              }`}
             >
               {loading ? "Processing..." : "Place Order"}
             </button>
