@@ -48,7 +48,12 @@ const limiter = rateLimit({
 });
 
 // Static uploads
-
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://narayanam-store.vercel.app/"],
+    credentials: true,
+  }),
+);
 // Middlewares
 app.use(cors());
 app.use(express.json());
