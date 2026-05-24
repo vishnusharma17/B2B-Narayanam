@@ -33,23 +33,24 @@ export default function WhyChooseSection() {
   ];
 
   return (
-    <section className="py-24 sm:py-28 bg-[#f8f3ec]">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
-        
+    <section className="py-12 sm:py-16 lg:py-20 bg-[#f8f3ec]">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Heading */}
-        <div className="text-center mb-16">
-          
-          <p className="uppercase tracking-[4px] text-[#b68d40] text-sm mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+
+          <p className="uppercase tracking-[3px] sm:tracking-[5px] text-[#b68d40] text-[10px] sm:text-xs mb-2">
             Why Choose Narayanam
           </p>
 
-          <h2 className="text-3xl sm:text-5xl font-light leading-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-light leading-tight">
             Trusted By Fashion
-            <br />
+            <br className="hidden sm:block" />
             Retailers Across India
           </h2>
 
-          <p className="text-gray-600 mt-6 max-w-2xl mx-auto leading-8 text-sm sm:text-base">
+          <p className="text-gray-600 mt-4 sm:mt-5 max-w-2xl mx-auto leading-6 sm:leading-8 text-xs sm:text-sm lg:text-base px-2">
             We help boutiques, wholesalers and fashion retailers
             source premium ethnic collections with unmatched quality,
             flexible ordering and fast delivery.
@@ -57,8 +58,8 @@ export default function WhyChooseSection() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-          
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+
           {features.map((item, i) => {
             const Icon = item.icon;
 
@@ -68,53 +69,62 @@ export default function WhyChooseSection() {
                 className="
                   group
                   bg-white
-                  rounded-3xl
-                  p-8
+                  rounded-2xl
+                  p-4
+                  sm:p-6
+                  lg:p-8
                   shadow-sm
-                  hover:shadow-2xl
+                  hover:shadow-xl
                   transition-all
-                  duration-500
-                  hover:-translate-y-2
+                  duration-300
                   border
                   border-transparent
                   hover:border-[#d6b36a]
                 "
               >
-                
+
                 {/* Icon */}
-                <div className="
-                  w-16
-                  h-16
-                  rounded-2xl
-                  bg-[#f8f3ec]
-                  flex
-                  items-center
-                  justify-center
-                  mb-6
-                  group-hover:bg-black
-                  transition
-                  duration-500
-                ">
+                <div
+                  className="
+                    w-12
+                    h-12
+                    sm:w-14
+                    sm:h-14
+                    lg:w-16
+                    lg:h-16
+                    rounded-2xl
+                    bg-[#f8f3ec]
+                    flex
+                    items-center
+                    justify-center
+                    mb-4
+                    sm:mb-5
+                    group-hover:bg-black
+                    transition
+                    duration-300
+                  "
+                >
                   <Icon
-                    size={30}
+                    size={24}
                     className="
                       text-black
                       group-hover:text-white
                       transition
-                      duration-500
+                      duration-300
                     "
                   />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-2xl font-medium mb-4 leading-snug">
+                <h3 className="text-sm sm:text-xl font-medium mb-2 sm:mb-4 leading-snug">
                   {item.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-gray-600 leading-7 text-sm">
+                <p className="text-gray-600 leading-5 sm:leading-7 text-[11px] sm:text-sm">
                   {item.desc}
                 </p>
+
               </div>
             );
           })}

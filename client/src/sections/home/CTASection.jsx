@@ -5,21 +5,28 @@ import { useEffect, useState } from "react";
 import API from "../../lib/api";
 
 export default function CTASection() {
-  const [wholesaleData, setWholesaleData] = useState(null);
+  const [wholesaleData, setWholesaleData] =
+    useState(null);
 
   useEffect(() => {
     fetchWholesaleData();
   }, []);
 
-  const fetchWholesaleData = async () => {
-    try {
-      const res = await API.get("/wholesale-settings");
+  const fetchWholesaleData =
+    async () => {
+      try {
+        const res =
+          await API.get(
+            "/wholesale-settings"
+          );
 
-      setWholesaleData(res.data.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        setWholesaleData(
+          res.data.data
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
   return (
     <section
@@ -28,12 +35,9 @@ export default function CTASection() {
         overflow-hidden
         bg-black
         text-white
-        py-16
-        sm:py-20
-        lg:py-28
-        px-4
-        sm:px-6
-        md:px-10
+        py-12
+        sm:py-16
+        lg:py-20
       "
     >
       {/* BACKGROUND GLOW */}
@@ -43,25 +47,29 @@ export default function CTASection() {
           top-0
           left-1/2
           -translate-x-1/2
-          w-[500px]
-          h-[500px]
+          w-[260px]
+          sm:w-[500px]
+          h-[260px]
+          sm:h-[500px]
           bg-[#D4AF37]/10
-          blur-[140px]
+          blur-[100px]
+          sm:blur-[140px]
           rounded-full
         "
       />
 
-      <div className="relative max-w-5xl mx-auto text-center">
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+
         {/* SMALL TAG */}
         <p
           className="
             uppercase
-            tracking-[4px]
-            sm:tracking-[6px]
+            tracking-[3px]
+            sm:tracking-[5px]
             text-[#D4AF37]
-            text-xs
-            sm:text-sm
-            mb-5
+            text-[10px]
+            sm:text-xs
+            mb-3
           "
         >
           Wholesale Fashion Partner
@@ -70,12 +78,14 @@ export default function CTASection() {
         {/* HEADING */}
         <h2
           className="
-            text-3xl
+            text-2xl
             sm:text-4xl
-            md:text-5xl
-            lg:text-6xl
+            lg:text-5xl
+            xl:text-6xl
             font-bold
             leading-tight
+            max-w-5xl
+            mx-auto
           "
         >
           {wholesaleData?.ctaTitle ||
@@ -86,12 +96,15 @@ export default function CTASection() {
         <p
           className="
             text-gray-300
-            mt-6
+            mt-4
+            sm:mt-6
             max-w-2xl
             mx-auto
-            text-sm
-            sm:text-base
-            leading-7
+            text-xs
+            sm:text-sm
+            lg:text-base
+            leading-6
+            sm:leading-7
             px-2
           "
         >
@@ -107,28 +120,35 @@ export default function CTASection() {
             sm:flex-row
             justify-center
             items-center
-            gap-4
-            mt-10
+            gap-3
+            sm:gap-4
+            mt-8
+            sm:mt-10
           "
         >
           {/* PRIMARY BUTTON */}
-          <a href="/contact">
+          <a
+            href="/contact"
+            className="w-full sm:w-auto"
+          >
             <button
               className="
+                w-full
+                sm:w-auto
                 bg-[#D4AF37]
                 hover:bg-[#c39d24]
                 transition
                 duration-300
                 text-black
-                px-8
+                px-6
                 sm:px-10
-                py-4
+                py-3
+                sm:py-4
                 rounded-full
                 font-semibold
                 text-sm
                 sm:text-base
                 shadow-lg
-                hover:scale-105
               "
             >
               {wholesaleData?.ctaButtonText ||
@@ -137,18 +157,24 @@ export default function CTASection() {
           </a>
 
           {/* SECONDARY BUTTON */}
-          <a href="/products">
+          <a
+            href="/products"
+            className="w-full sm:w-auto"
+          >
             <button
               className="
+                w-full
+                sm:w-auto
                 border
                 border-white/20
                 hover:bg-white
                 hover:text-black
                 transition
                 duration-300
-                px-8
+                px-6
                 sm:px-10
-                py-4
+                py-3
+                sm:py-4
                 rounded-full
                 text-sm
                 sm:text-base
@@ -166,24 +192,32 @@ export default function CTASection() {
             grid-cols-2
             sm:grid-cols-4
             gap-5
-            mt-14
-            pt-10
+            sm:gap-6
+            mt-10
+            sm:mt-14
+            pt-8
+            sm:pt-10
             border-t
             border-white/10
           "
         >
-          {wholesaleData?.stats?.map((item, index) => (
-            <div key={index}>
-              <h3 className="text-2xl sm:text-3xl font-bold text-[#D4AF37]">
-                {item.value}
-              </h3>
+          {wholesaleData?.stats?.map(
+            (item, index) => (
+              <div
+                key={index}
+              >
+                <h3 className="text-xl sm:text-3xl font-bold text-[#D4AF37]">
+                  {item.value}
+                </h3>
 
-              <p className="text-gray-400 text-sm mt-2">
-                {item.label}
-              </p>
-            </div>
-          ))}
+                <p className="text-gray-400 text-xs sm:text-sm mt-1 sm:mt-2">
+                  {item.label}
+                </p>
+              </div>
+            )
+          )}
         </div>
+
       </div>
     </section>
   );

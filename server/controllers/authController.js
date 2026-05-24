@@ -1,15 +1,105 @@
 import bcrypt from "bcryptjs";
+
 import crypto from "crypto";
+
 import jwt from "jsonwebtoken";
+
 import User from "../models/User.js";
+
 import { sendEmail } from "../utils/sendEmail.js";
 
+import { OAuth2Client } from "google-auth-library";
+
+// =========================
+// GOOGLE CLIENT
+// =========================
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// =========================
+// GOOGLE LOGIN
+// =========================
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    if (!credential) {
+      return res.status(400).json({
+        message: "Google credential missing",
+      });
+    }
+
+    // VERIFY TOKEN
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    const { email, name, picture } = payload;
+
+    // CHECK USER
+    let user = await User.findOne({
+      email,
+    });
+
+    // CREATE USER
+    if (!user) {
+      const hashedPassword = await bcrypt.hash("google-login-user", 10);
+
+      user = await User.create({
+        name,
+        email,
+        image: picture,
+        password: hashedPassword,
+      });
+    }
+
+    // JWT TOKEN
+    const token = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        role: user.role,
+        image: user.image,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Google login failed",
+    });
+  }
+};
+
+// =========================
 // REGISTER
+// =========================
+
 export const register = async (req, res) => {
   try {
     const { name, email, password, confirmPassword, phone, address } = req.body;
 
-    // Check existing user
+    // CHECK EXISTING USER
     const existingUser = await User.findOne({
       email,
     });
@@ -20,15 +110,17 @@ export const register = async (req, res) => {
       });
     }
 
-    // Confirm password validation
+    // PASSWORD MATCH
     if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Passwords do not match",
       });
     }
 
+    // HASH PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // CREATE USER
     const user = await User.create({
       name,
       email,
@@ -37,6 +129,7 @@ export const register = async (req, res) => {
       address,
     });
 
+    // JWT
     const token = jwt.sign(
       {
         id: user._id,
@@ -67,7 +160,10 @@ export const register = async (req, res) => {
   }
 };
 
+// =========================
 // LOGIN
+// =========================
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -120,7 +216,10 @@ export const login = async (req, res) => {
   }
 };
 
+// =========================
 // FORGOT PASSWORD
+// =========================
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -135,7 +234,7 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate reset token
+    // GENERATE TOKEN
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     user.resetPasswordToken = resetToken;
@@ -160,7 +259,7 @@ This link expires in 15 minutes.
 
 Thank you,
 Narayanam Team
-      `,
+        `,
     });
 
     res.json({
@@ -174,14 +273,17 @@ Narayanam Team
   }
 };
 
+// =========================
 // RESET PASSWORD
+// =========================
+
 export const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
 
     const { password, confirmPassword } = req.body;
 
-    // Confirm password validation
+    // VALIDATION
     if (password !== confirmPassword) {
       return res.status(400).json({
         message: "Passwords do not match",
@@ -218,6 +320,49 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: error.message,
+    });
+  }
+};
+
+// =========================
+// UPDATE PROFILE
+// =========================
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email, phone, address } = req.body;
+
+    // VALIDATION
+    if (!name || !email || !phone) {
+      return res.status(400).json({
+        message: "Please fill required fields",
+      });
+    }
+
+    // UPDATE USER
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        name,
+        email,
+        phone,
+        address,
+      },
+      {
+        new: true,
+      },
+    );
+
+    // RESPONSE
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      message: "Profile update failed",
     });
   }
 };

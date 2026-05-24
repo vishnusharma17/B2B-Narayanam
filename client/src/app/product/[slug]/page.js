@@ -106,6 +106,7 @@ export default function ProductDetailPage() {
 
       return;
     }
+
     try {
       if (product.sizes?.length > 0 && !selectedSize) {
         return toast.error("Please select size");
@@ -180,6 +181,7 @@ export default function ProductDetailPage() {
 
       return;
     }
+
     if (product.sizes?.length > 0 && !selectedSize) {
       return toast.error("Please select size");
     }
@@ -213,22 +215,23 @@ export default function ProductDetailPage() {
   return (
     <div className="bg-[#faf7f2] min-h-screen pt-20 sm:pt-24">
       {/* BREADCRUMB */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 pt-6 text-sm text-gray-500">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 pt-6 text-xs sm:text-sm text-gray-500 overflow-x-auto whitespace-nowrap">
         Home / Products / <span className="text-black">{product.name}</span>
       </div>
 
       {/* MAIN SECTION */}
       <section className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10 py-8 sm:py-12">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* LEFT */}
           <div className="lg:sticky lg:top-28">
-            <div className="flex flex-col-reverse md:flex-row gap-4">
+            <div className="flex flex-col-reverse md:flex-row gap-3 sm:gap-4">
               {/* THUMBNAILS */}
               <div
                 className="
                   flex
                   md:flex-col
-                  gap-3
+                  gap-2
+                  sm:gap-3
                   overflow-x-auto
                   md:overflow-y-auto
                   md:max-h-[650px]
@@ -242,10 +245,14 @@ export default function ProductDetailPage() {
                     onClick={() => setSelectedImage(img)}
                     className={`
                       relative
-                      min-w-[85px]
-                      w-[85px]
-                      h-[105px]
-                      rounded-2xl
+                      min-w-[72px]
+                      w-[72px]
+                      h-[90px]
+                      sm:min-w-[85px]
+                      sm:w-[85px]
+                      sm:h-[105px]
+                      rounded-xl
+                      sm:rounded-2xl
                       overflow-hidden
                       border-2
                       bg-white
@@ -282,7 +289,8 @@ export default function ProductDetailPage() {
                           inset-0
                           border-2
                           border-black
-                          rounded-2xl
+                          rounded-xl
+                          sm:rounded-2xl
                         "
                       />
                     )}
@@ -295,7 +303,8 @@ export default function ProductDetailPage() {
                 className="
                   flex-1
                   bg-white
-                  rounded-3xl
+                  rounded-2xl
+                  sm:rounded-3xl
                   overflow-hidden
                   shadow-sm
                   border
@@ -309,12 +318,13 @@ export default function ProductDetailPage() {
                   onClick={() => setShowImagePreview(true)}
                   className="
                     w-full
-                    h-[350px]
+                    h-[320px]
                     sm:h-[500px]
-                    lg:h-[700px]
+                    lg:h-[650px]
                     object-contain
                     bg-white
-                    p-4
+                    p-3
+                    sm:p-4
                     transition-all
                     duration-700
                     ease-in-out
@@ -327,13 +337,17 @@ export default function ProductDetailPage() {
                 <div
                   className="
                     absolute
-                    top-4
-                    left-4
+                    top-3
+                    sm:top-4
+                    left-3
+                    sm:left-4
                     bg-black/70
                     text-white
-                    text-xs
+                    text-[10px]
+                    sm:text-xs
                     px-3
-                    py-2
+                    py-1.5
+                    sm:py-2
                     rounded-full
                     backdrop-blur
                     z-20
@@ -348,13 +362,17 @@ export default function ProductDetailPage() {
                 <div
                   className="
                     absolute
-                    bottom-4
-                    right-4
+                    bottom-3
+                    sm:bottom-4
+                    right-3
+                    sm:right-4
                     bg-black/70
                     text-white
-                    text-xs
+                    text-[10px]
+                    sm:text-xs
                     px-3
-                    py-2
+                    py-1.5
+                    sm:py-2
                     rounded-full
                     backdrop-blur
                     z-20
@@ -367,29 +385,29 @@ export default function ProductDetailPage() {
           </div>
 
           {/* RIGHT */}
-          <div>
-            <p className="uppercase tracking-[4px] text-xs sm:text-sm text-[#b68d40] mb-3">
+          <div className="pb-24 sm:pb-0">
+            <p className="uppercase tracking-[3px] sm:tracking-[4px] text-[10px] sm:text-xs text-[#b68d40] mb-3">
               Narayanam Premium
             </p>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-light leading-tight">
               {product.name}
             </h1>
 
             {/* PRICE */}
-            <div className="mt-6 flex items-center gap-4 flex-wrap">
-              <span className="text-3xl font-semibold">
+            <div className="mt-5 sm:mt-6 flex items-center gap-3 sm:gap-4 flex-wrap">
+              <span className="text-2xl sm:text-3xl font-semibold">
                 ₹{product.price_min}
               </span>
 
               {product.original_price && (
-                <span className="line-through text-gray-400">
+                <span className="line-through text-gray-400 text-sm sm:text-base">
                   ₹{product.original_price}
                 </span>
               )}
 
               {product.discount_percentage > 0 && (
-                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                   {product.discount_percentage}% OFF
                 </span>
               )}
@@ -398,15 +416,27 @@ export default function ProductDetailPage() {
             {/* STOCK */}
             <div className="mt-4">
               {product.stock > 0 ? (
-                <span className="text-green-600 font-medium">In Stock</span>
+                <span className="text-green-600 font-medium text-sm sm:text-base">
+                  In Stock
+                </span>
               ) : (
-                <span className="text-red-500 font-medium">Out of Stock</span>
+                <span className="text-red-500 font-medium text-sm sm:text-base">
+                  Out of Stock
+                </span>
               )}
             </div>
 
             {/* DESCRIPTION */}
             <div
-              className="mt-6 text-gray-600 leading-7 prose max-w-none"
+              className="
+                mt-6
+                text-gray-600
+                leading-7
+                prose
+                max-w-none
+                text-sm
+                sm:text-base
+              "
               dangerouslySetInnerHTML={{
                 __html: product.description,
               }}
@@ -414,22 +444,26 @@ export default function ProductDetailPage() {
 
             {/* COLORS */}
             {product.colors?.length > 0 && (
-              <div className="mt-8">
-                <p className="font-medium mb-4">Select Color</p>
+              <div className="mt-7 sm:mt-8">
+                <p className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">
+                  Select Color
+                </p>
 
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex gap-2 sm:gap-3 flex-wrap">
                   {product.colors.map((color) => (
                     <button
                       key={color}
                       onClick={() => setSelectedColor(color)}
                       className={`
-                        px-5
+                        px-4
+                        sm:px-5
                         py-2
                         rounded-full
                         border
                         transition-all
                         duration-300
                         capitalize
+                        text-sm
 
                         ${
                           selectedColor === color
@@ -447,19 +481,30 @@ export default function ProductDetailPage() {
 
             {/* SIZES */}
             {product.sizes?.length > 0 && (
-              <div className="mt-8">
-                <p className="font-medium mb-4">Select Size</p>
+              <div className="mt-7 sm:mt-8">
+                <p className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">
+                  Select Size
+                </p>
 
-                <div className="flex gap-3 flex-wrap">
+                <div className="flex gap-2 sm:gap-3 flex-wrap">
                   {product.sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`px-5 py-2 border rounded-full transition ${
-                        selectedSize === size
-                          ? "bg-black text-white border-black"
-                          : "hover:bg-black hover:text-white"
-                      }`}
+                      className={`
+                        px-4
+                        sm:px-5
+                        py-2
+                        border
+                        rounded-full
+                        transition
+                        text-sm
+                        ${
+                          selectedSize === size
+                            ? "bg-black text-white border-black"
+                            : "hover:bg-black hover:text-white"
+                        }
+                      `}
                     >
                       {size}
                     </button>
@@ -469,24 +514,26 @@ export default function ProductDetailPage() {
             )}
 
             {/* QUANTITY */}
-            <div className="mt-8">
-              <p className="font-medium mb-4">Quantity</p>
+            <div className="mt-7 sm:mt-8">
+              <p className="font-medium mb-3 sm:mb-4 text-sm sm:text-base">
+                Quantity
+              </p>
 
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <button
                   onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
-                  className="w-12 h-12 rounded-full bg-white shadow"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow text-lg"
                 >
                   -
                 </button>
 
-                <div className="w-16 h-12 rounded-xl bg-white flex items-center justify-center font-semibold shadow">
+                <div className="w-14 sm:w-16 h-10 sm:h-12 rounded-xl bg-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">
                   {quantity}
                 </div>
 
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="w-12 h-12 rounded-full bg-white shadow"
+                  className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow text-lg"
                 >
                   +
                 </button>
@@ -494,10 +541,25 @@ export default function ProductDetailPage() {
             </div>
 
             {/* BUTTONS */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-8 sm:mt-10">
               <button
                 onClick={handleAddToCart}
-                className="bg-white border border-black py-4 rounded-full hover:bg-black hover:text-white transition flex items-center justify-center gap-2"
+                className="
+                  bg-white
+                  border
+                  border-black
+                  py-3.5
+                  sm:py-4
+                  rounded-full
+                  hover:bg-black
+                  hover:text-white
+                  transition
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                  text-sm
+                "
               >
                 <ShoppingBag size={18} />
                 Add To Cart
@@ -505,14 +567,32 @@ export default function ProductDetailPage() {
 
               <button
                 onClick={handleBuyNow}
-                className="bg-black text-white py-4 rounded-full"
+                className="
+                  bg-black
+                  text-white
+                  py-3.5
+                  sm:py-4
+                  rounded-full
+                  text-sm
+                "
               >
                 Buy Now
               </button>
 
               <button
                 onClick={handleWishlist}
-                className="bg-white py-4 rounded-full shadow flex items-center justify-center gap-2"
+                className="
+                  bg-white
+                  py-3.5
+                  sm:py-4
+                  rounded-full
+                  shadow
+                  flex
+                  items-center
+                  justify-center
+                  gap-2
+                  text-sm
+                "
               >
                 <Heart size={18} />
                 Wishlist
@@ -520,20 +600,20 @@ export default function ProductDetailPage() {
             </div>
 
             {/* FEATURES */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
-              <div className="bg-white p-5 rounded-2xl text-center">
-                <Truck className="mx-auto mb-3" />
-                <p className="text-sm">Fast Delivery</p>
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-8 sm:mt-10">
+              <div className="bg-white p-3 sm:p-5 rounded-2xl text-center">
+                <Truck className="mx-auto mb-2 sm:mb-3 w-5 h-5 sm:w-6 sm:h-6" />
+                <p className="text-[11px] sm:text-sm">Fast Delivery</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl text-center">
-                <ShieldCheck className="mx-auto mb-3" />
-                <p className="text-sm">Secure Payment</p>
+              <div className="bg-white p-3 sm:p-5 rounded-2xl text-center">
+                <ShieldCheck className="mx-auto mb-2 sm:mb-3 w-5 h-5 sm:w-6 sm:h-6" />
+                <p className="text-[11px] sm:text-sm">Secure Payment</p>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl text-center">
-                <RotateCcw className="mx-auto mb-3" />
-                <p className="text-sm">Easy Returns</p>
+              <div className="bg-white p-3 sm:p-5 rounded-2xl text-center">
+                <RotateCcw className="mx-auto mb-2 sm:mb-3 w-5 h-5 sm:w-6 sm:h-6" />
+                <p className="text-[11px] sm:text-sm">Easy Returns</p>
               </div>
             </div>
           </div>
@@ -543,17 +623,17 @@ export default function ProductDetailPage() {
       {/* RELATED PRODUCTS */}
       {relatedProducts.length > 0 && (
         <section className="py-16 sm:py-20 px-4 md:px-10 bg-white">
-          <div className="text-center mb-12">
-            <p className="uppercase tracking-[4px] text-[#b68d40] text-sm mb-3">
+          <div className="text-center mb-10 sm:mb-12">
+            <p className="uppercase tracking-[4px] text-[#b68d40] text-xs sm:text-sm mb-3">
               You May Also Like
             </p>
 
-            <h2 className="text-3xl md:text-4xl font-light">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-light">
               Similar Products
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {relatedProducts.map((item) => (
               <ProductCard key={item._id} product={item} />
             ))}
@@ -566,9 +646,9 @@ export default function ProductDetailPage() {
         <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4">
           <button
             onClick={() => setShowImagePreview(false)}
-            className="absolute top-5 right-5 text-white"
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 text-white"
           >
-            <X size={32} />
+            <X size={30} />
           </button>
 
           <img
@@ -590,14 +670,14 @@ export default function ProductDetailPage() {
 
         <button
           onClick={handleAddToCart}
-          className="flex-1 bg-black text-white py-3 rounded-full"
+          className="flex-1 bg-black text-white py-3 rounded-full text-sm"
         >
           Add To Cart
         </button>
 
         <button
           onClick={handleBuyNow}
-          className="flex-1 bg-[#b68d40] text-white py-3 rounded-full"
+          className="flex-1 bg-[#b68d40] text-white py-3 rounded-full text-sm"
         >
           Buy Now
         </button>

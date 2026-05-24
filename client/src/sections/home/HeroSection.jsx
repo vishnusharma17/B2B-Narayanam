@@ -1,7 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+
+import {
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import API from "../../lib/api";
 
 export default function HeroSection() {
@@ -11,7 +21,10 @@ export default function HeroSection() {
   const [current, setCurrent] =
     useState(0);
 
-  // Fetch banners
+  // =========================
+  // FETCH BANNERS
+  // =========================
+
   useEffect(() => {
     const fetchBanners =
       async () => {
@@ -32,7 +45,10 @@ export default function HeroSection() {
     fetchBanners();
   }, []);
 
-  // Auto Slider
+  // =========================
+  // AUTO SLIDER
+  // =========================
+
   useEffect(() => {
     if (!slides.length) return;
 
@@ -51,63 +67,149 @@ export default function HeroSection() {
       );
   }, [slides]);
 
+  // =========================
+  // NEXT
+  // =========================
+
+  const nextSlide = () => {
+    setCurrent(
+      (prev) =>
+        (prev + 1) %
+        slides.length
+    );
+  };
+
+  // =========================
+  // PREV
+  // =========================
+
+  const prevSlide = () => {
+    setCurrent(
+      (prev) =>
+        prev === 0
+          ? slides.length - 1
+          : prev - 1
+    );
+  };
+
+  // =========================
+  // LOADING
+  // =========================
+
   if (slides.length === 0) {
     return (
-      <div className="h-[70vh] sm:h-screen flex items-center justify-center bg-white text-black text-lg sm:text-xl">
-        Loading banners...
+      <div
+        className="
+          h-[80vh]
+          flex
+          items-center
+          justify-center
+          bg-black
+        "
+      >
+        <div className="text-center">
+
+          <div
+            className="
+              w-14
+              h-14
+              border-4
+              border-[#D4AF37]
+              border-t-transparent
+              rounded-full
+              animate-spin
+              mx-auto
+              mb-5
+            "
+          />
+
+          <h2
+            className="
+              text-white
+              text-xl
+              sm:text-2xl
+            "
+          >
+            Loading Collection...
+          </h2>
+        </div>
       </div>
     );
   }
 
   return (
     <section
-     className="
-  relative
-  mt-[80px]
-  h-[calc(70vh-80px)]
-  sm:h-[calc(85vh-80px)]
-  md:h-[calc(100vh-80px)]
-  overflow-hidden
-  bg-[#f5f5f5]
-"
+      className="
+        relative
+        mt-[80px]
+        h-[70vh]
+        sm:h-[85vh]
+        lg:h-[92vh]
+        overflow-hidden
+        bg-black
+      "
     >
-      {/* Background Images */}
-      <div className="absolute inset-0 overflow-hidden bg-[#f5f5f5]">
+      {/* SLIDES */}
+      <div className="absolute inset-0">
+
         {slides.map(
           (
             slide,
             index
           ) => (
             <div
-              key={
-                index
-              }
+              key={index}
               className={`
                 absolute
                 inset-0
-                transition-all
+                transition-opacity
                 duration-1000
-                flex
-                items-center
-                justify-center
                 ${
                   current ===
                   index
-                    ? "opacity-100 scale-100"
-                    : "opacity-0 scale-105"
+                    ? "opacity-100 z-10"
+                    : "opacity-0 z-0"
                 }
               `}
             >
+
+              {/* IMAGE */}
               <img
-                src={
-                  slide.image
+                src={slide.image}
+                alt={
+                  slide.title ||
+                  "Banner"
                 }
-                alt="banner"
                 className="
                   w-full
                   h-full
-                  object-contain
-                  object-center
+                  object-cover
+                  object-top
+                "
+              />
+
+              {/* OVERLAY */}
+              <div
+                className="
+                  absolute
+                  inset-0
+                  bg-gradient-to-r
+                  from-black/70
+                  via-black/30
+                  to-black/10
+                "
+              />
+
+              {/* BOTTOM FADE */}
+              <div
+                className="
+                  absolute
+                  inset-x-0
+                  bottom-0
+                  h-40
+                  bg-gradient-to-t
+                  from-black/80
+                  to-transparent
                 "
               />
             </div>
@@ -115,133 +217,262 @@ export default function HeroSection() {
         )}
       </div>
 
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/25"></div>
-
-      {/* Content */}
-      <div className="absolute inset-0 flex items-center z-10">
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 text-white w-full">
-          
-          <p
+      {/* CONTENT */}
+      <div
+        className="
+          relative
+          z-20
+          h-full
+          flex
+          items-center
+        "
+      >
+        <div
+          className="
+            max-w-7xl
+            mx-auto
+            w-full
+            px-4
+            sm:px-6
+            lg:px-10
+          "
+        >
+          <div
             className="
-              text-[#D4AF37]
-              uppercase
-              tracking-[3px]
-              sm:tracking-[6px]
-              text-xs
-              sm:text-sm
-              mb-3
-              sm:mb-4
+              max-w-2xl
+              text-white
             "
           >
-            Exclusive Collection
-          </p>
 
-          <h1
-            className="
-              text-3xl
-              sm:text-5xl
-              md:text-6xl
-              lg:text-7xl
-              font-bold
-              leading-tight
-              max-w-3xl
-              mb-4
-              sm:mb-5
-            "
-          >
-            {
-              slides[current]
-                ?.title
-            }
-          </h1>
-
-          <p
-            className="
-              text-sm
-              sm:text-lg
-              md:text-xl
-              text-gray-200
-              max-w-xl
-              leading-6
-              sm:leading-8
-              mb-6
-              sm:mb-8
-            "
-          >
-            {
-              slides[current]
-                ?.subtitle
-            }
-          </p>
-
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            
-            <Link
-              href={
-                slides[current]
-                  ?.link ||
-                "/products"
-              }
+            {/* TAG */}
+            <div
+              className="
+                inline-flex
+                items-center
+                gap-2
+                bg-white/10
+                border
+                border-white/10
+                backdrop-blur-md
+                px-4
+                py-2
+                rounded-full
+                mb-5
+              "
             >
-              <button
-                className="
-                  w-full
-                  sm:w-auto
-                  bg-[#D4AF37]
-                  text-black
-                  px-6
-                  sm:px-8
-                  py-3
-                  sm:py-4
-                  rounded-full
-                  font-medium
-                  hover:bg-white
-                  transition
-                "
-              >
-                Shop Collection
-              </button>
-            </Link>
 
-            <Link href="/contact">
-              <button
+              <div
                 className="
-                  w-full
-                  sm:w-auto
-                  border
-                  border-white
-                  px-6
-                  sm:px-8
-                  py-3
-                  sm:py-4
+                  w-2
+                  h-2
                   rounded-full
-                  hover:bg-white
-                  hover:text-black
-                  transition
+                  bg-[#D4AF37]
+                "
+              />
+
+              <span
+                className="
+                  text-[#D4AF37]
+                  uppercase
+                  tracking-[3px]
+                  text-[10px]
+                  sm:text-xs
                 "
               >
-                Bulk Inquiry
-              </button>
-            </Link>
+                Premium Collection
+              </span>
+            </div>
+
+            {/* TITLE */}
+            <h1
+              className="
+                text-3xl
+                sm:text-5xl
+                md:text-6xl
+                lg:text-7xl
+                font-bold
+                leading-tight
+                mb-5
+              "
+            >
+              {
+                slides[current]
+                  ?.title
+              }
+            </h1>
+
+            {/* SUBTITLE */}
+            <p
+              className="
+                text-sm
+                sm:text-lg
+                md:text-xl
+                text-gray-200
+                leading-7
+                sm:leading-8
+                mb-8
+              "
+            >
+              {
+                slides[current]
+                  ?.subtitle
+              }
+            </p>
+
+            {/* BUTTONS */}
+            <div
+              className="
+                flex
+                flex-col
+                sm:flex-row
+                gap-4
+              "
+            >
+
+              {/* PRIMARY */}
+              <Link
+                href={
+                  slides[current]
+                    ?.link ||
+                  "/products"
+                }
+              >
+                <button
+                  className="
+                    w-full
+                    sm:w-auto
+                    bg-[#D4AF37]
+                    hover:bg-white
+                    transition-all
+                    duration-300
+                    text-black
+                    px-8
+                    py-4
+                    rounded-full
+                    font-semibold
+                    hover:scale-105
+                  "
+                >
+                  Shop Collection
+                </button>
+              </Link>
+
+              {/* SECONDARY */}
+              <Link href="/contact">
+                <button
+                  className="
+                    w-full
+                    sm:w-auto
+                    border
+                    border-white/20
+                    bg-white/10
+                    backdrop-blur-md
+                    hover:bg-white
+                    hover:text-black
+                    transition-all
+                    duration-300
+                    px-8
+                    py-4
+                    rounded-full
+                    font-medium
+                  "
+                >
+                  Bulk Inquiry
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Dots */}
-      <div className="absolute bottom-5 sm:bottom-8 w-full flex justify-center gap-2 sm:gap-3 z-10">
-        
+      {/* LEFT ARROW */}
+      <button
+        onClick={prevSlide}
+        className="
+          absolute
+          left-3
+          sm:left-5
+          top-1/2
+          -translate-y-1/2
+          z-30
+          w-10
+          h-10
+          sm:w-12
+          sm:h-12
+          rounded-full
+          bg-black/40
+          backdrop-blur-md
+          border
+          border-white/10
+          text-white
+          flex
+          items-center
+          justify-center
+          hover:bg-white
+          hover:text-black
+          transition
+        "
+      >
+        <ChevronLeft
+          size={22}
+        />
+      </button>
+
+      {/* RIGHT ARROW */}
+      <button
+        onClick={nextSlide}
+        className="
+          absolute
+          right-3
+          sm:right-5
+          top-1/2
+          -translate-y-1/2
+          z-30
+          w-10
+          h-10
+          sm:w-12
+          sm:h-12
+          rounded-full
+          bg-black/40
+          backdrop-blur-md
+          border
+          border-white/10
+          text-white
+          flex
+          items-center
+          justify-center
+          hover:bg-white
+          hover:text-black
+          transition
+        "
+      >
+        <ChevronRight
+          size={22}
+        />
+      </button>
+
+      {/* DOTS */}
+      <div
+        className="
+          absolute
+          bottom-5
+          sm:bottom-7
+          left-1/2
+          -translate-x-1/2
+          z-30
+          flex
+          items-center
+          gap-3
+        "
+      >
+
         {slides.map(
           (
             _,
             index
           ) => (
             <button
-              key={
-                index
-              }
+              key={index}
               onClick={() =>
                 setCurrent(
                   index
@@ -253,8 +484,8 @@ export default function HeroSection() {
                 ${
                   current ===
                   index
-                    ? "w-6 sm:w-8 h-2 sm:h-3 rounded-full bg-[#D4AF37]"
-                    : "w-2 sm:w-3 h-2 sm:h-3 rounded-full bg-white/70"
+                    ? "w-8 h-[3px] rounded-full bg-[#D4AF37]"
+                    : "w-2.5 h-2.5 rounded-full bg-white/50"
                 }
               `}
             />

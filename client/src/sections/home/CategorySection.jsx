@@ -35,8 +35,8 @@ export default function CategorySection() {
 
   if (loading) {
     return (
-      <section className="py-24 px-4 md:px-10 bg-white text-center">
-        <h2 className="text-2xl font-semibold">
+      <section className="py-12 sm:py-16 bg-white text-center">
+        <h2 className="text-lg sm:text-2xl font-semibold">
           Loading Categories...
         </h2>
       </section>
@@ -50,117 +50,127 @@ export default function CategorySection() {
   }
 
   return (
-    <section className="py-20 sm:py-24 px-4 md:px-10 bg-white">
-      
-      {/* Heading */}
-      <div className="text-center mb-14">
-        
-        <p className="uppercase tracking-[4px] sm:tracking-[6px] text-xs sm:text-sm text-gray-500 mb-3">
-          Curated Collections
-        </p>
+    <section className="py-12 sm:py-16 lg:py-20 bg-white">
 
-        <h2 className="text-3xl sm:text-5xl font-semibold">
-          Shop By Category
-        </h2>
-      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      {/* Category Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-        
-        {categories.map(
-          (
-            item,
-            index
-          ) => (
-            <Link
-              key={
-                item._id ||
-                index
-              }
-              href={`/products?category=${item.name}`}
-            >
-              <div
-                className="
-                  relative
-                  h-[350px]
-                  sm:h-[450px]
-                  lg:h-[500px]
-                  rounded-3xl
-                  overflow-hidden
-                  group
-                  cursor-pointer
-                  bg-[#f5f5f5]
-                "
+        {/* Heading */}
+        <div className="text-center mb-8 sm:mb-12">
+
+          <p className="uppercase tracking-[3px] sm:tracking-[5px] text-[10px] sm:text-xs text-gray-500 mb-2">
+            Curated Collections
+          </p>
+
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-semibold leading-tight">
+            Shop By Category
+          </h2>
+
+        </div>
+
+        {/* Category Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
+
+          {categories.map(
+            (
+              item,
+              index
+            ) => (
+              <Link
+                key={
+                  item._id ||
+                  index
+                }
+                href={`/products?category=${item.name}`}
               >
-                {/* Image */}
-                <img
-                  src={
-                    item.image
-                  }
-                  alt={
-                    item.name
-                  }
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                    object-center
-                    group-hover:scale-110
-                    transition
-                    duration-700
-                  "
-                />
-
-                {/* Overlay */}
                 <div
                   className="
-                    absolute
-                    inset-0
-                    bg-black/35
-                    group-hover:bg-black/50
-                    transition
-                    duration-500
-                  "
-                ></div>
-
-                {/* Text */}
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    flex
-                    flex-col
-                    justify-center
-                    items-center
-                    text-white
-                    p-4
-                    text-center
+                    relative
+                    h-[180px]
+                    sm:h-[280px]
+                    lg:h-[360px]
+                    rounded-2xl
+                    overflow-hidden
+                    group
+                    cursor-pointer
+                    bg-[#f5f5f5]
                   "
                 >
-                  <h3 className="text-2xl sm:text-3xl font-semibold mb-4">
-                    {item.name}
-                  </h3>
-
-                  <button
+                  {/* Image */}
+                  <img
+                    src={
+                      item.image
+                    }
+                    alt={
+                      item.name
+                    }
                     className="
-                      border
-                      border-white
-                      px-6
-                      py-2
-                      rounded-full
-                      hover:bg-white
-                      hover:text-black
+                      w-full
+                      h-full
+                      object-cover
+                      object-center
+                      group-hover:scale-105
+                      transition
+                      duration-500
+                    "
+                  />
+
+                  {/* Overlay */}
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      bg-black/35
+                      group-hover:bg-black/45
                       transition
                       duration-300
                     "
+                  ></div>
+
+                  {/* Text */}
+                  <div
+                    className="
+                      absolute
+                      inset-0
+                      flex
+                      flex-col
+                      justify-end
+                      items-center
+                      text-white
+                      p-4
+                      sm:p-6
+                      text-center
+                    "
                   >
-                    Explore
-                  </button>
+                    <h3 className="text-sm sm:text-2xl font-semibold mb-2 sm:mb-4">
+                      {item.name}
+                    </h3>
+
+                    <button
+                      className="
+                        border
+                        border-white
+                        px-3
+                        sm:px-5
+                        py-1.5
+                        sm:py-2
+                        rounded-full
+                        hover:bg-white
+                        hover:text-black
+                        transition
+                        duration-300
+                        text-xs
+                        sm:text-sm
+                      "
+                    >
+                      Explore
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          )
-        )}
+              </Link>
+            )
+          )}
+
+        </div>
       </div>
     </section>
   );

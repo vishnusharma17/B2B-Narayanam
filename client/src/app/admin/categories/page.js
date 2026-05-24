@@ -79,24 +79,38 @@ export default function AdminCategoriesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F3EC] p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[#F8F3EC] p-3 sm:p-5 lg:p-8">
       {/* Heading */}
-      <div className="mb-10">
-        <h1 className="text-3xl sm:text-4xl font-light">Category Management</h1>
+      <div className="mb-6 sm:mb-10">
+        <h1 className="text-2xl sm:text-4xl font-light leading-tight">
+          Category Management
+        </h1>
 
-        <p className="text-gray-500 mt-2">Manage homepage categories</p>
+        <p className="text-sm sm:text-base text-gray-500 mt-2">
+          Manage homepage categories
+        </p>
       </div>
 
       {/* Add Category */}
-      <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md mb-10">
-        <h2 className="text-2xl mb-6">Add Category</h2>
+      <div className="bg-white p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl shadow-md mb-8 sm:mb-10">
+        <h2 className="text-xl sm:text-2xl mb-5 sm:mb-6">Add Category</h2>
 
-        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           {/* Name */}
           <input
             type="text"
             placeholder="Category Name"
-            className="border p-3 rounded-xl"
+            className="
+              border
+              p-3
+              rounded-xl
+              outline-none
+              text-sm
+              sm:text-base
+            "
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -106,7 +120,14 @@ export default function AdminCategoriesPage() {
           <input
             type="file"
             accept="image/*"
-            className="border p-3 rounded-xl"
+            className="
+              border
+              p-3
+              rounded-xl
+              outline-none
+              text-sm
+              sm:text-base
+            "
             onChange={(e) => setImage(e.target.files[0])}
             required
           />
@@ -121,6 +142,8 @@ export default function AdminCategoriesPage() {
               md:col-span-2
               hover:bg-gray-800
               transition
+              text-sm
+              sm:text-base
             "
           >
             Add Category
@@ -130,21 +153,21 @@ export default function AdminCategoriesPage() {
 
       {/* Category List */}
       {loading ? (
-        <div className="text-xl">Loading...</div>
+        <div className="text-lg sm:text-xl">Loading...</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {categories.map((category) => (
             <div
               key={category._id}
               className="
                   bg-white
-                  rounded-3xl
+                  rounded-2xl
                   overflow-hidden
                   shadow-md
                 "
             >
               {/* Image */}
-              <div className="h-[250px] bg-[#f5f5f5] overflow-hidden">
+              <div className="h-[150px] sm:h-[220px] bg-[#f5f5f5] overflow-hidden">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -158,20 +181,26 @@ export default function AdminCategoriesPage() {
               </div>
 
               {/* Content */}
-              <div className="p-5">
-                <h2 className="text-2xl font-semibold">{category.name}</h2>
+              <div className="p-3 sm:p-5">
+                <h2 className="text-sm sm:text-xl font-semibold line-clamp-1">
+                  {category.name}
+                </h2>
 
                 <button
                   onClick={() => handleDelete(category._id)}
                   className="
-                      mt-5
+                      mt-3
+                      sm:mt-5
                       bg-red-500
                       text-white
-                      px-5
+                      px-4
                       py-2
                       rounded-xl
                       hover:bg-red-600
                       transition
+                      text-xs
+                      sm:text-sm
+                      w-full
                     "
                 >
                   Delete
