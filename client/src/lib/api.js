@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL || "https://b2b-narayanam.onrender.com/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5004/api",
 });
 
 export default API;
