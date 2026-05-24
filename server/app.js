@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express from "express";
 import rateLimit from "express-rate-limit";
 import path from "path";
+
 // Load environment variables
 dotenv.config();
 
@@ -15,6 +16,7 @@ import addressRoutes from "./routes/addressRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import bannerRoutes from "./routes/bannerRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import contactSettingsRoutes from "./routes/contactSettingsRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
@@ -33,33 +35,37 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import wardrobePickRoutes from "./routes/wardrobePickRoutes.js";
 import wholesaleRoutes from "./routes/wholesaleRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
-// NEW CART ROUTE
-import cartRoutes from "./routes/cartRoutes.js";
 
 // Connect DB
 connectDB();
 
 const app = express();
+
+// ---------------- MIDDLEWARES ---------------- //
+
+// CORS FIX
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://narayanam-store.vercel.app"],
+    credentials: true,
+  }),
+);
+
+// JSON parser
+app.use(express.json());
+
+// Static uploads
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
 // Rate limiter
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
 });
 
-// Static uploads
-app.use(
-  cors({
-    origin: ["http://localhost:3000", "https://narayanam-store.vercel.app/"],
-    credentials: true,
-  }),
-);
-// Middlewares
-app.use(cors());
-app.use(express.json());
 // app.use(limiter);
 
-// ---------------- API Routes ---------------- //
+// ---------------- API ROUTES ---------------- //
 
 app.use("/api/auth", authRoutes);
 
@@ -81,7 +87,6 @@ app.use("/api/reviews", reviewRoutes);
 
 app.use("/api/wishlist", wishlistRoutes);
 
-// NEW CART API
 app.use("/api/cart", cartRoutes);
 
 app.use("/api/testimonials", testimonialRoutes);
@@ -103,16 +108,24 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/products", productRoutes);
 
 app.use("/api/fashion-stories", fashionStoryRoutes);
+
 app.use("/api/shop-roles", shopRoleRoutes);
+
 app.use("/api/wardrobe-picks", wardrobePickRoutes);
+
 app.use("/api/address", addressRoutes);
-// Test route
+
+// ---------------- TEST ROUTE ---------------- //
+
 app.get("/", (req, res) => {
   res.send("B2B Server Running 🚀");
 });
 
-// Error handler
+// ---------------- ERROR HANDLER ---------------- //
+
 app.use(errorHandler);
+
+// ---------------- SERVER ---------------- //
 
 const PORT = process.env.PORT || 5004;
 
