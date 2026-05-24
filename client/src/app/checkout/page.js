@@ -1,21 +1,32 @@
 "use client";
 
 import { CheckCircle, CreditCard, MapPin, Truck } from "lucide-react";
+
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+
+import { Suspense, useEffect, useState } from "react";
+
 import toast from "react-hot-toast";
+
 import API from "../../lib/api";
 
-export default function CheckoutPage() {
+// =========================
+// MAIN CONTENT
+// =========================
+
+function CheckoutContent() {
   const searchParams = useSearchParams();
+
   const router = useRouter();
 
   const type = searchParams.get("type");
 
   const [products, setProducts] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
+
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   const [paymentMethod, setPaymentMethod] = useState("COD");
@@ -29,6 +40,7 @@ export default function CheckoutPage() {
 
     if (!user) {
       router.push("/login");
+
       return;
     }
 
@@ -38,8 +50,6 @@ export default function CheckoutPage() {
     const localAddresses =
       JSON.parse(localStorage.getItem("userAddresses")) || [];
 
-    console.log("LOCAL STORAGE ADDRESS:", localAddresses);
-
     if (localAddresses.length > 0) {
       setAddresses(localAddresses);
 
@@ -47,6 +57,7 @@ export default function CheckoutPage() {
     }
 
     fetchProducts();
+
     fetchAddresses();
   }, []);
 
@@ -114,15 +125,11 @@ export default function CheckoutPage() {
 
       if (!token) return;
 
-      console.log("TOKEN:", token);
-
       const res = await API.get("/address", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("ADDRESS API RESPONSE:", res.data);
 
       const fetchedAddresses = res.data.data || [];
 
@@ -132,10 +139,6 @@ export default function CheckoutPage() {
         setSelectedAddress(fetchedAddresses[0]);
 
         localStorage.setItem("userAddresses", JSON.stringify(fetchedAddresses));
-
-        console.log("ADDRESS SET SUCCESS");
-      } else {
-        console.log("NO ADDRESS FROM API");
       }
     } catch (error) {
       console.log("ADDRESS ERROR:", error);
@@ -178,7 +181,7 @@ ${selectedAddress.landmark},
 ${selectedAddress.city},
 ${selectedAddress.state},
 ${selectedAddress.pincode}
-        `,
+          `,
 
         products: products.map((item) => ({
           productId: item._id,
@@ -190,8 +193,6 @@ ${selectedAddress.pincode}
 
         paymentMethod,
       };
-
-      console.log("ORDER PAYLOAD:", payload);
 
       // =========================
       // COD ORDER
@@ -274,15 +275,17 @@ ${selectedAddress.pincode}
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F3EC] pt-[120px] px-6">
+    <div className="min-h-screen bg-[#F8F3EC] pt-[120px] px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-light mb-10">Secure Checkout</h1>
+        <h1 className="text-3xl sm:text-4xl font-light mb-10">
+          Secure Checkout
+        </h1>
 
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-3 gap-8">
           {/* LEFT */}
           <div className="lg:col-span-2 space-y-8">
             {/* ADDRESS */}
-            <div className="bg-white p-8 rounded-3xl shadow-md">
+            <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md">
               <h2 className="text-2xl mb-6 flex items-center gap-2">
                 <MapPin />
                 Select Address
@@ -328,7 +331,7 @@ ${selectedAddress.pincode}
             </div>
 
             {/* PAYMENT */}
-            <div className="bg-white p-8 rounded-3xl shadow-md">
+            <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md">
               <h2 className="text-2xl mb-6 flex items-center gap-2">
                 <CreditCard />
                 Payment Method
@@ -347,11 +350,11 @@ ${selectedAddress.pincode}
           </div>
 
           {/* RIGHT */}
-          <div className="bg-white p-8 rounded-3xl shadow-md h-fit">
+          <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md h-fit">
             <h2 className="text-2xl mb-6">Order Summary</h2>
 
             {products.map((item) => (
-              <div key={item._id} className="flex justify-between mb-4">
+              <div key={item._id} className="flex justify-between mb-4 gap-4">
                 <span>
                   {item.name} x {item.quantity}
                 </span>
@@ -394,5 +397,23 @@ ${selectedAddress.pincode}
         </div>
       </div>
     </div>
+  );
+}
+
+// =========================
+// SUSPENSE WRAPPER
+// =========================
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-xl">
+          Loading Checkout...
+        </div>
+      }
+    >
+      <CheckoutContent />
+    </Suspense>
   );
 }

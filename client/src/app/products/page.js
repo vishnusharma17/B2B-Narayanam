@@ -2,7 +2,7 @@
 
 import { Search, SlidersHorizontal, Sparkles, X } from "lucide-react";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 
 import { useSearchParams } from "next/navigation";
 
@@ -10,7 +10,11 @@ import ProductCard from "../../components/product/ProductCard";
 
 import API from "../../lib/api";
 
-export default function ProductsPage() {
+// =========================
+// MAIN CONTENT
+// =========================
+
+function ProductsContent() {
   const searchParams = useSearchParams();
 
   // =========================
@@ -369,19 +373,19 @@ export default function ProductsPage() {
                           setCurrentPage(1);
                         }}
                         className={`
-                          w-full
-                          text-left
-                          px-4
-                          py-3
-                          rounded-xl
-                          transition
-                          text-sm
-                          ${
-                            category === cat._id
-                              ? "bg-black text-white"
-                              : "hover:bg-gray-100"
-                          }
-                        `}
+                            w-full
+                            text-left
+                            px-4
+                            py-3
+                            rounded-xl
+                            transition
+                            text-sm
+                            ${
+                              category === cat._id
+                                ? "bg-black text-white"
+                                : "hover:bg-gray-100"
+                            }
+                          `}
                       >
                         {cat.name}
                       </button>
@@ -436,17 +440,17 @@ export default function ProductsPage() {
                           setCurrentPage(1);
                         }}
                         className={`
-                          w-9
-                          h-9
-                          rounded-full
-                          border-2
-                          transition-all
-                          ${
-                            color === clr
-                              ? "border-black scale-110 ring-2 ring-black"
-                              : "border-gray-300"
-                          }
-                        `}
+                            w-9
+                            h-9
+                            rounded-full
+                            border-2
+                            transition-all
+                            ${
+                              color === clr
+                                ? "border-black scale-110 ring-2 ring-black"
+                                : "border-gray-300"
+                            }
+                          `}
                         style={{
                           backgroundColor: clr,
                         }}
@@ -475,15 +479,15 @@ export default function ProductsPage() {
                           setCurrentPage(1);
                         }}
                         className={`
-                          block
-                          text-sm
-                          transition
-                          ${
-                            discount === String(d)
-                              ? "font-semibold text-black"
-                              : "text-gray-500 hover:text-black"
-                          }
-                        `}
+                            block
+                            text-sm
+                            transition
+                            ${
+                              discount === String(d)
+                                ? "font-semibold text-black"
+                                : "text-gray-500 hover:text-black"
+                            }
+                          `}
                       >
                         {d}% & Above
                       </button>
@@ -652,5 +656,23 @@ export default function ProductsPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+// =========================
+// SUSPENSE WRAPPER
+// =========================
+
+export default function ProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex justify-center items-center text-xl">
+          Loading Products...
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
   );
 }
