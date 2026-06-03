@@ -29,7 +29,7 @@ export const createFashionStory = async (req, res) => {
     const imageFile = req.file;
 
     const image = imageFile
-      ? `http://localhost:5004/uploads/fashion/${imageFile.filename}`
+      ? `${BASE_URL}/uploads/fashion/${imageFile.filename}`
       : "";
 
     const story = await FashionStory.create({

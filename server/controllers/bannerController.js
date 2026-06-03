@@ -7,7 +7,7 @@ export const createBanner = async (req, res) => {
 
     // Uploaded Image
     if (req.file) {
-      imageUrl = `http://localhost:5004/${req.file.path.replace(/\\/g, "/")}`;
+      imageUrl = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
     }
 
     const banner = await Banner.create({

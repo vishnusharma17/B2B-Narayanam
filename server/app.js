@@ -2,7 +2,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import rateLimit from "express-rate-limit";
-import path from "path";
 
 // Load environment variables
 dotenv.config();
@@ -55,7 +54,7 @@ app.use(
 app.use(express.json());
 
 // Static uploads
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static("uploads"));
 
 // Rate limiter
 const limiter = rateLimit({

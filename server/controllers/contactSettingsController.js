@@ -30,7 +30,7 @@ export const updateContactSettings = async (req, res) => {
 
     // IMAGE UPLOAD
     if (req.file) {
-      heroImage = `http://localhost:5004/uploads/${req.file.filename}`;
+      heroImage = `${BASE_URL}/uploads/${req.file.filename}`;
     }
 
     const payload = {

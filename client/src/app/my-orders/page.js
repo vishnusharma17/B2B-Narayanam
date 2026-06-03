@@ -286,7 +286,7 @@ export default function MyOrdersPage() {
                   </button>
 
                   <a
-                    href={`http://localhost:5004/api/invoice/${order._id}`}
+                    href={`${BASE_URL}/api/invoice/${order._id}`}
                     target="_blank"
                   >
                     <button className="bg-black text-white px-6 py-3 rounded-xl">

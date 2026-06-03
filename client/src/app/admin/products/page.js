@@ -79,7 +79,6 @@ export default function AdminProductsPage() {
     return {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
       },
     };
   };
@@ -93,6 +92,8 @@ export default function AdminProductsPage() {
       setLoading(true);
 
       const res = await API.get("/products");
+
+      console.log(res.data.data);
 
       setProducts(res.data?.data || []);
     } catch (error) {
@@ -595,19 +596,26 @@ export default function AdminProductsPage() {
             >
               {/* LEFT */}
               <div className="flex gap-4 items-start sm:items-center">
-                <img
-                  src={product.mainImage}
-                  alt={product.name}
-                  className="
-                    w-20
-                    h-20
-                    sm:w-24
-                    sm:h-24
-                    object-cover
-                    rounded-xl
-                    bg-gray-100
-                  "
-                />
+                {product.mainImage ? (
+                  <img
+                    src={product.mainImage}
+                    alt={product.name}
+                    onError={(e) => {
+                      console.log("IMAGE ERROR:", product.mainImage);
+                    }}
+                    className="
+      w-20
+      h-20
+      sm:w-24
+      sm:h-24
+      object-cover
+      rounded-xl
+      bg-gray-100
+    "
+                  />
+                ) : (
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gray-200 rounded-xl"></div>
+                )}
 
                 <div>
                   <h3 className="font-semibold text-lg sm:text-xl">

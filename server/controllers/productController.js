@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 import Product from "../models/productModel.js";
+
+const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
+console.log("Base url: ", process.env.BASE_URL);
+
+// ==========================
 // GET ALL PRODUCTS
+// ==========================
 export const getProducts = async (req, res) => {
   try {
-    // QUERY PARAMS
     const page = Number(req.query.page) || 1;
 
     const limit = Number(req.query.limit) || 12;
@@ -20,10 +25,8 @@ export const getProducts = async (req, res) => {
 
     const discount = Number(req.query.discount) || 0;
 
-    // SKIP
     const skip = (page - 1) * limit;
 
-    // FILTER OBJECT
     let filters = {};
 
     // SEARCH
@@ -77,10 +80,8 @@ export const getProducts = async (req, res) => {
       };
     }
 
-    // TOTAL PRODUCTS
     const totalProducts = await Product.countDocuments(filters);
 
-    // PRODUCTS
     const products = await Product.find(filters)
       .populate("category")
       .sort(sortOption)
@@ -112,19 +113,25 @@ export const getProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // CREATE PRODUCT
+// ==========================
 export const createProduct = async (req, res) => {
   try {
+    console.log("BODY =>", req.body);
+    console.log("FILES =>", req.files);
+    console.log("MAIN IMAGE =>", req.files?.mainImage);
+    console.log("GALLERY =>", req.files?.galleryImages);
     const mainImageFile = req.files?.mainImage?.[0];
 
     const galleryFiles = req.files?.galleryImages || [];
 
     const mainImage = mainImageFile
-      ? `http://localhost:5004/uploads/products/${mainImageFile.filename}`
+      ? `${BASE_URL}/uploads/products/${mainImageFile.filename}`
       : "";
 
     const galleryImages = galleryFiles.map(
-      (file) => `http://localhost:5004/uploads/products/${file.filename}`,
+      (file) => `${BASE_URL}/uploads/products/${file.filename}`,
     );
 
     const product = await Product.create({
@@ -141,6 +148,7 @@ export const createProduct = async (req, res) => {
       isLimitedStock: req.body.isLimitedStock === "true",
 
       mainImage,
+
       galleryImages,
     });
 
@@ -159,7 +167,9 @@ export const createProduct = async (req, res) => {
   }
 };
 
+// ==========================
 // UPDATE PRODUCT
+// ==========================
 export const updateProduct = async (req, res) => {
   try {
     const existingProduct = await Product.findById(req.params.id);
@@ -175,7 +185,7 @@ export const updateProduct = async (req, res) => {
     let mainImage = existingProduct.mainImage;
 
     if (req.files?.mainImage?.[0]) {
-      mainImage = `http://localhost:5004/uploads/products/${req.files.mainImage[0].filename}`;
+      mainImage = `${BASE_URL}/uploads/products/${req.files.mainImage[0].filename}`;
     }
 
     // GALLERY IMAGES
@@ -183,7 +193,7 @@ export const updateProduct = async (req, res) => {
 
     if (req.files?.galleryImages?.length > 0) {
       const newGalleryImages = req.files.galleryImages.map(
-        (file) => `http://localhost:5004/uploads/products/${file.filename}`,
+        (file) => `${BASE_URL}/uploads/products/${file.filename}`,
       );
 
       galleryImages = [...galleryImages, ...newGalleryImages];
@@ -226,7 +236,9 @@ export const updateProduct = async (req, res) => {
   }
 };
 
+// ==========================
 // DELETE PRODUCT
+// ==========================
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id);
@@ -252,7 +264,9 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
+// ==========================
 // GET SINGLE PRODUCT
+// ==========================
 export const getSingleProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("category");
@@ -278,7 +292,9 @@ export const getSingleProduct = async (req, res) => {
   }
 };
 
+// ==========================
 // GET PRODUCT BY SLUG
+// ==========================
 export const getProductBySlug = async (req, res) => {
   try {
     const product = await Product.findOne({
@@ -306,7 +322,9 @@ export const getProductBySlug = async (req, res) => {
   }
 };
 
+// ==========================
 // GET RELATED PRODUCTS
+// ==========================
 export const getRelatedProducts = async (req, res) => {
   try {
     const { categoryId } = req.params;
@@ -353,7 +371,9 @@ export const getRelatedProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // GET TRENDING PRODUCTS
+// ==========================
 export const getTrendingProducts = async (req, res) => {
   try {
     const products = await Product.find({
@@ -379,7 +399,9 @@ export const getTrendingProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // GET BEST SELLER PRODUCTS
+// ==========================
 export const getBestSellerProducts = async (req, res) => {
   try {
     const products = await Product.find({
@@ -405,7 +427,9 @@ export const getBestSellerProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // GET LIMITED STOCK PRODUCTS
+// ==========================
 export const getLimitedStockProducts = async (req, res) => {
   try {
     const products = await Product.find({
@@ -431,6 +455,9 @@ export const getLimitedStockProducts = async (req, res) => {
   }
 };
 
+// ==========================
+// UPDATE PRODUCT VIEWS
+// ==========================
 export const updateProductViews = async (req, res) => {
   try {
     const product = await Product.findByIdAndUpdate(
@@ -438,7 +465,9 @@ export const updateProductViews = async (req, res) => {
       {
         $inc: { views: 1 },
       },
-      { returnDocument: "after" },
+      {
+        returnDocument: "after",
+      },
     );
 
     res.status(200).json({
@@ -453,9 +482,16 @@ export const updateProductViews = async (req, res) => {
   }
 };
 
+// ==========================
+// MOST VIEWED PRODUCTS
+// ==========================
 export const getMostViewedProducts = async (req, res) => {
   try {
-    const products = await Product.find().sort({ views: -1 }).limit(8);
+    const products = await Product.find()
+      .sort({
+        views: -1,
+      })
+      .limit(8);
 
     res.status(200).json({
       success: true,
@@ -469,7 +505,9 @@ export const getMostViewedProducts = async (req, res) => {
   }
 };
 
+// ==========================
 // LIVE SEARCH PRODUCTS
+// ==========================
 export const searchProducts = async (req, res) => {
   try {
     const keyword = req.query.q;

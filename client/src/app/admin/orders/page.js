@@ -739,7 +739,7 @@ export default function AdminOrdersPage() {
 
                 {/* INVOICE */}
                 <a
-                  href={`http://localhost:5004/api/invoice/${order._id}`}
+                  href={`${BASE_URL}/api/invoice/${order._id}`}
                   target="_blank"
                   className="
                       w-full

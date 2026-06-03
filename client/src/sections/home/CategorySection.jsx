@@ -5,33 +5,24 @@ import { useEffect, useState } from "react";
 import API from "../../lib/api";
 
 export default function CategorySection() {
-  const [categories, setCategories] =
-    useState([]);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  const fetchCategories =
-    async () => {
-      try {
-        const res =
-          await API.get(
-            "/categories"
-          );
+  const fetchCategories = async () => {
+    try {
+      const res = await API.get("/categories");
 
-        setCategories(
-          res.data.data || []
-        );
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setCategories(res.data.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -43,20 +34,16 @@ export default function CategorySection() {
     );
   }
 
-  if (
-    categories.length === 0
-  ) {
+  if (categories.length === 0) {
     return null;
   }
 
   return (
     <section className="py-12 sm:py-16 lg:py-20 bg-white">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-12">
-
           <p className="uppercase tracking-[3px] sm:tracking-[5px] text-[10px] sm:text-xs text-gray-500 mb-2">
             Curated Collections
           </p>
@@ -64,45 +51,34 @@ export default function CategorySection() {
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-semibold leading-tight">
             Shop By Category
           </h2>
-
         </div>
 
         {/* Category Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
-
-          {categories.map(
-            (
-              item,
-              index
-            ) => (
-              <Link
-                key={
-                  item._id ||
-                  index
-                }
-                href={`/products?category=${item.name}`}
+          {categories.map((item, index) => (
+            <Link
+              key={item._id || index}
+              href={`/products?category=${item.name}`}
+            >
+              <div
+                className="
+                  relative
+                  h-[180px]
+                  sm:h-[280px]
+                  lg:h-[360px]
+                  rounded-2xl
+                  overflow-hidden
+                  group
+                  cursor-pointer
+                  bg-[#f5f5f5]
+                "
               >
-                <div
-                  className="
-                    relative
-                    h-[180px]
-                    sm:h-[280px]
-                    lg:h-[360px]
-                    rounded-2xl
-                    overflow-hidden
-                    group
-                    cursor-pointer
-                    bg-[#f5f5f5]
-                  "
-                >
-                  {/* Image */}
+
+                {/* Image */}
+                {item.image ? (
                   <img
-                    src={
-                      item.image
-                    }
-                    alt={
-                      item.name
-                    }
+                    src={item.image}
+                    alt={item.name}
                     className="
                       w-full
                       h-full
@@ -113,63 +89,64 @@ export default function CategorySection() {
                       duration-500
                     "
                   />
+                ) : (
+                  <div className="w-full h-full bg-gray-200"></div>
+                )}
 
-                  {/* Overlay */}
-                  <div
+                {/* Overlay */}
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    bg-black/35
+                    group-hover:bg-black/45
+                    transition
+                    duration-300
+                  "
+                ></div>
+
+                {/* Text */}
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    flex
+                    flex-col
+                    justify-end
+                    items-center
+                    text-white
+                    p-4
+                    sm:p-6
+                    text-center
+                  "
+                >
+                  <h3 className="text-sm sm:text-2xl font-semibold mb-2 sm:mb-4">
+                    {item.name}
+                  </h3>
+
+                  <button
                     className="
-                      absolute
-                      inset-0
-                      bg-black/35
-                      group-hover:bg-black/45
+                      border
+                      border-white
+                      px-3
+                      sm:px-5
+                      py-1.5
+                      sm:py-2
+                      rounded-full
+                      hover:bg-white
+                      hover:text-black
                       transition
                       duration-300
-                    "
-                  ></div>
-
-                  {/* Text */}
-                  <div
-                    className="
-                      absolute
-                      inset-0
-                      flex
-                      flex-col
-                      justify-end
-                      items-center
-                      text-white
-                      p-4
-                      sm:p-6
-                      text-center
+                      text-xs
+                      sm:text-sm
                     "
                   >
-                    <h3 className="text-sm sm:text-2xl font-semibold mb-2 sm:mb-4">
-                      {item.name}
-                    </h3>
-
-                    <button
-                      className="
-                        border
-                        border-white
-                        px-3
-                        sm:px-5
-                        py-1.5
-                        sm:py-2
-                        rounded-full
-                        hover:bg-white
-                        hover:text-black
-                        transition
-                        duration-300
-                        text-xs
-                        sm:text-sm
-                      "
-                    >
-                      Explore
-                    </button>
-                  </div>
+                    Explore
+                  </button>
                 </div>
-              </Link>
-            )
-          )}
-
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>

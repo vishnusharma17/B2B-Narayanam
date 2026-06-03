@@ -27,7 +27,7 @@ export const createWardrobePick = async (req, res) => {
     const { title, subtitle, link } = req.body;
 
     const image = req.file
-      ? `http://localhost:5004/uploads/wardrobe/${req.file.filename}`
+      ? `${BASE_URL}/uploads/wardrobe/${req.file.filename}`
       : "";
 
     const pick = await WardrobePick.create({

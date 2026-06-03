@@ -55,7 +55,7 @@ export const createCategory = async (req, res) => {
     let imageUrl = "";
 
     if (req.file) {
-      imageUrl = `http://localhost:5004/${req.file.path.replace(/\\/g, "/")}`;
+      imageUrl = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
     }
 
     const category = await Category.create({
@@ -98,10 +98,7 @@ export const updateCategory = async (req, res) => {
 
     // New Image Upload
     if (req.file) {
-      updatedData.image = `http://localhost:5004/${req.file.path.replace(
-        /\\/g,
-        "/",
-      )}`;
+      updatedData.image = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
     }
 
     const category = await Category.findByIdAndUpdate(

@@ -25,7 +25,7 @@ export const createShopRole = async (req, res) => {
     const { title, link } = req.body;
 
     const image = req.file
-      ? `http://localhost:5004/uploads/roles/${req.file.filename}`
+      ? `${BASE_URL}/uploads/roles/${req.file.filename}`
       : "";
 
     const role = await ShopRole.create({
