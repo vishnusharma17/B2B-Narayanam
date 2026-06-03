@@ -1,5 +1,7 @@
 import Category from "../models/CategoryModel.js";
 
+const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
+
 // GET ALL CATEGORIES
 export const getCategories = async (req, res) => {
   try {
@@ -44,14 +46,12 @@ export const createCategory = async (req, res) => {
       });
     }
 
-    // Auto Slug
     const slug = name
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-");
 
-    // Image Upload
     let imageUrl = "";
 
     if (req.file) {
@@ -70,7 +70,7 @@ export const createCategory = async (req, res) => {
       data: category,
     });
   } catch (error) {
-    console.log(error);
+    console.log("CATEGORY CREATE ERROR =>", error);
 
     res.status(500).json({
       success: false,
@@ -96,7 +96,6 @@ export const updateCategory = async (req, res) => {
         .replace(/\s+/g, "-");
     }
 
-    // New Image Upload
     if (req.file) {
       updatedData.image = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
     }
@@ -105,7 +104,7 @@ export const updateCategory = async (req, res) => {
       req.params.id,
       updatedData,
       {
-        returnDocument: "after",
+        new: true,
       },
     );
 
