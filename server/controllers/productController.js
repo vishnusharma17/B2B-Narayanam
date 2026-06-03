@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 import Product from "../models/productModel.js";
 
-const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
-console.log("Base url: ", process.env.BASE_URL);
-
 // ==========================
 // GET ALL PRODUCTS
 // ==========================
@@ -126,14 +123,9 @@ export const createProduct = async (req, res) => {
 
     const galleryFiles = req.files?.galleryImages || [];
 
-    const mainImage = mainImageFile
-      ? `${BASE_URL}/uploads/products/${mainImageFile.filename}`
-      : "";
+    const mainImage = mainImageFile ? mainImageFile.path : "";
 
-    const galleryImages = galleryFiles.map(
-      (file) => `${BASE_URL}/uploads/products/${file.filename}`,
-    );
-
+    const galleryImages = galleryFiles.map((file) => file.path);
     const product = await Product.create({
       ...req.body,
 
@@ -185,16 +177,14 @@ export const updateProduct = async (req, res) => {
     let mainImage = existingProduct.mainImage;
 
     if (req.files?.mainImage?.[0]) {
-      mainImage = `${BASE_URL}/uploads/products/${req.files.mainImage[0].filename}`;
+      mainImage = req.files.mainImage[0].path;
     }
 
     // GALLERY IMAGES
     let galleryImages = existingProduct.galleryImages || [];
 
     if (req.files?.galleryImages?.length > 0) {
-      const newGalleryImages = req.files.galleryImages.map(
-        (file) => `${BASE_URL}/uploads/products/${file.filename}`,
-      );
+      const newGalleryImages = req.files.galleryImages.map((file) => file.path);
 
       galleryImages = [...galleryImages, ...newGalleryImages];
     }
