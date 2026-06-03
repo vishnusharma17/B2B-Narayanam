@@ -1,11 +1,15 @@
 import Banner from "../models/Banner.js";
 
+const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
+
 // CREATE BANNER
 export const createBanner = async (req, res) => {
   try {
+    console.log("BODY =>", req.body);
+    console.log("FILE =>", req.file);
+
     let imageUrl = "";
 
-    // Uploaded Image
     if (req.file) {
       imageUrl = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
     }
@@ -23,7 +27,7 @@ export const createBanner = async (req, res) => {
       data: banner,
     });
   } catch (error) {
-    console.log(error);
+    console.log("BANNER ERROR =>", error);
 
     res.status(500).json({
       success: false,
