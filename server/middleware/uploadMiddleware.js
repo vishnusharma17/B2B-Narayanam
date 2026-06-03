@@ -1,31 +1,14 @@
-import fs from "fs";
 import multer from "multer";
-import path from "path";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import cloudinary from "../config/cloudinary.js";
 
-// CREATE FOLDER IF NOT EXISTS
-const uploadPath = "./uploads/products";
-
-if (!fs.existsSync(uploadPath)) {
-  fs.mkdirSync(uploadPath, {
-    recursive: true,
-  });
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    console.log("UPLOAD PATH =>", uploadPath);
-    console.log("FILE NAME =>", file.originalname);
-
-    cb(null, uploadPath);
-  },
-
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + path.extname(file.originalname);
-
-    console.log("SAVING FILE =>", uniqueName);
-
-    cb(null, uniqueName);
-  },
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: async (req, file) => ({
+    folder: "narayanam",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    public_id: Date.now().toString(),
+  }),
 });
 
 const fileFilter = (req, file, cb) => {
