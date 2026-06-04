@@ -1,5 +1,6 @@
+import fs from "fs";
+import cloudinary from "../config/cloudinary.js";
 import Banner from "../models/Banner.js";
-
 const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
 
 // CREATE BANNER
@@ -11,7 +12,15 @@ export const createBanner = async (req, res) => {
     let imageUrl = "";
 
     if (req.file) {
-      imageUrl = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "narayanam/banners",
+      });
+
+      imageUrl = result.secure_url;
+
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
     }
 
     const banner = await Banner.create({
