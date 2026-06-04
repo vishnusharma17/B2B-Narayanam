@@ -270,7 +270,7 @@ export default function HeroSection() {
                 "
               />
 
-              <span
+              {/* <span
                 className="
                   text-[#D4AF37]
                   uppercase
@@ -280,7 +280,7 @@ export default function HeroSection() {
                 "
               >
                 Premium Collection
-              </span>
+              </span> */}
             </div>
 
             {/* TITLE */}
