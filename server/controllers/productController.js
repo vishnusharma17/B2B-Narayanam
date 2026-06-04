@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import Product from "../models/productModel.js";
 
+import fs from "fs";
+import cloudinary from "../config/cloudinary.js";
 // ==========================
 // GET ALL PRODUCTS
 // ==========================
@@ -117,15 +119,43 @@ export const createProduct = async (req, res) => {
   try {
     console.log("BODY =>", req.body);
     console.log("FILES =>", req.files);
-    console.log("MAIN IMAGE =>", req.files?.mainImage);
-    console.log("GALLERY =>", req.files?.galleryImages);
-    const mainImageFile = req.files?.mainImage?.[0];
 
+    const mainImageFile = req.files?.mainImage?.[0];
     const galleryFiles = req.files?.galleryImages || [];
 
-    const mainImage = mainImageFile ? mainImageFile.path : "";
+    // MAIN IMAGE UPLOAD
+    let mainImage = "";
 
-    const galleryImages = galleryFiles.map((file) => file.path);
+    if (mainImageFile) {
+      const uploadResult = await cloudinary.uploader.upload(
+        mainImageFile.path,
+        {
+          folder: "narayanam/products",
+        },
+      );
+
+      mainImage = uploadResult.secure_url;
+
+      if (fs.existsSync(mainImageFile.path)) {
+        fs.unlinkSync(mainImageFile.path);
+      }
+    }
+
+    // GALLERY IMAGES UPLOAD
+    const galleryImages = [];
+
+    for (const file of galleryFiles) {
+      const uploadResult = await cloudinary.uploader.upload(file.path, {
+        folder: "narayanam/products",
+      });
+
+      galleryImages.push(uploadResult.secure_url);
+
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+    }
+
     const product = await Product.create({
       ...req.body,
 
@@ -150,7 +180,7 @@ export const createProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    console.log(error);
+    console.log("CREATE PRODUCT ERROR =>", error);
 
     res.status(500).json({
       success: false,
