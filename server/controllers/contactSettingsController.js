@@ -1,5 +1,6 @@
+import fs from "fs";
+import cloudinary from "../config/cloudinary.js";
 import ContactSettings from "../models/ContactSettings.js";
-
 // GET
 export const getContactSettings = async (req, res) => {
   try {
@@ -30,7 +31,15 @@ export const updateContactSettings = async (req, res) => {
 
     // IMAGE UPLOAD
     if (req.file) {
-      heroImage = `${BASE_URL}/uploads/${req.file.filename}`;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "narayanam/contact",
+      });
+
+      heroImage = result.secure_url;
+
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
     }
 
     const payload = {
