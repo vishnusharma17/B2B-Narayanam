@@ -244,44 +244,7 @@ export default function HeroSection() {
             "
           >
 
-            {/* TAG */}
-            <div
-              className="
-                inline-flex
-                items-center
-                gap-2
-                bg-white/10
-                border
-                border-white/10
-                backdrop-blur-md
-                px-4
-                py-2
-                rounded-full
-                mb-5
-              "
-            >
-
-              <div
-                className="
-                  w-2
-                  h-2
-                  rounded-full
-                  bg-[#D4AF37]
-                "
-              />
-
-              {/* <span
-                className="
-                  text-[#D4AF37]
-                  uppercase
-                  tracking-[3px]
-                  text-[10px]
-                  sm:text-xs
-                "
-              >
-                Premium Collection
-              </span> */}
-            </div>
+            
 
             {/* TITLE */}
             <h1
