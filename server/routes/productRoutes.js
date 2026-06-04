@@ -59,7 +59,7 @@ router.post(
   "/",
   protect,
   isAdmin,
-  upload.any([
+  upload.fields([
     {
       name: "mainImage",
       maxCount: 1,

@@ -125,13 +125,9 @@ export const createProduct = async (req, res) => {
     console.log("BODY =>", req.body);
     console.log("FILES =>", req.files);
 
-    const mainImageFile = req.files.find(
-      (file) => file.fieldname === "mainImage",
-    );
+    const mainImageFile = req.files?.mainImage?.[0];
 
-    const galleryFiles = req.files.filter(
-      (file) => file.fieldname === "galleryImages",
-    );
+    const galleryFiles = req.files?.galleryImages || [];
     // MAIN IMAGE UPLOAD
     let mainImage = "";
 
@@ -216,14 +212,36 @@ export const updateProduct = async (req, res) => {
     let mainImage = existingProduct.mainImage;
 
     if (req.files?.mainImage?.[0]) {
-      mainImage = req.files.mainImage[0].path;
+      const file = req.files.mainImage[0];
+
+      const uploadResult = await cloudinary.uploader.upload(file.path, {
+        folder: "narayanam/products",
+      });
+
+      mainImage = uploadResult.secure_url;
+
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
     }
 
     // GALLERY IMAGES
     let galleryImages = existingProduct.galleryImages || [];
 
     if (req.files?.galleryImages?.length > 0) {
-      const newGalleryImages = req.files.galleryImages.map((file) => file.path);
+      const newGalleryImages = [];
+
+      for (const file of req.files.galleryImages) {
+        const uploadResult = await cloudinary.uploader.upload(file.path, {
+          folder: "narayanam/products",
+        });
+
+        newGalleryImages.push(uploadResult.secure_url);
+
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
+      }
 
       galleryImages = [...galleryImages, ...newGalleryImages];
     }
