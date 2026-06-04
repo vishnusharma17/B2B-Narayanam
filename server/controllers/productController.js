@@ -116,8 +116,8 @@ export const getProducts = async (req, res) => {
 // CREATE PRODUCT
 // ==========================
 export const createProduct = async (req, res) => {
-  console.log("files rescived",req.files);
-  
+  console.log("files rescived", req.files);
+
   console.log("===== NEW CLOUDINARY CODE RUNNING =====");
   console.log("CLOUD NAME =", process.env.CLOUD_NAME);
   console.log("MAIN IMAGE FILE =", req.files?.mainImage?.[0]);
@@ -196,7 +196,6 @@ export const createProduct = async (req, res) => {
       message: error.message,
     });
   }
-  console.log("CLOUDINARY URL =", uploadResult.secure_url);
 };
 
 // ==========================
