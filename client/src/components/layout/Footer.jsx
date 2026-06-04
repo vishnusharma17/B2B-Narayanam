@@ -85,7 +85,13 @@ export default function Footer() {
       }
     };
 
-  if (!footerData) return null;
+  if (!footerData) {
+  return (
+    <div className="bg-red-500 text-white p-10">
+      FOOTER DATA NOT FOUND
+    </div>
+  );
+}
 
   return (
     <footer className="bg-black text-white overflow-hidden border-t border-white/10">
