@@ -116,6 +116,8 @@ export const getProducts = async (req, res) => {
 // CREATE PRODUCT
 // ==========================
 export const createProduct = async (req, res) => {
+  console.log("files rescived",req.files);
+  
   console.log("===== NEW CLOUDINARY CODE RUNNING =====");
   console.log("CLOUD NAME =", process.env.CLOUD_NAME);
   console.log("MAIN IMAGE FILE =", req.files?.mainImage?.[0]);
@@ -123,9 +125,13 @@ export const createProduct = async (req, res) => {
     console.log("BODY =>", req.body);
     console.log("FILES =>", req.files);
 
-    const mainImageFile = req.files?.mainImage?.[0];
-    const galleryFiles = req.files?.galleryImages || [];
+    const mainImageFile = req.files.find(
+      (file) => file.fieldname === "mainImage",
+    );
 
+    const galleryFiles = req.files.filter(
+      (file) => file.fieldname === "galleryImages",
+    );
     // MAIN IMAGE UPLOAD
     let mainImage = "";
 
