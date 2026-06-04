@@ -1,5 +1,6 @@
+import fs from "fs";
+import cloudinary from "../config/cloudinary.js";
 import Category from "../models/CategoryModel.js";
-
 const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
 
 // GET ALL CATEGORIES
@@ -55,7 +56,15 @@ export const createCategory = async (req, res) => {
     let imageUrl = "";
 
     if (req.file) {
-      imageUrl = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "narayanam/categories",
+      });
+
+      imageUrl = result.secure_url;
+
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
     }
 
     const category = await Category.create({
@@ -97,7 +106,15 @@ export const updateCategory = async (req, res) => {
     }
 
     if (req.file) {
-      updatedData.image = `${BASE_URL}/${req.file.path.replace(/\\/g, "/")}`;
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "narayanam/categories",
+      });
+
+      updatedData.image = result.secure_url;
+
+      if (fs.existsSync(req.file.path)) {
+        fs.unlinkSync(req.file.path);
+      }
     }
 
     const category = await Category.findByIdAndUpdate(
