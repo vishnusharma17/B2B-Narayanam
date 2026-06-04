@@ -31,9 +31,13 @@ export const updateContactSettings = async (req, res) => {
 
     // IMAGE UPLOAD
     if (req.file) {
+      console.log("REQ FILE =>", req.file);
+
       const result = await cloudinary.uploader.upload(req.file.path, {
         folder: "narayanam/contact",
       });
+
+      console.log("CLOUD URL =>", result.secure_url);
 
       heroImage = result.secure_url;
 
