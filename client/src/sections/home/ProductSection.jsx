@@ -89,8 +89,7 @@ export default function ProductSection() {
       <div
         className="
           grid
-          grid-cols-1
-          sm:grid-cols-2
+          grid-cols-2
           md:grid-cols-3
           lg:grid-cols-4
           xl:grid-cols-5
@@ -117,58 +116,66 @@ export default function ProductSection() {
               "
             >
               {/* Product Image */}
-              <div
-                className="
-                  relative
-                  bg-[#f5f5f5]
-                  overflow-hidden
-                  aspect-[3/4]
-                "
-              >
-                <img
-                  src={
-                    product.mainImage ||
-                    product
-                      .images?.[0]
-                  }
-                  alt={
-                    product.name
-                  }
-                  className="
-                    w-full
-                    h-[180px]
-                    sm:h-[240px]
-                    md:h-[300px]
-                    object-cover
-                    group-hover:scale-105
-                    transition
-                    duration-700
-                  "
-                />
+            <div
+  className="
+    relative
+    bg-[#f5f5f5]
+    overflow-hidden
+    h-[260px]
+    sm:h-[320px]
+  "
+>
+  <Swiper
+    modules={[Pagination, Autoplay]}
+    pagination={{ clickable: true }}
+    autoplay={{
+      delay: 3000,
+      disableOnInteraction: false,
+    }}
+    loop={true}
+    className="w-full h-full"
+  >
+    {[product.mainImage, ...(product.galleryImages || [])]
+      .filter(Boolean)
+      .map((img, index) => (
+        <SwiperSlide key={index}>
+          <img
+            src={img}
+            alt={product.name}
+            className="
+              w-full
+              h-full
+              object-contain
+              p-4
+              transition-transform
+              duration-700
+              group-hover:scale-[1.03]
+            "
+          />
+        </SwiperSlide>
+      ))}
+  </Swiper>
 
-                {/* Badge */}
-                {(product.isBestSeller ||
-                  product.isTrending) && (
-                  <span
-                    className="
-                      absolute
-                      top-3
-                      left-3
-                      bg-[#D4AF37]
-                      text-black
-                      px-3
-                      py-1
-                      rounded-full
-                      text-xs
-                      font-semibold
-                    "
-                  >
-                    {product.isBestSeller
-                      ? "Best Seller"
-                      : "Trending"}
-                  </span>
-                )}
-              </div>
+  {(product.isBestSeller || product.isTrending) && (
+    <span
+      className="
+        absolute
+        top-3
+        left-3
+        z-10
+        bg-[#D4AF37]
+        text-black
+        px-3
+        py-1
+        rounded-full
+        text-xs
+        font-semibold
+      "
+    >
+      {product.isBestSeller ? "Best Seller" : "Trending"}
+    </span>
+  )}
+</div>
 
               {/* Product Info */}
               <div className="p-4 sm:p-5">
