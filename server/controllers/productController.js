@@ -588,3 +588,24 @@ export const searchProducts = async (req, res) => {
     });
   }
 };
+
+export const getFeaturedProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate("category")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

@@ -4,6 +4,7 @@ import {
   createProduct,
   deleteProduct,
   getBestSellerProducts,
+  getFeaturedProducts,
   getLimitedStockProducts,
   getMostViewedProducts,
   getProductBySlug,
@@ -36,6 +37,9 @@ router.get("/best-sellers", getBestSellerProducts);
 
 // TRENDING PRODUCTS
 router.get("/trending", getTrendingProducts);
+
+// FEATURED PRODUCTS
+router.get("/featured", getFeaturedProducts);
 
 // LIMITED STOCK PRODUCTS
 router.get("/limited-stock", getLimitedStockProducts);

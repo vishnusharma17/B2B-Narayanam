@@ -31,6 +31,7 @@ export default function ProductSection() {
       } finally {
         setLoading(false);
       }
+      console.log("Products =>", res.data.data[0]);
     };
 
   if (loading) {
@@ -121,6 +122,7 @@ export default function ProductSection() {
                   relative
                   bg-[#f5f5f5]
                   overflow-hidden
+                  aspect-[3/4]
                 "
               >
                 <img
@@ -134,12 +136,10 @@ export default function ProductSection() {
                   }
                   className="
                     w-full
-                    h-[260px]
-                    sm:h-[300px]
-                    md:h-[320px]
-                    object-contain
-                    object-center
-                    p-3
+                    h-[180px]
+                    sm:h-[240px]
+                    md:h-[300px]
+                    object-cover
                     group-hover:scale-105
                     transition
                     duration-700
