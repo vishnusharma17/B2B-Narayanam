@@ -1,13 +1,17 @@
 "use client";
-
-import Link from "next/link";
-
 import {
   Mail,
   MapPin,
   Phone,
   Send,
 } from "lucide-react";
+import Link from "next/link";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaWhatsapp,
+  FaYoutube,
+} from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 
@@ -94,12 +98,16 @@ export default function Footer() {
 }
 
   return (
-    <footer className="bg-black text-white overflow-hidden border-t border-white/10">
+   <footer className="relative bg-black text-white overflow-hidden border-t border-white/10">
+
+  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-[#D4AF37]/10 blur-[180px] rounded-full pointer-events-none"></div>
 
       {/* TOP */}
       <div
         className="
-          max-w-[1600px]
+        relative
+        z-10
+        max-w-[1600px]
           mx-auto
           px-4
           sm:px-6
@@ -110,6 +118,23 @@ export default function Footer() {
           pb-8
         "
       >
+        <div className="bg-gradient-to-r from-[#D4AF37] via-[#f0d36f] to-[#D4AF37] rounded-[32px] p-8 sm:p-12 text-center text-black mb-12 relative z-10">
+
+  <h2 className="text-3xl sm:text-5xl font-light">
+   Partner With India's Premium Ethnic Wear Brand
+  </h2>
+
+  <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base">
+   Expand your business with exclusive ethnic collections, attractive wholesale pricing and PAN India delivery support.
+  </p>
+
+  <Link href="/wholesale">
+    <button className="mt-6 bg-black text-white px-8 py-4 rounded-full hover:bg-[#222] transition-all duration-300">
+      Explore Wholesale
+    </button>
+  </Link>
+
+</div>
         <div
           className="
             grid
@@ -142,6 +167,11 @@ export default function Footer() {
             >
               NARAYANAM
             </h2>
+            <div className="w-20 h-[2px] bg-[#D4AF37] mt-3 mb-5"></div>
+
+<p className="text-gray-500 italic text-sm">
+  Timeless Ethnic Elegance
+</p>
 
             <p
               className="
@@ -160,51 +190,37 @@ export default function Footer() {
             </p>
 
             {/* SOCIAL */}
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-4 mt-6">
 
-              <a
-                href="#"
-                className="
-                  w-10
-                  h-10
-                  rounded-full
-                  bg-white/10
-                  hover:bg-[#D4AF37]
-                  hover:text-black
-                  transition-all
-                  duration-300
-                  flex
-                  items-center
-                  justify-center
-                  text-sm
-                  font-semibold
-                "
-              >
-                IG
-              </a>
+  <a
+    href="#"
+    className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#D4AF37] hover:text-black flex items-center justify-center transition-all duration-300"
+  >
+    <FaInstagram />
+  </a>
 
-              <a
-                href="#"
-                className="
-                  w-10
-                  h-10
-                  rounded-full
-                  bg-white/10
-                  hover:bg-[#D4AF37]
-                  hover:text-black
-                  transition-all
-                  duration-300
-                  flex
-                  items-center
-                  justify-center
-                  text-sm
-                  font-semibold
-                "
-              >
-                FB
-              </a>
+  <a
+    href="#"
+    className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#D4AF37] hover:text-black flex items-center justify-center transition-all duration-300"
+  >
+    <FaFacebookF />
+  </a>
 
-            </div>
+  <a
+    href="#"
+    className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#D4AF37] hover:text-black flex items-center justify-center transition-all duration-300"
+  >
+    <FaYoutube />
+  </a>
+
+  <a
+    href="#"
+    className="w-12 h-12 rounded-full bg-white/5 hover:bg-[#25D366] hover:text-white flex items-center justify-center transition-all duration-300"
+  >
+    <FaWhatsapp />
+  </a>
+
+</div>
           </div>
 
           {/* QUICK LINKS */}
@@ -312,10 +328,9 @@ export default function Footer() {
 
             </div>
           </div>
-
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-md">
           {/* NEWSLETTER */}
           <div>
-
             <h3
               className="
                 text-lg
@@ -463,6 +478,7 @@ export default function Footer() {
 
           </div>
         </div>
+      </div>
       </div>
     </footer>
   );
