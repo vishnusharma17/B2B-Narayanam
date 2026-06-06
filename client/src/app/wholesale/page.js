@@ -79,7 +79,7 @@ export default function WholesalePage() {
         </div>
 
         {/* Floating Overlap Stats Badge Container */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 hidden lg:flex bg-white rounded-2xl shadow-xl px-10 py-6 gap-12 z-20 border border-[#D4AF37]/10">
+        {/* <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 hidden lg:flex bg-white rounded-2xl shadow-xl px-10 py-6 gap-12 z-20 border border-[#D4AF37]/10">
           <div className="text-center">
             <h3 className="text-3xl font-bold text-[#D4AF37]">500+</h3>
             <p className="text-gray-500 text-xs font-medium uppercase tracking-wider mt-0.5">
@@ -100,7 +100,7 @@ export default function WholesalePage() {
               Pieces Delivered
             </p>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* STATS SECTION */}
