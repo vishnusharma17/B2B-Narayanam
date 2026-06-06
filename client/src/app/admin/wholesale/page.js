@@ -84,7 +84,7 @@ export default function AdminWholesalePage() {
             title: "",
             description: "",
           },
-        ],
+        ]
       );
 
       setProcessSteps(data.processSteps || [""]);
@@ -95,7 +95,7 @@ export default function AdminWholesalePage() {
             value: "",
             label: "",
           },
-        ],
+        ]
       );
     } catch (error) {
       console.log(error);
@@ -824,7 +824,7 @@ export default function AdminWholesalePage() {
                       type="button"
                       onClick={() => {
                         const updated = processSteps.filter(
-                          (_, i) => i !== index,
+                          (_, i) => i !== index
                         );
 
                         setProcessSteps(updated);
