@@ -25,6 +25,8 @@ export default function AdminWholesalePage() {
 
   const [heroImage, setHeroImage] = useState("");
 
+  const [heroImageFile, setHeroImageFile] = useState(null);
+
   const [ctaTitle, setCtaTitle] = useState("");
 
   const [ctaButtonText, setCtaButtonText] = useState("");
@@ -114,10 +116,25 @@ export default function AdminWholesalePage() {
     try {
       setLoading(true);
 
+      let finalHeroImage = heroImage;
+
+      if (heroImageFile) {
+        const formData = new FormData();
+
+        formData.append("images", heroImageFile);
+
+        const uploadRes = await API.post("/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        finalHeroImage = uploadRes.data.urls[0];
+      }
       await API.put("/wholesale-settings", {
         heroTitle,
         heroSubtitle,
-        heroImage,
+        heroImage: finalHeroImage,
         ctaTitle,
         ctaButtonText,
         benefits,
@@ -371,12 +388,14 @@ export default function AdminWholesalePage() {
                     hidden
                     accept="image/*"
                     onChange={(e) => {
-                      const file = e.target.files[0];
+                      const file = e.target.files?.[0];
 
                       if (file) {
-                        const imageUrl = URL.createObjectURL(file);
+                        setHeroImageFile(file);
 
-                        setHeroImage(imageUrl);
+                        const previewUrl = URL.createObjectURL(file);
+
+                        setHeroImage(previewUrl);
                       }
                     }}
                   />
