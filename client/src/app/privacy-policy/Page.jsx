@@ -1,37 +1,56 @@
-import PolicyPage from "@/components/PolicyPage";
-
-export default function Page() {
+export default function PrivacyPolicyPage() {
   return (
-    <PolicyPage
-      title="Privacy Policy"
-      subtitle="Your privacy and data protection are important to us."
-      sections={[
-        {
-          title: "Information We Collect",
-          content:
-            "We may collect personal information such as your name, email address, phone number, billing address, shipping address and payment details when you place an order or contact us.",
-        },
-        {
-          title: "How We Use Information",
-          content:
-            "Your information is used to process orders, provide customer support, improve our services, send order updates and communicate important information related to your purchases.",
-        },
-        {
-          title: "Data Security",
-          content:
-            "We implement industry-standard security measures to protect your personal information against unauthorized access, alteration or disclosure.",
-        },
-        {
-          title: "Third-Party Services",
-          content:
-            "We may use trusted third-party services for payment processing, analytics and shipping. These providers only receive information necessary to perform their services.",
-        },
-        {
-          title: "Contact Us",
-          content:
-            "If you have any questions regarding this Privacy Policy, please contact us through our website contact page.",
-        },
-      ]}
-    />
+    <div className="min-h-screen bg-[#F9F6F1] pt-28 pb-20">
+      <div className="max-w-5xl mx-auto px-5">
+        <div className="text-center mb-16">
+          <p className="uppercase tracking-[6px] text-[#D4AF37] text-sm">
+            Narayanam
+          </p>
+
+          <h1 className="text-4xl md:text-6xl font-light mt-4">
+            Privacy Policy
+          </h1>
+
+          <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-6"></div>
+
+          <p className="text-gray-500 mt-5">
+            Your privacy and data security matter to us.
+          </p>
+        </div>
+
+        <div className="space-y-8">
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
+            <h2 className="text-2xl font-semibold mb-4">
+              Information We Collect
+            </h2>
+            <p className="text-gray-600 leading-8">
+              We collect information including name, email, phone number,
+              shipping address and billing details to process orders and
+              improve customer experience.
+            </p>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
+            <h2 className="text-2xl font-semibold mb-4">
+              How We Use Your Data
+            </h2>
+            <p className="text-gray-600 leading-8">
+              Information is used for order fulfillment, customer support,
+              marketing communication and website improvements.
+            </p>
+          </div>
+
+          <div className="bg-white p-8 rounded-3xl shadow-sm">
+            <h2 className="text-2xl font-semibold mb-4">
+              Data Protection
+            </h2>
+            <p className="text-gray-600 leading-8">
+              We maintain appropriate security measures to protect your data
+              from unauthorized access or disclosure.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
