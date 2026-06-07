@@ -1,7 +1,7 @@
 export default function PolicyPage({
-  title,
-  subtitle,
-  sections,
+  title ="Policy Page",
+  subtitle = "",
+  sections = [],
 }) {
   return (
     <div className="min-h-screen bg-[#F9F6F1] pt-28 pb-20">
@@ -26,7 +26,7 @@ export default function PolicyPage({
 
         {/* Content */}
         <div className="space-y-8">
-          {sections.map((item, index) => (
+          {sections?.map((item, index) => (
             <div
               key={index}
               className="bg-white rounded-3xl p-6 sm:p-8 border border-[#D4AF37]/10 shadow-sm hover:shadow-lg transition-all duration-300"
