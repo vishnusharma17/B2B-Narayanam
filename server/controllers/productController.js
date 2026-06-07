@@ -136,7 +136,7 @@ export const createProduct = async (req, res) => {
         mainImageFile.path,
         {
           folder: "narayanam/products",
-        },
+        }
       );
 
       mainImage = uploadResult.secure_url;
@@ -265,7 +265,7 @@ export const updateProduct = async (req, res) => {
       },
       {
         returnDocument: "after",
-      },
+      }
     );
 
     res.status(200).json({
@@ -430,7 +430,8 @@ export const getTrendingProducts = async (req, res) => {
       .sort({
         createdAt: -1,
       })
-      .limit(10);
+      .limit(8)
+      .lean();
 
     res.status(200).json({
       success: true,
@@ -514,7 +515,7 @@ export const updateProductViews = async (req, res) => {
       },
       {
         returnDocument: "after",
-      },
+      }
     );
 
     res.status(200).json({

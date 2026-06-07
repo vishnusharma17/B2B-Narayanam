@@ -2,13 +2,16 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  timeout: 10000,
 });
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("adminToken");
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("adminToken");
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   return config;

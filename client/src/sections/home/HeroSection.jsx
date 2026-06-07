@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 
 import {
@@ -21,6 +20,15 @@ export default function HeroSection() {
   const [current, setCurrent] =
     useState(0);
 
+
+    const optimizeImage = (url) => {
+  if (!url) return "";
+
+  return url.replace(
+    "/upload/",
+    "/upload/f_auto,q_auto,w_1920/"
+  );
+};
   // =========================
   // FETCH BANNERS
   // =========================
@@ -97,44 +105,7 @@ export default function HeroSection() {
   // =========================
 
   if (slides.length === 0) {
-    return (
-      <div
-        className="
-          h-[80vh]
-          flex
-          items-center
-          justify-center
-          bg-black
-        "
-      >
-        <div className="text-center">
-
-          <div
-            className="
-              w-14
-              h-14
-              border-4
-              border-[#D4AF37]
-              border-t-transparent
-              rounded-full
-              animate-spin
-              mx-auto
-              mb-5
-            "
-          />
-
-          <h2
-            className="
-              text-white
-              text-xl
-              sm:text-2xl
-            "
-          >
-            Loading Collection...
-          </h2>
-        </div>
-      </div>
-    );
+    return null
   }
 
   return (
@@ -174,19 +145,17 @@ export default function HeroSection() {
             >
 
               {/* IMAGE */}
-              <img
-                src={slide.image}
-                alt={
-                  slide.title ||
-                  "Banner"
-                }
-                className="
-                  w-full
-                  h-full
-                  object-cover
-                  object-top
-                "
-              />
+<img
+  src={optimizeImage(slide.image)}
+  alt={slide.title || "Banner"}
+  loading={index === 0 ? "eager" : "lazy"}
+  className="
+    w-full
+    h-full
+    object-cover
+    object-top
+  "
+/>
 
               {/* OVERLAY */}
               <div

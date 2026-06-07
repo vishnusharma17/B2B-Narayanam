@@ -1,14 +1,7 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import API from "../../lib/api";
-
-// Swiper Imports and Styles
-import "swiper/css";
-import "swiper/css/pagination";
-import { Autoplay, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function ProductSection() {
   const [products, setProducts] = useState([]);
@@ -30,19 +23,20 @@ export default function ProductSection() {
   };
 
   if (loading) {
-    return (
-      <section className="py-24 px-4 md:px-10 bg-[#F9F6F1] text-center">
-        <div className="inline-block w-8 h-8 border-4 border-[#7A1E1E] border-t-transparent rounded-full animate-spin mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-700">
-          Loading Products...
-        </h2>
-      </section>
-    );
+    return null;
   }
 
   if (products.length === 0) {
     return null;
   }
+  const optimizeImage = (url) => {
+  if (!url) return "";
+
+  return url.replace(
+    "/upload/",
+    "/upload/f_auto,q_auto,w_800/"
+  );
+};
 
   return (
     <section className="py-16 sm:py-24 px-3 sm:px-6 md:px-10 bg-[#F9F6F1]">
@@ -71,28 +65,19 @@ export default function ProductSection() {
           >
             {/* Product Image Container */}
             <div className="relative bg-[#fcfcfc] overflow-hidden aspect-[3/4] w-full">
-              <Swiper
-                modules={[Pagination, Autoplay]}
-                pagination={{ clickable: true }}
-                autoplay={{
-                  delay: 3500,
-                  disableOnInteraction: false,
-                }}
-                loop={true}
-                className="w-full h-full custom-product-swiper"
-              >
-                {[product.mainImage, ...(product.galleryImages || [])]
-                  .filter(Boolean)
-                  .map((img, index) => (
-                    <SwiperSlide key={index}>
-                      <img
-                        src={img}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                    </SwiperSlide>
-                  ))}
-              </Swiper>
+             <img
+  src={optimizeImage(product.mainImage)}
+  alt={product.name}
+  loading="lazy"
+  className="
+    w-full
+    h-full
+    object-cover
+    transition-transform
+    duration-700
+    group-hover:scale-105
+  "
+/>
 
               {/* Tag/Badge */}
               {(product.isBestSeller || product.isTrending) && (

@@ -35,13 +35,7 @@ export default function TrendingSection() {
 
   // Loading state
   if (loading) {
-    return (
-      <section className="py-12 sm:py-16 bg-white text-center">
-        <h2 className="text-lg sm:text-2xl font-semibold">
-          Loading Trending Products...
-        </h2>
-      </section>
-    );
+    return null;
   }
 
   // No products

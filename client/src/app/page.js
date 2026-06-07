@@ -13,40 +13,18 @@ export default function Home() {
     <>
       {/* Hero Banner */}
       <HeroSection />
-
-      {/* <ShopByRoleSection /> */}
-      {/* New Arrivals */}
       <CategorySection />
       <TrendingSection />
       <WhyChooseSection />
       <BestSellerSection />
       <LimitedStockSection />
-      {/* <ProductSection /> */}
-
-      {/* Trending Products */}
-
-      {/* Shop By Category */}
-
-      {/* Best Sellers */}
-
       {/* Most Viewed */}
       <MostViewedSection />
-
-      {/* <FashionStoriesSection /> */}
-      {/* <WardrobePickSection /> */}
-      {/* Why Choose Us */}
-
-      {/* Limited Stock / FOMO */}
-
       {/* Testimonials */}
       <TestimonialSection />
 
       {/* CTA Banner */}
       <CTASection />
-
-      {/* Newsletter */}
-      {/* <NewsletterSection /> */}
-      
     </>
   );
 }
