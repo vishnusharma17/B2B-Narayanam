@@ -163,30 +163,63 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* CONTACT INFO COLUMN */}
-          <div>
-            <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-5 text-white">
+          {/* CONTACT INFO COLUMN - UPDATED & ATTRACTIVE */}
+          <div className="space-y-4 sm:space-y-5">
+            <h3 className="text-base sm:text-lg font-semibold text-white tracking-wide relative pb-2 group">
               Contact Info
+              <span className="absolute bottom-0 left-0 w-10 h-[2px] bg-[#D4AF37] transition-all duration-300 group-hover:w-16"></span>
             </h3>
-            <div className="space-y-3.5 sm:space-y-4 text-gray-400">
-              <div className="flex gap-3 items-start">
-                <MapPin size={16} className="mt-0.5 text-[#D4AF37] shrink-0" />
-                <p className="leading-relaxed text-xs sm:text-sm">
-                  {footerData.address}
-                </p>
-              </div>
-              <div className="flex gap-3 items-center">
-                <Phone size={16} className="text-[#D4AF37] shrink-0" />
-                <p className="text-xs sm:text-sm break-all">
-                  {footerData.phone}
-                </p>
-              </div>
-              <div className="flex gap-3 items-center">
-                <Mail size={16} className="text-[#D4AF37] shrink-0" />
-                <p className="text-xs sm:text-sm break-all">
-                  {footerData.email}
-                </p>
-              </div>
+            
+            <div className="space-y-4 text-gray-400">
+              {/* ADDRESS */}
+              <a 
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(footerData.address)}`}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex gap-4 items-start group/item cursor-pointer hover:text-white transition-colors duration-300"
+              >
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#D4AF37] border border-white/5 group-hover/item:bg-[#D4AF37] group-hover/item:text-black transition-all duration-300 shrink-0 shadow-sm">
+                  <MapPin size={16} className="sm:size-[18px]" />
+                </div>
+                <div className="flex flex-col pt-0.5">
+                  <span className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-0.5">Our Showroom</span>
+                  <p className="leading-relaxed text-xs sm:text-sm">
+                    {footerData.address}
+                  </p>
+                </div>
+              </a>
+
+              {/* PHONE */}
+              <a 
+                href={`tel:${footerData.phone}`}
+                className="flex gap-4 items-center group/item cursor-pointer hover:text-white transition-colors duration-300"
+              >
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#D4AF37] border border-white/5 group-hover/item:bg-[#D4AF37] group-hover/item:text-black transition-all duration-300 shrink-0 shadow-sm">
+                  <Phone size={16} className="sm:size-[18px]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-0.5">Call / WhatsApp</span>
+                  <p className="text-xs sm:text-sm font-medium tracking-wide break-all">
+                    {footerData.phone}
+                  </p>
+                </div>
+              </a>
+
+              {/* EMAIL */}
+              <a 
+                href={`mailto:${footerData.email}`}
+                className="flex gap-4 items-center group/item cursor-pointer hover:text-white transition-colors duration-300"
+              >
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/5 flex items-center justify-center text-[#D4AF37] border border-white/5 group-hover/item:bg-[#D4AF37] group-hover/item:text-black transition-all duration-300 shrink-0 shadow-sm">
+                  <Mail size={16} className="sm:size-[18px]" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-0.5">Email Support</span>
+                  <p className="text-xs sm:text-sm font-medium tracking-wide break-all">
+                    {footerData.email}
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
 
