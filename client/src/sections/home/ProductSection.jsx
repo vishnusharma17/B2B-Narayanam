@@ -4,287 +4,185 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import API from "../../lib/api";
 
-export default function ProductSection() {
-  const [products, setProducts] =
-    useState([]);
+// Swiper Imports and Styles
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
-  const [loading, setLoading] =
-    useState(true);
+export default function ProductSection() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const fetchProducts =
-    async () => {
-      try {
-        const res =
-          await API.get(
-            "/products/featured"
-          );
-
-        setProducts(
-          res.data.data || []
-        );
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-      console.log("Products =>", res.data.data[0]);
-    };
+  const fetchProducts = async () => {
+    try {
+      const res = await API.get("/products/featured");
+      setProducts(res.data.data || []);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
       <section className="py-24 px-4 md:px-10 bg-[#F9F6F1] text-center">
-        <h2 className="text-2xl font-semibold">
+        <div className="inline-block w-8 h-8 border-4 border-[#7A1E1E] border-t-transparent rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-semibold text-gray-700">
           Loading Products...
         </h2>
       </section>
     );
   }
 
-  if (
-    products.length === 0
-  ) {
+  if (products.length === 0) {
     return null;
   }
 
   return (
-    <section className="py-20 sm:py-24 px-4 md:px-10 bg-[#F9F6F1]">
+    <section className="py-16 sm:py-24 px-3 sm:px-6 md:px-10 bg-[#F9F6F1]">
       
       {/* Heading */}
-      <div className="text-center mb-14 sm:mb-16">
-        
-        <p
-          className="
-            tracking-[4px]
-            sm:tracking-[6px]
-            text-xs
-            sm:text-sm
-            uppercase
-            text-[#7A1E1E]
-            mb-3
-            font-medium
-          "
-        >
+      <div className="text-center mb-10 sm:mb-16">
+        <p className="tracking-[3px] sm:tracking-[6px] text-[10px] sm:text-sm uppercase text-[#7A1E1E] mb-2 font-semibold">
           Premium Collection
         </p>
 
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#111]">
+        <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#111] tracking-tight">
           Featured Collection
         </h2>
 
-        <p className="mt-4 text-gray-600 max-w-2xl mx-auto leading-7 sm:leading-8 text-sm sm:text-base">
-          Explore our premium
-          ethnic collections
-          designed for
-          boutiques,
-          wholesalers and
-          fashion retailers.
+        <p className="mt-3 text-gray-600 max-w-2xl mx-auto leading-relaxed text-xs sm:text-base px-2">
+          Explore our premium ethnic collections designed for boutiques, wholesalers and fashion retailers.
         </p>
       </div>
 
-      {/* Product Grid */}
-      <div
-        className="
-          grid
-          grid-cols-2
-          md:grid-cols-3
-          lg:grid-cols-4
-          xl:grid-cols-5
-          gap-5
-          sm:gap-6
-        "
-      >
-        {products.map(
-          (product) => (
-            <div
-              key={
-                product._id
-              }
-              className="
-                bg-white
-                rounded-3xl
-                overflow-hidden
-                shadow-md
-                hover:shadow-2xl
-                transition-all
-                duration-500
-                hover:-translate-y-2
-                group
-              "
-            >
-              {/* Product Image */}
-            <div
-  className="
-    relative
-    bg-[#f5f5f5]
-    overflow-hidden
-    h-[260px]
-    sm:h-[320px]
-  "
->
-  <Swiper
-    modules={[Pagination, Autoplay]}
-    pagination={{ clickable: true }}
-    autoplay={{
-      delay: 3000,
-      disableOnInteraction: false,
-    }}
-    loop={true}
-    className="w-full h-full"
-  >
-    {[product.mainImage, ...(product.galleryImages || [])]
-      .filter(Boolean)
-      .map((img, index) => (
-        <SwiperSlide key={index}>
-          <img
-            src={img}
-            alt={product.name}
-            className="
-              w-full
-              h-full
-              object-contain
-              p-4
-              transition-transform
-              duration-700
-              group-hover:scale-[1.03]
-            "
-          />
-        </SwiperSlide>
-      ))}
-  </Swiper>
+      {/* Product Grid - Optimized for Mobile (2 Columns with smaller gap) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6">
+        {products.map((product) => (
+          <div
+            key={product._id}
+            className="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between border border-gray-100 group"
+          >
+            {/* Product Image Container */}
+            <div className="relative bg-[#fcfcfc] overflow-hidden aspect-[3/4] w-full">
+              <Swiper
+                modules={[Pagination, Autoplay]}
+                pagination={{ clickable: true }}
+                autoplay={{
+                  delay: 3500,
+                  disableOnInteraction: false,
+                }}
+                loop={true}
+                className="w-full h-full custom-product-swiper"
+              >
+                {[product.mainImage, ...(product.galleryImages || [])]
+                  .filter(Boolean)
+                  .map((img, index) => (
+                    <SwiperSlide key={index}>
+                      <img
+                        src={img}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </SwiperSlide>
+                  ))}
+              </Swiper>
 
-  {(product.isBestSeller || product.isTrending) && (
-    <span
-      className="
-        absolute
-        top-3
-        left-3
-        z-10
-        bg-[#D4AF37]
-        text-black
-        px-3
-        py-1
-        rounded-full
-        text-xs
-        font-semibold
-      "
-    >
-      {product.isBestSeller ? "Best Seller" : "Trending"}
-    </span>
-  )}
-</div>
+              {/* Tag/Badge */}
+              {(product.isBestSeller || product.isTrending) && (
+                <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-[#D4AF37] text-black px-2 sm:px-3 py-0.5 sm:py-1 rounded-md sm:rounded-full text-[9px] sm:text-xs font-bold tracking-wider uppercase shadow-sm">
+                  {product.isBestSeller ? "Best Seller" : "Trending"}
+                </span>
+              )}
+            </div>
 
-              {/* Product Info */}
-              <div className="p-4 sm:p-5">
-                
-                <h3
-                  className="
-                    text-lg
-                    sm:text-xl
-                    font-semibold
-                    text-[#111]
-                    line-clamp-1
-                  "
-                >
+            {/* Product Info */}
+            <div className="p-3 sm:p-5 flex flex-col flex-grow justify-between">
+              <div>
+                <h3 className="text-sm sm:text-lg font-medium sm:font-semibold text-[#111] line-clamp-1 group-hover:text-[#7A1E1E] transition-colors duration-300">
                   {product.name}
                 </h3>
 
-                {/* Price */}
-                <div className="mt-3 flex items-center gap-3 flex-wrap">
-                  
-                  <p className="text-lg font-semibold text-black">
-                    ₹
-                    {
-                      product.price_min
-                    }
+                {/* Price Matrix */}
+                <div className="mt-1.5 sm:mt-2 flex items-baseline gap-1.5 sm:gap-2 flex-wrap">
+                  <p className="text-base sm:text-xl font-bold text-black">
+                    ₹{product.price_min}
                   </p>
-
                   {product.original_price && (
-                    <p className="text-sm text-gray-400 line-through">
-                      ₹
-                      {
-                        product.original_price
-                      }
+                    <p className="text-[11px] sm:text-sm text-gray-400 line-through font-light">
+                      ₹{product.original_price}
                     </p>
                   )}
                 </div>
 
-                {/* MOQ */}
-                <p className="mt-2 text-sm text-gray-500">
-                  MOQ:{" "}
-                  {
-                    product.moq
-                  }{" "}
-                  pieces
-                </p>
-
-                {/* Stock */}
-                <p className="mt-1 text-sm">
-                  {product.stock >
-                  0 ? (
-                    <span className="text-green-600">
-                      In Stock
-                    </span>
-                  ) : (
-                    <span className="text-red-500">
-                      Out of Stock
-                    </span>
-                  )}
-                </p>
-
-                {/* Button */}
-                <Link
-                  href={`/product/${product.slug}`}
-                >
-                  <button
-                    className="
-                      mt-5
-                      w-full
-                      bg-[#7A1E1E]
-                      text-white
-                      py-3
-                      rounded-full
-                      hover:bg-black
-                      transition
-                      duration-300
-                      text-sm
-                      sm:text-base
-                    "
-                  >
-                    View Product
-                  </button>
-                </Link>
+                {/* Meta details wrapper for modern neat look */}
+                <div className="mt-2 pt-2 border-t border-gray-50 space-y-0.5 text-[11px] sm:text-sm">
+                  <p className="text-gray-500 flex justify-between">
+                    <span>MOQ:</span>
+                    <span className="font-medium text-gray-800">{product.moq} pcs</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>Status:</span>
+                    {product.stock > 0 ? (
+                      <span className="text-green-600 font-medium">In Stock</span>
+                    ) : (
+                      <span className="text-red-500 font-medium">Out of Stock</span>
+                    )}
+                  </p>
+                </div>
               </div>
+
+              {/* Action Button */}
+              <Link href={`/product/${product.slug}`} className="block mt-4">
+                <button className="w-full bg-[#7A1E1E] hover:bg-black text-white py-2.5 sm:py-3 rounded-xl sm:rounded-full transition duration-300 text-xs sm:text-sm font-medium tracking-wide active:scale-[0.98] transform">
+                  View Details
+                </button>
+              </Link>
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
 
-      {/* View All */}
-      <div className="text-center mt-12 sm:mt-14">
-        
+      {/* View All Button */}
+      <div className="text-center mt-10 sm:mt-14">
         <Link href="/products">
-          <button
-            className="
-              border
-              border-black
-              px-8
-              py-3
-              rounded-full
-              hover:bg-black
-              hover:text-white
-              transition
-              duration-300
-            "
-          >
-            View Full
-            Collection
+          <button className="border border-black text-black px-8 py-2.5 sm:py-3 rounded-full hover:bg-black hover:text-white transition duration-300 text-sm font-medium tracking-wide">
+            View Full Collection
           </button>
         </Link>
       </div>
+
+      {/* Global override stylesheet to style Swiper bullets beautifully on mobile */}
+      <style jsx global>{`
+        .custom-product-swiper .swiper-pagination-bullet {
+          width: 5px;
+          height: 5px;
+          background: #000;
+          opacity: 0.2;
+        }
+        .custom-product-swiper .swiper-pagination-bullet-active {
+          background: #7A1E1E;
+          opacity: 1;
+          width: 14px;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+        }
+        @media (min-width: 640px) {
+          .custom-product-swiper .swiper-pagination-bullet {
+            width: 6px;
+            height: 6px;
+          }
+          .custom-product-swiper .swiper-pagination-bullet-active {
+            width: 18px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
