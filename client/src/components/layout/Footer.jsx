@@ -257,7 +257,7 @@ export default function Footer() {
             {footerData.copyrightText}
           </p>
           <div className="flex flex-wrap justify-center gap-4 sm:gap-5 text-[11px] sm:text-xs text-gray-500 order-1 sm:order-2">
-            <Link href="/privacy-policy" className="hover:text-[#D4AF37] transition-all duration-300">
+            <Link href="/privacy" className="hover:text-[#D4AF37] transition-all duration-300">
               Privacy Policy
             </Link>
             <Link href="/terms" className="hover:text-[#D4AF37] transition-all duration-300">
