@@ -56,8 +56,7 @@ export default function ProductDetailPage() {
 
       const productData = res.data.data;
 
-      await API.put(`/products/views/${productData._id}`);
-
+      // Product turant show karo
       setProduct(productData);
 
       setSelectedImage(productData.mainImage || "/placeholder-product.jpg");
@@ -66,28 +65,39 @@ export default function ProductDetailPage() {
         setSelectedColor(productData.colors[0]);
       }
 
+      // Loading yahin band
+      setLoading(false);
+
+      // Background me view count update
+      API.put(`/products/views/${productData._id}`).catch(() => {});
+
+      // Background me related products fetch
       const categoryId = productData.category?._id || productData.category;
 
-      const relatedRes = await API.get(`/products/related/${categoryId}`);
+      try {
+        const relatedRes = await API.get(`/products/related/${categoryId}`);
 
-      let filtered = (relatedRes.data.data || []).filter(
-        (item) => item._id !== productData._id,
-      );
+        let filtered = (relatedRes.data.data || []).filter(
+          (item) => item._id !== productData._id
+        );
 
-      if (filtered.length === 0) {
-        const allProducts = await API.get("/products");
+        if (filtered.length === 0) {
+          const allProducts = await API.get("/products");
 
-        filtered = (allProducts.data.data || [])
-          .filter((item) => item._id !== productData._id)
-          .slice(0, 4);
+          filtered = (allProducts.data.data || [])
+            .filter((item) => item._id !== productData._id)
+            .slice(0, 4);
+        }
+
+        setRelatedProducts(filtered.slice(0, 4));
+      } catch (err) {
+        console.log(err);
       }
-
-      setRelatedProducts(filtered.slice(0, 4));
     } catch (error) {
       console.log(error);
 
       toast.error("Failed to load product");
-    } finally {
+
       setLoading(false);
     }
   };
@@ -187,7 +197,7 @@ export default function ProductDetailPage() {
     }
 
     router.push(
-      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`,
+      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`
     );
   };
 

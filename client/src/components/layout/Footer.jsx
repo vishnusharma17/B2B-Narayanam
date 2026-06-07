@@ -182,7 +182,7 @@ export default function Footer() {
                   <MapPin size={16} className="sm:size-[18px]" />
                 </div>
                 <div className="flex flex-col pt-0.5">
-                  <span className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-0.5">Our Showroom</span>
+                  <span className="text-[11px] uppercase tracking-wider text-gray-500 font-medium mb-0.5">Our Office </span>
                   <p className="leading-relaxed text-xs sm:text-sm">
                     {footerData.address}
                   </p>
