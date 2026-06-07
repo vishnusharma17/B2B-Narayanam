@@ -1,5 +1,4 @@
-import PolicyPage from "../components/PolicyPage";
-
+import PolicyPage from "@/components/PolicyPage";
 export default function PrivacyPolicy() {
   const sections = [
     {
