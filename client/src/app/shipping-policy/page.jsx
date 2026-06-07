@@ -1,6 +1,6 @@
 import PolicyPage from "@/components/PolicyPage";
 
-export default function ShippingPolicy() {
+export default function Page() {
   return (
     <PolicyPage/>
   );
