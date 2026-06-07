@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
             </h2>
             <p className="text-gray-600 leading-8">
               We maintain appropriate security measures to protect your data
-              from unauthorized access or disclosure.
+              from unauthorized access or disclosures.
             </p>
           </div>
         </div>
