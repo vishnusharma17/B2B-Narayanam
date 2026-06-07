@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
           <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-6"></div>
 
           <p className="text-gray-500 mt-5">
-            Your privacy and data security matter to us.
+            Your privacy and data security matter to Us.
           </p>
         </div>
 
