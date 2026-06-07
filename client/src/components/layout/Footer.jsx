@@ -55,13 +55,13 @@ export default function Footer() {
     }
   };
 
-  // if (!footerData) {
-  //   return (
-  //     <div className="bg-yellow-500 text-white p-6 text-center font-semibold text-sm sm:text-base">
-  //       FOOTER DATA NOT FOUND
-  //     </div>
-  //   );
-  // }
+  if (!footerData) {
+    return (
+      <div className="bg-yellow-500 text-white p-6 text-center font-semibold text-sm sm:text-base">
+        FOOTER DATA NOT FOUND
+      </div>
+    );
+  }
 
   return (
     <footer className="relative bg-black text-white overflow-hidden border-t border-white/10">
