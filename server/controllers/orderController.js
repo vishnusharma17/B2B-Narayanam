@@ -51,6 +51,7 @@ export const createOrder = async (req, res) => {
 
       await item.product.save();
     }
+    console.log("ORDER CREATED:");
 
     // CUSTOMER EMAIL
     try {
@@ -68,7 +69,10 @@ Order Status: ${order.status}
 Thank you for shopping with Narayanam ❤️
         `,
       });
+      console.log("ADMIN EMAIL SENT");
     } catch (emailError) {
+      console.log(emailError);
+
       console.log("Customer email failed:", emailError.message);
     }
 
@@ -182,7 +186,7 @@ export const requestReturn = async (req, res) => {
     }
 
     const days = Math.floor(
-      (new Date() - new Date(order.deliveredAt)) / (1000 * 60 * 60 * 24),
+      (new Date() - new Date(order.deliveredAt)) / (1000 * 60 * 60 * 24)
     );
 
     if (days > 3) {
