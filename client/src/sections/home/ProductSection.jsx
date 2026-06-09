@@ -29,12 +29,17 @@ export default function ProductSection() {
   if (products.length === 0) {
     return null;
   }
-  const optimizeImage = (url) => {
+
+const optimizeImage = (url, width = 800) => {
   if (!url) return "";
+
+  if (!url.includes("/upload/")) {
+    return url;
+  }
 
   return url.replace(
     "/upload/",
-    "/upload/f_auto,q_auto,w_800/"
+    `/upload/f_auto,q_auto,w_${width}/`
   );
 };
 
@@ -65,10 +70,11 @@ export default function ProductSection() {
           >
             {/* Product Image Container */}
             <div className="relative bg-[#fcfcfc] overflow-hidden aspect-[3/4] w-full">
-             <img
-  src={optimizeImage(product.mainImage)}
+<img
+  src={optimizeImage(product.mainImage, 800)}
   alt={product.name}
   loading="lazy"
+  decoding="async"
   className="
     w-full
     h-full

@@ -9,7 +9,7 @@ import API from "../../lib/api";
 
 export default function BestSellerSection() {
   const [products, setProducts] =
-    useState([]);
+    useState(() => []);
 
   const [loading, setLoading] =
     useState(true);

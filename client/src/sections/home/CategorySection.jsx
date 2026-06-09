@@ -8,6 +8,19 @@ export default function CategorySection() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
+const optimizeImage = (url, width = 800) => {
+  if (!url) return "";
+
+  if (!url.includes("/upload/")) {
+    return url;
+  }
+
+  return url.replace(
+    "/upload/",
+    `/upload/f_auto,q_auto,dpr_auto,w_${width}/`
+  );
+};
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -16,7 +29,7 @@ export default function CategorySection() {
     try {
       const res = await API.get("/categories");
 
-      setCategories(res.data.data || []);
+      setCategories(res.data.data || [].slice(0, 6));
     } catch (error) {
       console.log(error);
     } finally {
@@ -76,19 +89,23 @@ export default function CategorySection() {
 
                 {/* Image */}
                 {item.image ? (
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                      object-center
-                      group-hover:scale-105
-                      transition
-                      duration-500
-                    "
-                  />
+                 <img
+  src={optimizeImage(item.image, 800)}
+  alt={item.name}
+  loading="lazy"
+  decoding="async"
+  fetchPriority="low"
+  className="
+    w-full
+    h-full
+    object-cover
+    object-center
+    transform-gpu
+    group-hover:scale-105
+    transition
+    duration-300
+  "
+/>
                 ) : (
                   <div className="w-full h-full bg-gray-200"></div>
                 )}

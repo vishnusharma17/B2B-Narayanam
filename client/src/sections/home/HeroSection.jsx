@@ -1,11 +1,9 @@
 "use client";
-import Link from "next/link";
-
 import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-
+import Link from "next/link";
 import {
   useEffect,
   useState,
@@ -21,14 +19,20 @@ export default function HeroSection() {
     useState(0);
 
 
-    const optimizeImage = (url) => {
+
+    const optimizeImage = (url, width = 1920) => {
   if (!url) return "";
+
+  if (!url.includes("/upload/")) {
+    return url;
+  }
 
   return url.replace(
     "/upload/",
-    "/upload/f_auto,q_auto,w_1920/"
+    `/upload/f_auto,q_auto,w_${width}/`
   );
 };
+
   // =========================
   // FETCH BANNERS
   // =========================
@@ -105,7 +109,7 @@ export default function HeroSection() {
   // =========================
 
   if (slides.length === 0) {
-    return null
+    return null;
   }
 
   return (
@@ -146,15 +150,11 @@ export default function HeroSection() {
 
               {/* IMAGE */}
 <img
-  src={optimizeImage(slide.image)}
+  src={optimizeImage(slide.image, 1920)}
   alt={slide.title || "Banner"}
   loading={index === 0 ? "eager" : "lazy"}
-  className="
-    w-full
-    h-full
-    object-cover
-    object-top
-  "
+  fetchPriority={index === 0 ? "high" : "low"}
+  className="w-full h-full object-cover object-top"
 />
 
               {/* OVERLAY */}

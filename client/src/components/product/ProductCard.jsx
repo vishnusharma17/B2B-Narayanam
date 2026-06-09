@@ -1,19 +1,25 @@
 "use client";
-
 import { Heart, ShoppingBag } from "lucide-react";
-
 import Link from "next/link";
-
-import { useEffect, useState } from "react";
-
+import { memo } from "react";
 import toast from "react-hot-toast";
 
 import API from "../../lib/api";
+ const optimizeImage = (url, width = 700) => {
+  if (!url) return "";
 
-export default function ProductCard({ product }) {
-  const [hovered, setHovered] = useState(false);
+  if (!url.includes("/upload/")) {
+    return url;
+  }
 
-  const [currentImage, setCurrentImage] = useState(0);
+  return url.replace(
+    "/upload/",
+    `/upload/f_auto,q_auto,w_${width}/`
+  );
+};
+function ProductCard({ product }) {
+  
+const image = optimizeImage(product.mainImage, 700);
 
   const displayPrice =
     product.price_min > 0
@@ -22,29 +28,13 @@ export default function ProductCard({ product }) {
       ? product.price_max
       : null;
 
+
+
+
   // ALL IMAGES
-  const images = [
-    product.mainImage,
-    ...(product.galleryImages || []),
-  ].filter(Boolean);
 
   // AUTO SLIDER
-  useEffect(() => {
-    if (!hovered) {
-      setCurrentImage(0);
-      return;
-    }
 
-    if (images.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setCurrentImage((prev) =>
-        prev === images.length - 1 ? 0 : prev + 1,
-      );
-    }, 1500);
-
-    return () => clearInterval(interval);
-  }, [hovered, images.length]);
 
   // WISHLIST
   const handleWishlist = async (e) => {
@@ -121,65 +111,41 @@ export default function ProductCard({ product }) {
           border
           border-[#f1ece4]
         "
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
+        
       >
         {/* IMAGE SECTION */}
         <div className="relative bg-[#faf7f2] overflow-hidden">
           {/* IMAGE SLIDER */}
-          <div
-            className="
-              relative
-              w-full
-              h-[260px]
-              sm:h-[320px]
-              md:h-[360px]
-              lg:h-[400px]
-              xl:h-[430px]
-              overflow-hidden
-            "
-          >
-            <div
-              className="
-                flex
-                h-full
-                transition-transform
-                duration-700
-                ease-in-out
-              "
-              style={{
-                width: `${images.length * 100}%`,
-                transform: `translateX(-${
-                  currentImage * (100 / images.length)
-                }%)`,
-              }}
-            >
-              {images.map((img, index) => (
-                <div
-                  key={index}
-                  className="h-full flex-shrink-0"
-                  style={{
-                    width: `${100 / images.length}%`,
-                  }}
-                >
-                  <img
-                    src={img}
-                    alt={product.name}
-                    className="
-                      w-full
-                      h-full
-                      object-contain
-                      p-4
-                      transition-transform
-                      duration-700
-                      group-hover:scale-[1.03]
-                    "
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
+        
+<div
+  className="
+    relative
+    w-full
+    h-[260px]
+    sm:h-[320px]
+    md:h-[360px]
+    lg:h-[400px]
+    xl:h-[430px]
+    overflow-hidden
+  "
+>
+  <img
+  src={image}
+  alt={product.name}
+  loading="lazy"
+  decoding="async"
+  fetchPriority="low"
+  className="
+    w-full
+    h-full
+    object-contain
+    p-4
+    transition-transform
+    duration-700
+    group-hover:scale-[1.03]
+  "
+/>
+</div>
           {/* DISCOUNT */}
           {product.discount_percentage > 0 && (
             <div
@@ -202,50 +168,25 @@ export default function ProductCard({ product }) {
           )}
 
           {/* SLIDER DOTS */}
-          {images.length > 1 && (
-            <div
-              className="
-                absolute
-                bottom-4
-                left-1/2
-                -translate-x-1/2
-                flex
-                gap-2
-                z-20
-              "
-            >
-              {images.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    currentImage === index
-                      ? "w-6 bg-black"
-                      : "w-2 bg-black/30"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
 
           {/* HOVER BUTTONS */}
           <div
-            className={`
-              absolute
-              top-20
-              right-6
-              flex
-              flex-col
-              gap-3
-              z-30
-              transition-all
-              duration-500
-              ${
-                hovered
-                  ? "opacity-100 translate-x-0"
-                  : "opacity-0 translate-x-4"
-              }
-            `}
-          >
+  className="
+    absolute
+    top-20
+    right-6
+    flex
+    flex-col
+    gap-3
+    z-30
+    opacity-0
+    translate-x-4
+    group-hover:opacity-100
+    group-hover:translate-x-0
+    transition-all
+    duration-500
+  "
+>
             {/* WISHLIST */}
             <button
               onClick={handleWishlist}
@@ -375,3 +316,4 @@ export default function ProductCard({ product }) {
     </Link>
   );
 }
+export default memo(ProductCard);
