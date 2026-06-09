@@ -13,7 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import API from "../../lib/api";
-
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 export default function MyOrdersPage() {
   const [orders, setOrders] = useState([]);
 
@@ -30,7 +30,7 @@ export default function MyOrdersPage() {
       const res = await API.get("/orders");
 
       const myOrders = res.data.data.filter(
-        (order) => order.email === user.email,
+        (order) => order.email === user.email
       );
 
       setOrders(myOrders);
@@ -132,7 +132,7 @@ export default function MyOrdersPage() {
                   <div className="flex flex-col items-end gap-2">
                     <span
                       className={`px-4 py-2 rounded-full text-sm ${getStatusColor(
-                        order.status,
+                        order.status
                       )}`}
                     >
                       {order.status}

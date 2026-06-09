@@ -95,7 +95,7 @@ function CheckoutContent() {
         const res = await API.get("/products");
 
         const product = (res.data.data || []).find(
-          (item) => item._id === productId,
+          (item) => item._id === productId
         );
 
         if (product) {
@@ -151,7 +151,7 @@ function CheckoutContent() {
 
   const totalAmount = products.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0,
+    0
   );
 
   // =========================
@@ -203,7 +203,7 @@ ${selectedAddress.pincode}
 
         toast.success("Order placed successfully");
 
-        router.push("/my-orders");
+        router.push("/order-success");
 
         return;
       }
@@ -242,7 +242,7 @@ ${selectedAddress.pincode}
 
               toast.success("Payment successful & order placed");
 
-              router.push("/my-orders");
+              router.push("/order-success");
             } catch (error) {
               console.log(error);
 
