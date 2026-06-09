@@ -72,52 +72,6 @@ export const createOrder = async (req, res) => {
       await item.product.save();
     }
     console.log("ORDER CREATED:");
-
-    // CUSTOMER EMAIL
-    try {
-      await sendEmail({
-        to: order.email,
-        subject: "Order Confirmation - Narayanam",
-        text: `
-Hello ${order.customerName},
-
-Your order has been placed successfully.
-
-Order Amount: ₹${order.totalAmount}
-Order Status: ${order.status}
-
-Thank you for shopping with Narayanam ❤️
-        `,
-      });
-      console.log("ADMIN EMAIL SENT");
-    } catch (emailError) {
-      console.log(emailError);
-
-      console.log("Customer email failed:", emailError.message);
-    }
-
-    // ADMIN EMAIL
-    try {
-      await sendEmail({
-        to: process.env.EMAIL_USER,
-        subject: "New Order Received - Narayanam",
-        text: `
-New Order Received
-
-Customer: ${order.customerName}
-Email: ${order.email}
-Amount: ₹${order.totalAmount}
-        `,
-      });
-    } catch (emailError) {
-      console.log("Admin email failed:", emailError.message);
-    }
-
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      data: order,
-    });
   } catch (error) {
     console.log("Create Order Error:", error);
 
