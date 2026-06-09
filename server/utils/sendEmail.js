@@ -12,6 +12,9 @@ export const sendEmail = async ({ to, subject, text }) => {
       },
     });
 
+    await transporter.verify();
+    console.log("SMTP Connected");
+
     // 👇 Yaha add kar
     await transporter.verify();
     console.log("SMTP Connected");
