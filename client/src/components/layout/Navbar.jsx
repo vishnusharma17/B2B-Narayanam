@@ -4,12 +4,11 @@ export const dynamic = "force-dynamic";
 
 import {
   Heart,
-  LogOut,
   Menu,
   Search,
   ShoppingBag,
   User,
-  X,
+  X
 } from "lucide-react";
 
 import Link from "next/link";
@@ -357,7 +356,7 @@ export default function Navbar() {
                     />
                   </Link>
 
-                  <button
+                  {/* <button
                     onClick={
                       handleLogout
                     }
@@ -366,7 +365,7 @@ export default function Navbar() {
                     <LogOut
                       size={20}
                     />
-                  </button>
+                  </button> */}
                 </div>
               ) : (
                 <div className="flex gap-4 uppercase tracking-[2px] text-sm">

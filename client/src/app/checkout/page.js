@@ -267,8 +267,9 @@ ${selectedAddress.pincode}
       }
     } catch (error) {
       console.log("CHECKOUT ERROR:", error);
+      console.log("RESPONSE", error.response?.data);
 
-      toast.error("Checkout failed");
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
