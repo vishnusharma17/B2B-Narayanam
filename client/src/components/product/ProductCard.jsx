@@ -29,13 +29,6 @@ const image = optimizeImage(product.mainImage, 700);
       : null;
 
 
-
-
-  // ALL IMAGES
-
-  // AUTO SLIDER
-
-
   // WISHLIST
   const handleWishlist = async (e) => {
     e.preventDefault();
@@ -103,8 +96,9 @@ const image = optimizeImage(product.mainImage, 700);
           overflow-hidden
           transition-all
           duration-500
-          hover:shadow-2xl
-          hover:-translate-y-1
+          hover:shadow-lg
+          hover:-translate-y-0.5
+          duration-300
           h-full
           flex
           flex-col
@@ -142,6 +136,7 @@ const image = optimizeImage(product.mainImage, 700);
     p-4
     transition-transform
     duration-700
+    transform-gpu
     group-hover:scale-[1.03]
   "
 />
@@ -166,8 +161,6 @@ const image = optimizeImage(product.mainImage, 700);
               {product.discount_percentage}% OFF
             </div>
           )}
-
-          {/* SLIDER DOTS */}
 
           {/* HOVER BUTTONS */}
           <div

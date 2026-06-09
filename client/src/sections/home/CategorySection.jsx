@@ -37,15 +37,7 @@ const optimizeImage = (url, width = 800) => {
     }
   };
 
-  if (loading) {
-    return (
-      <section className="py-12 sm:py-16 bg-white text-center">
-        <h2 className="text-lg sm:text-2xl font-semibold">
-          Loading Categories...
-        </h2>
-      </section>
-    );
-  }
+  if (loading) return null;
 
   if (categories.length === 0) {
     return null;

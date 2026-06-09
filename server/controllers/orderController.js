@@ -35,7 +35,28 @@ export const createOrder = async (req, res) => {
     }
 
     // STEP 2 → Create order
+    // Order create
     const order = await Order.create(req.body);
+
+    // FRONTEND KO TURANT RESPONSE
+    res.status(201).json({
+      success: true,
+      message: "Order placed successfully",
+      data: order,
+    });
+
+    // Email background me
+    sendEmail({
+      to: order.email,
+      subject: "Order Confirmation",
+      text: "Order placed successfully",
+    }).catch((err) => console.log(err));
+
+    sendEmail({
+      to: process.env.EMAIL_USER,
+      subject: "New Order Received",
+      text: `New order received from ${order.customerName}`,
+    }).catch((err) => console.log(err));
 
     // STEP 3 → Clear cart only if session exists
     if (sessionId) {
