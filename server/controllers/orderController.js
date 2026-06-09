@@ -1,7 +1,6 @@
 import Cart from "../models/cartModel.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
-import { sendEmail } from "../utils/sendEmail.js";
 
 // CREATE ORDER
 export const createOrder = async (req, res) => {
@@ -54,44 +53,44 @@ export const createOrder = async (req, res) => {
     console.log("ORDER CREATED:");
 
     // CUSTOMER EMAIL
-    try {
-      await sendEmail({
-        to: order.email,
-        subject: "Order Confirmation - Narayanam",
-        text: `
-Hello ${order.customerName},
+    //     try {
+    //       await sendEmail({
+    //         to: order.email,
+    //         subject: "Order Confirmation - Narayanam",
+    //         text: `
+    // Hello ${order.customerName},
 
-Your order has been placed successfully.
+    // Your order has been placed successfully.
 
-Order Amount: ₹${order.totalAmount}
-Order Status: ${order.status}
+    // Order Amount: ₹${order.totalAmount}
+    // Order Status: ${order.status}
 
-Thank you for shopping with Narayanam ❤️
-        `,
-      });
-      console.log("ADMIN EMAIL SENT");
-    } catch (emailError) {
-      console.log(emailError);
+    // Thank you for shopping with Narayanam ❤️
+    //         `,
+    //       });
+    //       console.log("ADMIN EMAIL SENT");
+    //     } catch (emailError) {
+    //       console.log(emailError);
 
-      console.log("Customer email failed:", emailError.message);
-    }
+    //       console.log("Customer email failed:", emailError.message);
+    //     }
 
     // ADMIN EMAIL
-    try {
-      await sendEmail({
-        to: process.env.EMAIL_USER,
-        subject: "New Order Received - Narayanam",
-        text: `
-New Order Received
+    //     try {
+    //       await sendEmail({
+    //         to: process.env.EMAIL_USER,
+    //         subject: "New Order Received - Narayanam",
+    //         text: `
+    // New Order Received
 
-Customer: ${order.customerName}
-Email: ${order.email}
-Amount: ₹${order.totalAmount}
-        `,
-      });
-    } catch (emailError) {
-      console.log("Admin email failed:", emailError.message);
-    }
+    // Customer: ${order.customerName}
+    // Email: ${order.email}
+    // Amount: ₹${order.totalAmount}
+    //         `,
+    //       });
+    //     } catch (emailError) {
+    //       console.log("Admin email failed:", emailError.message);
+    //     }
 
     res.status(201).json({
       success: true,
