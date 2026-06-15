@@ -12,16 +12,15 @@ export const sendEmail = async ({ to, subject, text }) => {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
+      family: 4, // force IPv4
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
-      debug: true,
-      logger: true,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
-
-    await transporter.verify();
-    console.log("SMTP Connected");
 
     const info = await transporter.sendMail({
       from: `"Narayanam" <${process.env.EMAIL_USER}>`,
