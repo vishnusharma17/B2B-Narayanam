@@ -401,6 +401,8 @@ ${selectedAddress.pincode}
   );
 }
 
+const token = localStorage.getItem("userToken");
+console.log("TOKEN =>", token);
 // =========================
 // SUSPENSE WRAPPER
 // =========================
