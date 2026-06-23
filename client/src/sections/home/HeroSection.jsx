@@ -260,7 +260,8 @@ src={
                 flex
                 flex-col
                 sm:flex-row
-                gap-4
+                gap-3
+                items-start
               "
             >
 
@@ -274,18 +275,20 @@ src={
               >
                 <button
                   className="
-                    w-full
-                    sm:w-auto
+                    w-auto
                     bg-[#D4AF37]
                     hover:bg-white
                     transition-all
                     duration-300
                     text-black
-                    px-8
-                    py-4
+                    px-5
+                    sm:px-8
+                    py-2.5
+                    sm:py-4
                     rounded-full
                     font-semibold
-                    hover:scale-105
+                    text-sm
+                    sm:text-base
                   "
                 >
                   Shop Collection
@@ -296,8 +299,7 @@ src={
               <Link href="/contact">
                 <button
                   className="
-                    w-full
-                    sm:w-auto
+                    w-auto
                     border
                     border-white/20
                     bg-white/10
@@ -306,10 +308,14 @@ src={
                     hover:text-black
                     transition-all
                     duration-300
-                    px-8
-                    py-4
+                    px-5
+                    sm:px-8
+                    py-2.5
+                    sm:py-4
                     rounded-full
                     font-medium
+                    text-sm
+                    sm:text-base
                   "
                 >
                   Bulk Inquiry
