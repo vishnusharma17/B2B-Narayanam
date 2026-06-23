@@ -150,7 +150,7 @@ export default function HeroSection() {
   alt={slide.title || "Banner"}
   loading={index === 0 ? "eager" : "lazy"}
   fetchPriority={index === 0 ? "high" : "low"}
-  className="w-full h-full object-cover object-top"
+  className="w-full h-full object-cover object-center"
 />
 
               {/* OVERLAY */}
