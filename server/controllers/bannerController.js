@@ -37,7 +37,8 @@ export const createBanner = async (req, res) => {
       title: req.body.title,
       subtitle: req.body.subtitle,
       link: req.body.link,
-      image: imageUrl,
+      desktopImage,
+      mobileImage,
     });
 
     res.status(201).json({

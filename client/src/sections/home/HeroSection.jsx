@@ -146,7 +146,14 @@ export default function HeroSection() {
 
               {/* IMAGE */}
 <img
-  src={optimizeImage(slide.image, 1920)}
+src={
+  optimizeImage(
+    window.innerWidth < 768
+      ? slide.mobileImage
+      : slide.desktopImage,
+    window.innerWidth < 768 ? 768 : 1920
+  )
+}
   alt={slide.title || "Banner"}
   loading={index === 0 ? "eager" : "lazy"}
   fetchPriority={index === 0 ? "high" : "low"}
