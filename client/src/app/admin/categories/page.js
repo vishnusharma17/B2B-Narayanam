@@ -50,10 +50,6 @@ export default function AdminCategoriesPage() {
         formData.append("mobileImage", mobileImage);
       }
 
-      if (image) {
-        formData.append("image", image);
-      }
-
       await API.post("/categories", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -126,7 +122,8 @@ export default function AdminCategoriesPage() {
             required
           />
 
-          {/* Image */}
+          {/*desktop Image */}
+          <p className="mb-2 font-medium">Desktop Banner (1920x900)</p>
           <input
             type="file"
             accept="image/*"
@@ -145,6 +142,9 @@ export default function AdminCategoriesPage() {
             placeholder="Upload Desktop Image"
             label="Upload Desktop Image"
           />
+
+          {/* mobile image */}
+          <p className="mb-2 font-medium">Mobile Banner (800x1200)</p>
           <input
             type="file"
             accept="image/*"
