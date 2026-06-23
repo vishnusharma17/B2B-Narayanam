@@ -9,7 +9,8 @@ export default function AdminCategoriesPage() {
 
   const [name, setName] = useState("");
 
-  const [image, setImage] = useState(null);
+  const [desktopImage, setDesktopImage] = useState(null);
+  const [mobileImage, setMobileImage] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -41,6 +42,14 @@ export default function AdminCategoriesPage() {
 
       formData.append("name", name);
 
+      if (desktopImage) {
+        formData.append("desktopImage", desktopImage);
+      }
+
+      if (mobileImage) {
+        formData.append("mobileImage", mobileImage);
+      }
+
       if (image) {
         formData.append("image", image);
       }
@@ -54,7 +63,8 @@ export default function AdminCategoriesPage() {
       toast.success("Category Added");
 
       setName("");
-      setImage(null);
+      setDesktopImage(null);
+      setMobileImage(null);
 
       fetchCategories();
     } catch (error) {
@@ -128,7 +138,21 @@ export default function AdminCategoriesPage() {
               text-sm
               sm:text-base
             "
-            onChange={(e) => setImage(e.target.files[0])}
+            onChange={(e) => setDesktopImage(e.target.files[0])}
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            className="
+              border
+              p-3
+              rounded-xl
+              outline-none
+              text-sm
+              sm:text-base
+            "
+            onChange={(e) => setMobileImage(e.target.files[0])}
             required
           />
 
@@ -169,7 +193,7 @@ export default function AdminCategoriesPage() {
               {/* Image */}
               <div className="h-[150px] sm:h-[220px] bg-[#f5f5f5] overflow-hidden">
                 <img
-                  src={category.image}
+                  src={category.desktopImage}
                   alt={category.name}
                   className="
                       w-full

@@ -1,4 +1,3 @@
-import fs from "fs";
 import cloudinary from "../config/cloudinary.js";
 import Category from "../models/CategoryModel.js";
 const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
@@ -53,24 +52,36 @@ export const createCategory = async (req, res) => {
       .replace(/[^a-z0-9\s-]/g, "")
       .replace(/\s+/g, "-");
 
-    let imageUrl = "";
+    let desktopImage = "";
+    let mobileImage = "";
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "narayanam/categories",
-      });
+    if (req.files?.desktopImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.desktopImage[0].path,
+        {
+          folder: "narayanam/categories",
+        },
+      );
 
-      imageUrl = result.secure_url;
+      desktopImage = result.secure_url;
+    }
 
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
+    if (req.files?.mobileImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.mobileImage[0].path,
+        {
+          folder: "narayanam/categories",
+        },
+      );
+
+      mobileImage = result.secure_url;
     }
 
     const category = await Category.create({
       name,
       slug,
-      image: imageUrl,
+      desktopImage,
+      mobileImage,
     });
 
     res.status(201).json({
@@ -105,18 +116,27 @@ export const updateCategory = async (req, res) => {
         .replace(/\s+/g, "-");
     }
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "narayanam/categories",
-      });
+    if (req.files?.desktopImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.desktopImage[0].path,
+        {
+          folder: "narayanam/categories",
+        },
+      );
 
-      updatedData.image = result.secure_url;
-
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
+      updatedData.desktopImage = result.secure_url;
     }
 
+    if (req.files?.mobileImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.mobileImage[0].path,
+        {
+          folder: "narayanam/categories",
+        },
+      );
+
+      updatedData.mobileImage = result.secure_url;
+    }
     const category = await Category.findByIdAndUpdate(
       req.params.id,
       updatedData,

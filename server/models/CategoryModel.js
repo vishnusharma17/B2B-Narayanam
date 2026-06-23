@@ -14,7 +14,12 @@ const categorySchema = new mongoose.Schema(
       unique: true,
     },
 
-    image: {
+    desktopImage: {
+      type: String,
+      default: "",
+    },
+
+    mobileImage: {
       type: String,
       default: "",
     },

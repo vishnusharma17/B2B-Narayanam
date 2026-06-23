@@ -29,7 +29,7 @@ const optimizeImage = (url, width = 800) => {
     try {
       const res = await API.get("/categories");
 
-      setCategories(res.data.data || [].slice(0, 6));
+      setCategories((res.data.data || []).slice(0, 6));
     } catch (error) {
       console.log(error);
     } finally {
@@ -80,27 +80,34 @@ const optimizeImage = (url, width = 800) => {
               >
 
                 {/* Image */}
-                {item.image ? (
-                 <img
-  src={optimizeImage(item.image, 800)}
-  alt={item.name}
-  loading="lazy"
-  decoding="async"
-  fetchPriority="low"
-  className="
-    w-full
-    h-full
-    object-cover
-    object-center
-    transform-gpu
-    group-hover:scale-105
-    transition
-    duration-300
-  "
-/>
-                ) : (
-                  <div className="w-full h-full bg-gray-200"></div>
-                )}
+               {(item.desktopImage || item.mobileImage) ? (
+  <picture>
+    <source
+      media="(max-width:768px)"
+      srcSet={optimizeImage(item.mobileImage, 800)}
+    />
+
+    <img
+      src={optimizeImage(item.desktopImage, 1200)}
+      alt={item.name}
+      loading="lazy"
+      decoding="async"
+      fetchPriority="low"
+      className="
+        w-full
+        h-full
+        object-cover
+        object-center
+        transform-gpu
+        group-hover:scale-105
+        transition
+        duration-300
+      "
+    />
+  </picture>
+) : (
+  <div className="w-full h-full bg-gray-200"></div>
+)}
 
                 {/* Overlay */}
                 <div

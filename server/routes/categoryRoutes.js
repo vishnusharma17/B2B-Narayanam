@@ -15,10 +15,24 @@ const router = express.Router();
 router.get("/", getCategories);
 
 // CREATE CATEGORY
-router.post("/", upload.single("image"), createCategory);
+router.post(
+  "/",
+  upload.fields([
+    { name: "desktopImage", maxCount: 1 },
+    { name: "mobileImage", maxCount: 1 },
+  ]),
+  createCategory,
+);
 
 // UPDATE CATEGORY
-router.put("/:id", upload.single("image"), updateCategory);
+router.put(
+  "/:id",
+  upload.fields([
+    { name: "desktopImage", maxCount: 1 },
+    { name: "mobileImage", maxCount: 1 },
+  ]),
+  updateCategory,
+);
 
 // DELETE CATEGORY
 router.delete("/:id", deleteCategory);
