@@ -142,6 +142,7 @@ export default function AdminCategoriesPage() {
             required
             name="desktopImage"
             id="desktopImage"
+            placeholder="Upload Desktop Image"
             label="Upload Desktop Image"
           />
           <input
@@ -159,6 +160,7 @@ export default function AdminCategoriesPage() {
             name="mobileImage"
             id="mobileImage"
             label="Upload Mobile Image"
+            placeholder="Upload Mobile Image"
             required
           />
 
