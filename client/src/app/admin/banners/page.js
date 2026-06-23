@@ -612,7 +612,7 @@ export default function AdminBannersPage() {
                   "
               >
                 <img
-                  src={banner.image}
+                  src={banner.desktopImage}
                   alt={banner.title}
                   className="
                       w-full
