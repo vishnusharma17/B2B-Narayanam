@@ -1,4 +1,3 @@
-import fs from "fs";
 import cloudinary from "../config/cloudinary.js";
 import Banner from "../models/Banner.js";
 const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
@@ -7,20 +6,31 @@ const BASE_URL = process.env.BASE_URL || "http://localhost:5004";
 export const createBanner = async (req, res) => {
   try {
     console.log("BODY =>", req.body);
-    console.log("FILE =>", req.file);
+    console.log("FILE =>", req.files);
 
-    let imageUrl = "";
+    let desktopImage = "";
+    let mobileImage = "";
 
-    if (req.file) {
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "narayanam/banners",
-      });
+    if (req.files?.desktopImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.desktopImage[0].path,
+        {
+          folder: "narayanam/banners",
+        }
+      );
 
-      imageUrl = result.secure_url;
+      desktopImage = result.secure_url;
+    }
 
-      if (fs.existsSync(req.file.path)) {
-        fs.unlinkSync(req.file.path);
-      }
+    if (req.files?.mobileImage?.[0]) {
+      const result = await cloudinary.uploader.upload(
+        req.files.mobileImage[0].path,
+        {
+          folder: "narayanam/banners",
+        }
+      );
+
+      mobileImage = result.secure_url;
     }
 
     const banner = await Banner.create({

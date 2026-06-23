@@ -4,14 +4,15 @@ const bannerSchema = new mongoose.Schema(
   {
     title: String,
     subtitle: String,
-    image: String,
+    desktopImage: String,
+    mobileImage: String,
     link: String,
     active: {
       type: Boolean,
       default: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Banner", bannerSchema);

@@ -16,12 +16,12 @@ export default function AdminBannersPage() {
   const [submitting, setSubmitting] = useState(false);
 
   const [preview, setPreview] = useState("");
-
   const [formData, setFormData] = useState({
     title: "",
     subtitle: "",
     link: "",
-    image: null,
+    desktopImage: null,
+    mobileImage: null,
   });
 
   useEffect(() => {
@@ -52,7 +52,7 @@ export default function AdminBannersPage() {
     e.preventDefault();
 
     try {
-      if (!formData.title || !formData.image) {
+      if (!formData.title || !formData.desktopImage || !formData.mobileImage) {
         return toast.error("Please fill required fields");
       }
 
@@ -66,7 +66,9 @@ export default function AdminBannersPage() {
 
       payload.append("link", formData.link);
 
-      payload.append("image", formData.image);
+      payload.append("desktopImage", formData.desktopImage);
+
+      payload.append("mobileImage", formData.mobileImage);
 
       await API.post("/banners", payload);
 
@@ -76,7 +78,8 @@ export default function AdminBannersPage() {
         title: "",
         subtitle: "",
         link: "",
-        image: null,
+        desktopImage: null,
+        mobileImage: null,
       });
 
       setPreview("");
@@ -424,7 +427,7 @@ export default function AdminBannersPage() {
                   block
                 "
               >
-                Upload Banner Image
+                Upload Desktop Banner Image
               </label>
 
               <label
@@ -461,7 +464,7 @@ export default function AdminBannersPage() {
 
                     setFormData({
                       ...formData,
-                      image: file,
+                      desktopImage: file,
                     });
 
                     if (file) {
@@ -472,6 +475,62 @@ export default function AdminBannersPage() {
               </label>
             </div>
 
+            <div className="lg:col-span-2">
+              <label
+                className="
+                  text-sm
+                  font-medium
+                  mb-3
+                  block
+                "
+              >
+                Upload Mobile Banner Image
+              </label>
+
+              <label
+                className="
+                  border-2
+                  border-dashed
+                  border-gray-300
+                  hover:border-black
+                  transition
+                  rounded-3xl
+                  p-8
+                  flex
+                  flex-col
+                  justify-center
+                  items-center
+                  cursor-pointer
+                  bg-[#fafafa]
+                "
+              >
+                <ImageIcon size={42} className="text-gray-400 mb-4" />
+
+                <p className="font-medium">Click to upload image</p>
+
+                <p className="text-gray-500 text-sm mt-2 text-center">
+                  Recommended size: 800x1200
+                </p>
+
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+
+                    setFormData({
+                      ...formData,
+                      mobileImage: file,
+                    });
+
+                    if (file) {
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+              </label>
+            </div>
             {/* PREVIEW */}
             {preview && (
               <div className="lg:col-span-2">
