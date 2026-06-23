@@ -1,8 +1,4 @@
 "use client";
-import {
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
 import Link from "next/link";
 import {
   useEffect,
@@ -318,7 +314,7 @@ export default function HeroSection() {
       </div>
 
       {/* LEFT ARROW */}
-      <button
+      {/* <button
         onClick={prevSlide}
         className="
           absolute
@@ -348,10 +344,10 @@ export default function HeroSection() {
         <ChevronLeft
           size={22}
         />
-      </button>
+      </button> */}
 
       {/* RIGHT ARROW */}
-      <button
+      {/* <button
         onClick={nextSlide}
         className="
           absolute
@@ -381,7 +377,7 @@ export default function HeroSection() {
         <ChevronRight
           size={22}
         />
-      </button>
+      </button> */}
 
       {/* DOTS */}
       <div
