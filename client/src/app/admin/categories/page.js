@@ -140,6 +140,9 @@ export default function AdminCategoriesPage() {
             "
             onChange={(e) => setDesktopImage(e.target.files[0])}
             required
+            name="desktopImage"
+            id="desktopImage"
+            label="Upload Desktop Image"
           />
           <input
             type="file"
@@ -153,6 +156,9 @@ export default function AdminCategoriesPage() {
               sm:text-base
             "
             onChange={(e) => setMobileImage(e.target.files[0])}
+            name="mobileImage"
+            id="mobileImage"
+            label="Upload Mobile Image"
             required
           />
 
