@@ -313,7 +313,28 @@ export default function WishlistPage() {
                   <div key={item._id} className="relative group">
                     <ProductCard product={item.productId} />
 
-                    <button onClick={() => removeWishlist(item._id)}>✕</button>
+                    <button
+                      onClick={() => removeWishlist(item._id)}
+                      className="
+    absolute
+    top-3
+    right-3
+    z-50
+    w-9
+    h-9
+    rounded-full
+    bg-red-500
+    hover:bg-red-600
+    text-white
+    flex
+    items-center
+    justify-center
+    shadow-lg
+    transition-all
+  "
+                    >
+                      ✕
+                    </button>
                   </div>
                 ))}
             </div>
