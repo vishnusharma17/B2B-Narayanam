@@ -4,6 +4,17 @@ const enquirySchema = new mongoose.Schema(
   {
     name: String,
     phone: String,
+    email: String,
+
+    companyName: String,
+
+    city: String,
+
+    inquiryType: String,
+
+    budget: String,
+
+    preferredContact: String,
     product_id: String,
     quantity: Number,
     message: String,

@@ -186,6 +186,7 @@ export default function AdminEnquiriesPage() {
                 {enquiries.length}
               </h2>
             </div>
+            
           </div>
         </div>
 
@@ -301,7 +302,31 @@ export default function AdminEnquiriesPage() {
                         </h2>
                       </div>
                     </div>
+                    <div className="flex gap-2 mt-2">
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          item.status === "new"
+                            ? "bg-blue-100 text-blue-700"
+                            : item.status === "contacted"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-green-100 text-green-700"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
 
+                      <span
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          item.priority === "high"
+                            ? "bg-red-100 text-red-700"
+                            : item.priority === "medium"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {item.priority}
+                      </span>
+                    </div>
                     {/* CONTACT INFO */}
                     <div
                       className="
@@ -409,6 +434,30 @@ export default function AdminEnquiriesPage() {
                         </div>
                       </div>
                     </div>
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Company</p>
+                        <h3 className="font-medium">
+                          {item.companyName || "-"}
+                        </h3>
+                      </div>
+
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">City</p>
+                        <h3 className="font-medium">{item.city || "-"}</h3>
+                      </div>
+
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Inquiry Type</p>
+                        <h3 className="font-medium">
+                          {item.inquiryType || "-"}
+                        </h3>
+                      </div>
+                    </div>
+                    <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                      <p className="text-xs text-gray-400">Budget</p>
+                      <h3 className="font-medium">{item.budget || "-"}</h3>
+                    </div>
 
                     {/* MESSAGE */}
                     <div
@@ -449,31 +498,104 @@ export default function AdminEnquiriesPage() {
                   {/* DELETE */}
                   <div
                     className="
-                        flex
-                        lg:block
+                        lg:w-[280px] shrink-0
                       "
                   >
-                    <button
-                      onClick={() => handleDelete(item._id)}
-                      className="
-                          bg-red-500
-                          hover:bg-red-600
-                          transition
-                          text-white
-                          px-5
-                          py-3
-                          rounded-2xl
-                          flex
-                          items-center
-                          justify-center
-                          gap-2
-                          w-full
-                          lg:w-auto
-                        "
+                    <select
+                      value={item.priority || "medium"}
+                      onChange={async (e) => {
+                        await API.put(`/enquiry/${item._id}`, {
+                          priority: e.target.value,
+                        });
+
+                        fetchEnquiries();
+                      }}
+                      className="border p-3 rounded-xl w-full mb-3"
                     >
-                      <Trash2 size={18} />
-                      Delete
-                    </button>
+                      <option value="low">Low</option>
+                      <option value="medium">Medium</option>
+                      <option value="high">High</option>
+                    </select>
+
+                    <select
+                      value={item.status}
+                      onChange={async (e) => {
+                        await API.put(`/enquiry/${item._id}`, {
+                          status: e.target.value,
+                        });
+
+                        fetchEnquiries();
+                      }}
+                      className="border p-3 rounded-xl w-full mb-3"
+                    >
+                      <option value="new">New</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="converted">Converted</option>
+                    </select>
+                    {/* ACTIONS */}
+                    <div className="flex flex-col gap-3 lg:w-[250px]">
+                      {/* ASSIGNED TO */}
+                      <input
+                        type="text"
+                        placeholder="Assigned To"
+                        defaultValue={item.assignedTo || ""}
+                        onBlur={async (e) => {
+                          await API.put(`/enquiry/${item._id}`, {
+                            assignedTo: e.target.value,
+                          });
+
+                          fetchEnquiries();
+                        }}
+                        className="
+      border
+      p-3
+      rounded-xl
+      w-full
+    "
+                      />
+
+                      {/* NOTES */}
+                      <textarea
+                        rows={4}
+                        placeholder="Internal Notes..."
+                        defaultValue={item.notes || ""}
+                        onBlur={async (e) => {
+                          await API.put(`/enquiry/${item._id}`, {
+                            notes: e.target.value,
+                          });
+
+                          fetchEnquiries();
+                        }}
+                        className="
+      border
+      p-3
+      rounded-xl
+      w-full
+    "
+                      />
+
+                      {/* DELETE */}
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="
+      bg-red-500
+      hover:bg-red-600
+      transition
+      text-white
+      px-5
+      py-3
+      rounded-2xl
+      flex
+      items-center
+      justify-center
+      gap-2
+      w-full
+    "
+                      >
+                        <Trash2 size={18} />
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

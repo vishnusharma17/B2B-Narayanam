@@ -2,7 +2,18 @@ import Enquiry from "../models/Enquiry.js";
 
 export const createEnquiry = async (req, res) => {
   try {
-    const { name, phone, product_id, quantity } = req.body;
+    const {
+      name,
+      phone,
+      email,
+      companyName,
+      city,
+      inquiryType,
+      product_id,
+      quantity,
+      budget,
+      preferredContact,
+    } = req.body;
 
     // ✅ validation start
     if (!name || name.length < 3) {
@@ -19,10 +30,16 @@ export const createEnquiry = async (req, res) => {
       });
     }
 
-    if (!product_id || !quantity) {
+    if (!inquiryType) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required",
+        message: "Inquiry type is required",
+      });
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid email address",
       });
     }
     // ✅ validation end

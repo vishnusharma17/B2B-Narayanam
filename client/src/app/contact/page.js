@@ -11,9 +11,15 @@ import API from "../../lib/api";
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
+    companyName: "",
+    email: "",
     phone: "",
-    quantity: "",
+    city: "",
+    inquiryType: "",
     product_id: "",
+    quantity: "",
+    preferredContact: "",
+    budget: "",
     message: "",
   });
 
@@ -73,9 +79,15 @@ export default function ContactPage() {
 
       setFormData({
         name: "",
+        companyName: "",
+        email: "",
         phone: "",
-        quantity: "",
+        city: "",
+        inquiryType: "",
         product_id: "",
+        quantity: "",
+        preferredContact: "",
+        budget: "",
         message: "",
       });
     } catch (error) {
@@ -436,6 +448,33 @@ export default function ContactPage() {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+              <a
+                href={`https://wa.me/${contactData?.whatsapp}`}
+                target="_blank"
+                className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-lg transition"
+              >
+                <h3 className="font-semibold">WhatsApp</h3>
+                <p className="text-sm text-gray-500">Instant Response</p>
+              </a>
+
+              <a
+                href={`tel:${contactData?.phone}`}
+                className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-lg transition"
+              >
+                <h3 className="font-semibold">Call Us</h3>
+                <p className="text-sm text-gray-500">Business Support</p>
+              </a>
+
+              <a
+                href={`mailto:${contactData?.email}`}
+                className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-lg transition"
+              >
+                <h3 className="font-semibold">Email</h3>
+                <p className="text-sm text-gray-500">Sales Department</p>
+              </a>
+            </div>
+
             {/* WHATSAPP */}
             <a
               href={`https://wa.me/${contactData?.whatsapp}`}
@@ -578,6 +617,67 @@ export default function ContactPage() {
                     })
                   }
                 />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      email: e.target.value,
+                    })
+                  }
+                />
+                <input
+                  type="text"
+                  placeholder="Company / Boutique Name"
+                  value={formData.companyName}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      companyName: e.target.value,
+                    })
+                  }
+                />
+
+                <input
+                  type="text"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      city: e.target.value,
+                    })
+                  }
+                />
+
+                <select
+                  className="
+w-full
+border
+border-gray-200
+p-4
+rounded-2xl
+outline-none
+bg-white
+"
+                  value={formData.inquiryType}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      inquiryType: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select Inquiry Type</option>
+                  <option value="Wholesale">Wholesale Inquiry</option>
+                  <option value="Bulk">Bulk Order</option>
+                  <option value="Pricing">Pricing & MOQ</option>
+                  <option value="Custom">Custom Design</option>
+                  <option value="Partnership">Retail Partnership</option>
+                  <option value="Support">Support</option>
+                </select>
 
                 {/* PRODUCT */}
                 <select
@@ -636,6 +736,54 @@ export default function ContactPage() {
                   }
                 />
 
+                <select
+                  className="
+w-full
+border
+border-gray-200
+p-4
+rounded-2xl
+outline-none
+bg-white
+"
+                  value={formData.budget}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      budget: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Budget Range</option>
+                  <option value="10000-50000">₹10k - ₹50k</option>
+                  <option value="50000-100000">₹50k - ₹1L</option>
+                  <option value="100000-500000">₹1L - ₹5L</option>
+                  <option value="500000+">₹5L+</option>
+                </select>
+
+                <select
+                  className="
+w-full
+border
+border-gray-200
+p-4
+rounded-2xl
+outline-none
+bg-white
+"
+                  value={formData.preferredContact}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      preferredContact: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Preferred Contact</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="call">Phone Call</option>
+                  <option value="email">Email</option>
+                </select>
                 {/* MESSAGE */}
                 <textarea
                   rows="5"
@@ -691,6 +839,32 @@ export default function ContactPage() {
                   {submitting ? "Submitting..." : "Submit Enquiry"}
                 </button>
               </form>
+              <div className="mt-16">
+                <h2 className="text-3xl font-light mb-6">
+                  Frequently Asked Questions
+                </h2>
+
+                <div className="space-y-4">
+                  <details className="bg-white p-5 rounded-2xl">
+                    <summary>What is minimum order quantity?</summary>
+                    <p className="mt-3 text-gray-600">
+                      MOQ depends on product category.
+                    </p>
+                  </details>
+
+                  <details className="bg-white p-5 rounded-2xl">
+                    <summary>Do you provide catalogue?</summary>
+                    <p className="mt-3 text-gray-600">
+                      Yes, after enquiry submission.
+                    </p>
+                  </details>
+
+                  <details className="bg-white p-5 rounded-2xl">
+                    <summary>Do you offer custom manufacturing?</summary>
+                    <p className="mt-3 text-gray-600">Yes, for bulk orders.</p>
+                  </details>
+                </div>
+              </div>
             </div>
           </div>
         </div>
