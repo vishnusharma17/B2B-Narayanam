@@ -44,7 +44,11 @@ export const createEnquiry = async (req, res) => {
     }
     // ✅ validation end
 
-    const enquiry = await Enquiry.create(req.body);
+    const enquiry = await Enquiry.find(filter)
+      .populate("product_id", "name slug")
+      .sort({
+        createdAt: -1,
+      });
 
     res.status(201).json({
       success: true,

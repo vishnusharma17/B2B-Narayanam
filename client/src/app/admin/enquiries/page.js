@@ -440,7 +440,13 @@ export default function AdminEnquiriesPage() {
                           {item.companyName || "-"}
                         </h3>
                       </div>
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Product</p>
 
+                        <h3 className="font-medium">
+                          {item.product_id?.name || "-"}
+                        </h3>
+                      </div>
                       <div className="bg-[#F8F3EC] p-4 rounded-2xl">
                         <p className="text-xs text-gray-400">City</p>
                         <h3 className="font-medium">{item.city || "-"}</h3>

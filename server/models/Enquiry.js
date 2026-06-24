@@ -15,7 +15,10 @@ const enquirySchema = new mongoose.Schema(
     budget: String,
 
     preferredContact: String,
-    product_id: String,
+    product_id:{
+type:mongoose.Schema.Types.ObjectId,
+ref:"product"
+    },
     quantity: Number,
     message: String,
 
