@@ -1,31 +1,22 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SplashScreen from "../components/SplashScreen";
-import API from "../lib/api";
 
 export default function LoaderProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+
   useEffect(() => {
-    const startTime = Date.now();
+    const timer = setTimeout(() => {
+      setLoading(false);
 
-    const init = async () => {
-      try {
-        await API.get("/health");
-      } catch (err) {
-        console.log(err);
-      }
+      router.push("/");
+    }, 4000);
 
-      const elapsed = Date.now() - startTime;
-      const remaining = Math.max(4000 - elapsed, 0);
-
-      setTimeout(() => {
-        setLoading(false);
-      }, remaining);
-    };
-
-    init();
+    return () => clearTimeout(timer);
   }, []);
 
   if (loading) {
