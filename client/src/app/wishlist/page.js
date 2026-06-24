@@ -333,7 +333,7 @@ export default function WishlistPage() {
     transition-all
   "
                     >
-                      Remove
+                      X
                     </button>
                   </div>
                 ))}
