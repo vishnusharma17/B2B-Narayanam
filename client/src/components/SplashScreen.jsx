@@ -1,54 +1,128 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function SplashScreen() {
+export default function SplashScreen({ onComplete }) {
   const [mounted, setMounted] = useState(false);
+  const [exiting, setExiting] = useState(false);
+  const containerRef = useRef(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+
+    const handleMouseMove = (e) => {
+      if (!containerRef.current) return;
+      const { clientX, clientY } = e;
+      const { width, height } = containerRef.current.getBoundingClientRect();
+      setMousePos({ x: (clientX / width) * 100, y: (clientY / height) * 100 });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    
+    // Optional automatic trigger for demo purposes if no prop passed
+    const timer = setTimeout(() => {
+      if (onComplete) {
+        setExiting(true);
+        setTimeout(onComplete, 1000); // Wait for fade-out anim
+      }
+    }, 4500);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      clearTimeout(timer);
+    };
+  }, [onComplete]);
+
+  const brandName = "NARAYANAM";
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-cream overflow-hidden select-none">
-      
-      {/* LUXURY AMBIENT GLOWS (Slow moving background light) */}
-      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-gold/10 blur-[150px] rounded-full pointer-events-none animate-[pulse_6s_ease-in-out_infinite]" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-primary/5 blur-[130px] rounded-full pointer-events-none animate-[pulse_8s_ease-in-out_infinite]" />
-      
-      {/* VIGNETTE OVERLAY (Gives depth like fine paper/fabric) */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_30%,rgba(122,30,30,0.03))] pointer-events-none" />
+    <div 
+      ref={containerRef}
+      className={`fixed inset-0 z-[99999] flex items-center justify-center bg-cream overflow-hidden select-none transition-all duration-[1000ms] cubic-bezier(0.76, 0, 0.24, 1) ${
+        exiting ? "opacity-0 scale-105 pointer-events-none" : "opacity-100 scale-100"
+      }`}
+    >
+      {/* 1. SEAMLESS ROYAL ARCHITECTURAL GRID */}
+      <div className="absolute inset-0 flex justify-between pointer-events-none opacity-[0.03] px-8 sm:px-20">
+        <div className="w-[1px] h-full bg-primary" />
+        <div className="w-[1px] h-full bg-primary hidden md:block" />
+        <div className="w-[1px] h-full bg-primary hidden md:block" />
+        <div className="w-[1px] h-full bg-primary" />
+      </div>
+      <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-[0.03] py-12 sm:py-24">
+        <div className="h-[1px] w-full bg-primary" />
+        <div className="h-[1px] w-full bg-primary" />
+      </div>
 
-      {/* CONTENT CONTAINER */}
+      {/* 2. DYNAMIC CURSOR PATTERNING & INTELLIGENT LIGHTING */}
       <div 
-        className={`text-center z-10 px-8 transition-all duration-[1200ms] cubic-bezier(0.25, 1, 0.5, 1) transform ${
-          mounted ? "opacity-100 scale-100" : "opacity-0 scale-[0.97]"
-        }`}
-      >
-        {/* BRAND ICON / EMBLEM AREA */}
-        <div className="mb-8 flex justify-center">
-          <div className="relative w-12 h-12 flex items-center justify-center">
-            {/* Minimalist fine-line geometric diamond acting as a premium structural anchor */}
-            <div className="absolute inset-0 border border-gold/30 rotate-45 animate-[spin_20s_linear_infinite]" />
-            <div className="absolute inset-2 border border-primary/20 -rotate-45 animate-[spin_15s_linear_infinite]" />
-            <div className="w-1.5 h-1.5 bg-gold rounded-full" />
+        className="absolute w-[800px] h-[800px] rounded-full pointer-events-none bg-gold/5 blur-[160px] transition-all duration-[1500ms] ease-out hidden md:block"
+        style={{
+          left: `${mousePos.x}%`,
+          top: `${mousePos.y}%`,
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+      {/* Ambient Breathing Glows */}
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-primary/[0.02] blur-[150px] rounded-full pointer-events-none animate-[pulse_10s_ease-in-out_infinite]" />
+      <div className="absolute bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-gold/10 blur-[150px] rounded-full pointer-events-none animate-[pulse_8s_ease-in-out_infinite]" />
+
+      {/* 3. BACKGROUND ROYAL KINETIC MOTIF */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02] mix-blend-multiply scale-110 sm:scale-100">
+        <svg className="w-[650px] h-[650px] animate-[spin_180s_linear_infinite]" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+          <circle cx="100" cy="100" r="85" strokeWidth="0.15" strokeDasharray="3,3" className="text-primary"/>
+          <circle cx="100" cy="100" r="65" strokeWidth="0.1" className="text-gold"/>
+          <path d="M100 0 L100 200 M0 100 L200 100" strokeWidth="0.08" className="text-primary"/>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <polygon 
+              key={i} 
+              points="100,35 138,100 100,165 62,100" 
+              strokeWidth="0.08" 
+              className="text-primary"
+              transform={`rotate(${i * 30} 100 100)`}
+            />
+          ))}
+        </svg>
+      </div>
+
+      {/* 4. MAIN EMBLEM & TYPOGRAPHY SYSTEM */}
+      <div className="text-center z-10 px-8 relative">
+        
+        {/* HAUTE COUTURE LOGO ANCHOR */}
+        <div className="mb-14 flex justify-center">
+          <div className="relative w-24 h-24 flex items-center justify-center scale-90 sm:scale-100">
+            <div className="absolute inset-0 border-[0.5px] border-gold/30 rounded-full animate-[spin_50s_linear_infinite]" />
+            <div className="absolute inset-2 border-[0.5px] border-primary/10 rotate-45 animate-[spin_30s_linear_infinite]" />
+            <div className="absolute inset-4 border-[0.5px] border-gold/20 -rotate-45 animate-[spin_15s_linear_infinite]" />
+            <div className="w-1.5 h-1.5 bg-gradient-to-tr from-gold via-[#F6E0A4] to-[#B68D40] rounded-full shadow-[0_0_15px_rgba(212,175,55,0.6)] animate-pulse" />
           </div>
         </div>
 
-        {/* BRAND TITLE (Cinematic tracking expansion) */}
-        <h1 
-          className={`font-serif text-4xl sm:text-5xl font-extralight uppercase text-primary transition-all duration-[1600ms] delay-300 ${
-            mounted ? "tracking-[0.5em] pr-[-0.5em]" : "tracking-[0.2em] pr-[-0.2em]"
-          }`}
-          style={{ fontStyle: 'normal' }}
-        >
-          Narayanam
-        </h1>
+        {/* METALLIC MOVEMENT CINEMATIC TEXT */}
+        <div className="overflow-hidden py-3">
+          <h1 className="text-4xl sm:text-6xl font-light tracking-[0.55em] uppercase flex justify-center items-center pl-[0.55em] transition-all duration-1000">
+            {brandName.split("").map((letter, index) => (
+              <span
+                key={index}
+                className={`inline-block text-transparent bg-clip-text bg-gradient-to-b from-primary via-primary/95 to-primary/80 transition-all duration-[1800ms] cubic-bezier(0.16, 1, 0.3, 1) transform ${
+                  mounted ? "opacity-100 translate-y-0 filter blur-0" : "opacity-0 translate-y-12 filter blur-md"
+                }`}
+                style={{
+                  transitionDelay: `${index * 45}ms`,
+                  fontFamily: "var(--font-serif, serif)",
+                }}
+              >
+                {letter}
+              </span>
+            ))}
+          </h1>
+        </div>
 
-        {/* SUBTITLE */}
-        <div className="overflow-hidden mt-4">
+        {/* PREMIUM GOLD LIQUID SUBTITLE */}
+        <div className="overflow-hidden mt-6">
           <p 
-            className={`text-gold tracking-[0.35em] uppercase text-[10px] sm:text-xs font-medium transition-all duration-1000 delay-700 transform ${
+            className={`tracking-[0.45em] uppercase text-[9px] sm:text-xs font-medium transition-all duration-[1400ms] delay-[900ms] transform bg-clip-text text-transparent bg-gradient-to-r from-[#B68D40] via-[#F4D068] to-[#B68D40] bg-[length:200%_auto] animate-shimmer-gold ${
               mounted ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
             }`}
           >
@@ -56,23 +130,36 @@ export default function SplashScreen() {
           </p>
         </div>
 
-        {/* ELEGANT "SILK THREAD" LOADER */}
-        <div className="mt-14 w-40 mx-auto relative">
-          {/* Main Track */}
-          <div className="h-[1px] w-full bg-primary/10 relative overflow-hidden">
-            {/* The Golden Thread */}
-            <div className="absolute top-0 left-0 h-full w-2/3 bg-gradient-to-r from-transparent via-gold to-transparent animate-premium-slide" />
+        {/* FINE HAIRLINE TIME PROGRESSION */}
+        <div className="mt-24 w-36 mx-auto relative">
+          <div className="h-[1px] w-full bg-primary/10 relative overflow-hidden rounded-full">
+            <div className="absolute top-0 left-0 h-full w-1/2 bg-gradient-to-r from-transparent via-gold to-transparent animate-premium-slide" />
           </div>
-          
-          {/* Subtle accent glow directly beneath the track */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[4px] w-12 bg-gold/20 blur-sm rounded-full animate-pulse" />
         </div>
 
-        {/* STATUS TEXT */}
-        <p className="mt-5 text-primary/40 text-[9px] sm:text-[10px] tracking-[0.25em] uppercase font-light animate-[pulse_2.5s_ease-in-out_infinite]">
-          Preparing your experience
+        {/* ATELIER SIGNATURE */}
+        <p className="mt-6 text-primary/25 text-[8px] sm:text-[9px] tracking-[0.45em] uppercase font-light font-sans">
+          Curation In Progress
         </p>
       </div>
+
+      {/* GLOBAL LUXURY STYLES */}
+      <style jsx global>{`
+        @keyframes premium-slide {
+          0% { transform: translateX(-200%); }
+          100% { transform: translateX(200%); }
+        }
+        @keyframes shimmer-gold {
+          0% { bg-position: 0% center; }
+          100% { bg-position: 200% center; }
+        }
+        .animate-premium-slide {
+          animation: premium-slide 3.2s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+        }
+        .animate-shimmer-gold {
+          animation: shimmer-gold 6s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
