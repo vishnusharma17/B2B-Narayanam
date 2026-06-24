@@ -44,18 +44,19 @@ export const createEnquiry = async (req, res) => {
     }
     // ✅ validation end
 
-    const enquiry = await Enquiry.find(filter)
-      .populate("product_id", "name slug")
-      .sort({
-        createdAt: -1,
-      });
+    const enquiry = await Enquiry.create(req.body);
 
     res.status(201).json({
       success: true,
       data: enquiry,
     });
   } catch (error) {
-    res.status(500).json({ success: false });
+    console.log("CREATE ENQUIRY ERROR =>", error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
