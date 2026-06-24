@@ -27,3 +27,13 @@ button {
 section {
   overflow: hidden;
 }
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-150%);
+  }
+
+  100% {
+    transform: translateX(150%);
+  }
+}

@@ -36,6 +36,17 @@ export default function SplashScreen() {
             />
           </div>
 
+<div className="mt-8 flex justify-center gap-2">
+  <span className="w-2 h-2 bg-[#D4AF37] rounded-full animate-bounce" />
+  <span
+    className="w-2 h-2 bg-[#D4AF37] rounded-full animate-bounce"
+    style={{ animationDelay: "0.2s" }}
+  />
+  <span
+    className="w-2 h-2 bg-[#D4AF37] rounded-full animate-bounce"
+    style={{ animationDelay: "0.4s" }}
+  />
+</div>
           {/* BRAND */}
           <h1
             className="
