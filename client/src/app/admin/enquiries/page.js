@@ -186,7 +186,6 @@ export default function AdminEnquiriesPage() {
                 {enquiries.length}
               </h2>
             </div>
-            
           </div>
         </div>
 
@@ -446,7 +445,12 @@ export default function AdminEnquiriesPage() {
                         <p className="text-xs text-gray-400">City</p>
                         <h3 className="font-medium">{item.city || "-"}</h3>
                       </div>
-
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Product ID</p>
+                        <h3 className="font-medium break-all">
+                          {item.product_id || "-"}
+                        </h3>
+                      </div>
                       <div className="bg-[#F8F3EC] p-4 rounded-2xl">
                         <p className="text-xs text-gray-400">Inquiry Type</p>
                         <h3 className="font-medium">
@@ -457,6 +461,41 @@ export default function AdminEnquiriesPage() {
                     <div className="bg-[#F8F3EC] p-4 rounded-2xl">
                       <p className="text-xs text-gray-400">Budget</p>
                       <h3 className="font-medium">{item.budget || "-"}</h3>
+                    </div>
+
+                    <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                      <p className="text-xs text-gray-400">Budget</p>
+                      <h3 className="font-medium">{item.budget || "-"}</h3>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">
+                          Preferred Contact
+                        </p>
+                        <h3 className="font-medium">
+                          {item.preferredContact || "-"}
+                        </h3>
+                      </div>
+
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Quantity</p>
+                        <h3 className="font-medium">{item.quantity || "-"}</h3>
+                      </div>
+
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Assigned To</p>
+                        <h3 className="font-medium">
+                          {item.assignedTo || "-"}
+                        </h3>
+                      </div>
+
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Created On</p>
+                        <h3 className="font-medium">
+                          {new Date(item.createdAt).toLocaleDateString()}
+                        </h3>
+                      </div>
                     </div>
 
                     {/* MESSAGE */}
@@ -495,6 +534,13 @@ export default function AdminEnquiriesPage() {
                     </div>
                   </div>
 
+                  {item.notes && (
+                    <div className="mt-4 bg-yellow-50 p-5 rounded-2xl border border-yellow-200">
+                      <p className="text-sm font-medium mb-2">Internal Notes</p>
+
+                      <p className="text-gray-700">{item.notes}</p>
+                    </div>
+                  )}
                   {/* DELETE */}
                   <div
                     className="
