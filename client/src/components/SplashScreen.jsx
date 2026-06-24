@@ -6,7 +6,6 @@ export default function SplashScreen({ onComplete }) {
   const [mounted, setMounted] = useState(false);
   const [exiting, setExiting] = useState(false);
   const containerRef = useRef(null);
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
 
   useEffect(() => {
     // 1. Inject styling directly for drop-in setup
@@ -35,13 +34,7 @@ export default function SplashScreen({ onComplete }) {
 
     setMounted(true);
 
-    const handleMouseMove = (e) => {
-      if (!containerRef.current) return;
-      const { clientX, clientY } = e;
-      const { width, height } = containerRef.current.getBoundingClientRect();
-      setMousePos({ x: (clientX / width) * 100, y: (clientY / height) * 100 });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
+   
 
     // Exact 3 Seconds exit trigger
     const exitTimer = setTimeout(() => {
@@ -54,7 +47,6 @@ export default function SplashScreen({ onComplete }) {
     }, 4000);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(exitTimer);
       clearTimeout(completeTimer);
     };
@@ -86,15 +78,24 @@ export default function SplashScreen({ onComplete }) {
       </div>
 
       {/* 2. DYNAMIC MOUSE LIGHTING (Desktop) & STANDALONE LIGHTING (Mobile) */}
-      <div 
-        className="absolute w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] rounded-full pointer-events-none blur-[100px] md:blur-[160px] transition-all duration-[1500ms] ease-out hidden md:block"
-        style={{
-          left: `${mousePos.x}%`,
-          top: `${mousePos.y}%`,
-          transform: "translate(-50%, -50%)",
-          backgroundColor: "rgba(212, 175, 55, 0.04)",
-        }}
-      />
+      <div
+  className="
+    absolute
+    top-1/2
+    left-1/2
+    -translate-x-1/2
+    -translate-y-1/2
+    w-[700px]
+    h-[700px]
+    rounded-full
+    blur-[180px]
+    animate-pulse
+  "
+  style={{
+    background:
+      "radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)",
+  }}
+/>
       
       {/* Adaptive Mobile Lighting Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] blur-[90px] rounded-full pointer-events-none md:hidden opacity-60" style={{ backgroundColor: "rgba(122, 30, 30, 0.03)" }} />
