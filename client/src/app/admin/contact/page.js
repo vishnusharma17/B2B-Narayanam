@@ -183,8 +183,8 @@ export default function AdminContactPage() {
 
             {/* INPUTS */}
             <div className="space-y-6">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   Hero Title
                 </label>
                 <input
@@ -193,12 +193,12 @@ export default function AdminContactPage() {
                   placeholder="The Headline Statement"
                   value={formData.heroTitle}
                   onChange={handleChange}
-                  className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none px-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
+                  className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none px-5 py-4 rounded-xl transition-all duration-200 font-medium text-neutral-800 text-sm placeholder-neutral-400 shadow-sm"
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   Hero Subtitle
                 </label>
                 <textarea
@@ -206,7 +206,7 @@ export default function AdminContactPage() {
                   placeholder="A brief editorial description..."
                   value={formData.heroSubtitle}
                   onChange={handleChange}
-                  className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none px-4 py-3 rounded-xl min-h-[110px] resize-none transition-all duration-200 text-neutral-600 leading-relaxed text-sm placeholder-neutral-400"
+                  className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none px-5 py-4 rounded-xl min-h-[120px] resize-none transition-all duration-200 text-neutral-600 leading-relaxed text-sm placeholder-neutral-400 shadow-sm"
                 />
               </div>
 
@@ -266,16 +266,16 @@ export default function AdminContactPage() {
             </div>
 
             {/* INPUTS GRID */}
-            <div className="grid sm:grid-cols-2 gap-5">
+            <div className="grid sm:grid-cols-2 gap-6">
               {/* PHONE */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   Primary Phone
                 </label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r-2 border-neutral-200 pr-3 transition-colors group-focus-within:border-[#7A1E1E]">
                     <Phone
-                      size={14}
+                      size={15}
                       className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
                     />
                   </div>
@@ -285,20 +285,20 @@ export default function AdminContactPage() {
                     placeholder="Line details"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
+                    className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none pl-14 pr-4 py-4 rounded-xl transition-all duration-200 text-neutral-800 font-medium text-sm placeholder-neutral-400 shadow-sm"
                   />
                 </div>
               </div>
 
               {/* EMAIL */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   Email Identity
                 </label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r-2 border-neutral-200 pr-3 transition-colors group-focus-within:border-[#7A1E1E]">
                     <Mail
-                      size={14}
+                      size={15}
                       className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
                     />
                   </div>
@@ -308,20 +308,20 @@ export default function AdminContactPage() {
                     placeholder="Concierge mail"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
+                    className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none pl-14 pr-4 py-4 rounded-xl transition-all duration-200 text-neutral-800 font-medium text-sm placeholder-neutral-400 shadow-sm"
                   />
                 </div>
               </div>
 
               {/* LOCATION / CITY */}
-              <div className="sm:col-span-2 space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="sm:col-span-2 space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   Boutique City / Location
                 </label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r-2 border-neutral-200 pr-3 transition-colors group-focus-within:border-[#7A1E1E]">
                     <MapPin
-                      size={14}
+                      size={15}
                       className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
                     />
                   </div>
@@ -331,20 +331,20 @@ export default function AdminContactPage() {
                     placeholder="Maison address, City, Country"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
+                    className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none pl-14 pr-4 py-4 rounded-xl transition-all duration-200 text-neutral-800 font-medium text-sm placeholder-neutral-400 shadow-sm"
                   />
                 </div>
               </div>
 
               {/* WHATSAPP */}
-              <div className="sm:col-span-2 space-y-2">
-                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
+              <div className="sm:col-span-2 space-y-3">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1 block">
                   WhatsApp Chatline
                 </label>
                 <div className="relative group">
-                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r-2 border-neutral-200 pr-3 transition-colors group-focus-within:border-[#7A1E1E]">
                     <MessageCircle
-                      size={14}
+                      size={15}
                       className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
                     />
                   </div>
@@ -354,7 +354,7 @@ export default function AdminContactPage() {
                     placeholder="Direct wave linkage"
                     value={formData.whatsapp}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
+                    className="w-full border-2 border-neutral-200/80 focus:border-[#7A1E1E] focus:ring-4 focus:ring-[#7A1E1E]/5 bg-white outline-none pl-14 pr-4 py-4 rounded-xl transition-all duration-200 text-neutral-800 font-medium text-sm placeholder-neutral-400 shadow-sm"
                   />
                 </div>
               </div>
