@@ -8,21 +8,24 @@ export default function LoaderProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkBackend = async () => {
+    const startTime = Date.now();
+
+    const init = async () => {
       try {
         await API.get("/health");
-
-        setTimeout(() => {
-          setLoading(false);
-        }, 1500);
-      } catch (error) {
-        console.log(error);
-
-        setTimeout(checkBackend, 2000);
+      } catch (err) {
+        console.log(err);
       }
+
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(4000 - elapsed, 0);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, remaining);
     };
 
-    checkBackend();
+    init();
   }, []);
 
   if (loading) {

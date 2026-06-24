@@ -26,11 +26,7 @@ export default function SplashScreen() {
         {/* BRAND LOGO */}
         <div className="mb-10 relative group">
           <div className="absolute inset-0 bg-[#D4AF37]/20 blur-md rounded-full scale-75 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <img
-            src="/logo.png"
-            alt="Narayanam"
-            className="w-24 sm:w-32 mx-auto object-contain relative animate-[pulse_3s_ease-in-out_infinite]"
-          />
+
         </div>
 
         {/* BRAND TITLE */}

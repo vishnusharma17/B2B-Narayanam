@@ -13,6 +13,7 @@ import Navbar from "../components/layout/Navbar";
 import "./globals.css";
 
 import LoaderProvider from "./LoaderProvider";
+
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
