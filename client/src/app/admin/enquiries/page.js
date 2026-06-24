@@ -463,6 +463,12 @@ export default function AdminEnquiriesPage() {
                           {item.inquiryType || "-"}
                         </h3>
                       </div>
+                      <div className="bg-[#F8F3EC] p-4 rounded-2xl">
+                        <p className="text-xs text-gray-400">Product</p>
+                        <h3 className="font-medium">
+                          {item.productName || "-"}
+                        </h3>
+                      </div>
                     </div>
                     <div className="bg-[#F8F3EC] p-4 rounded-2xl">
                       <p className="text-xs text-gray-400">Budget</p>

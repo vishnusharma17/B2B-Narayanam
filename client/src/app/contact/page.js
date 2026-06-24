@@ -55,13 +55,17 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const selectedProduct = products.find((p) => p._id === formData.product_id);
     if (!formData.name || !formData.phone) {
       return toast.error("Please fill required fields");
     }
 
     try {
       setSubmitting(true);
-      await API.post("/enquiry", formData);
+      await API.post("/enquiry", {
+        ...formData,
+        productName: selectedProduct?.name || "",
+      });
       toast.success("Enquiry Submitted Successfully");
       setFormData({
         name: "",
