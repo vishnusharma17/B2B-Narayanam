@@ -163,9 +163,9 @@ export default function AdminContactPage() {
         </div>
 
         {/* MAIN LAYOUT GRID */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* HERO SECTION CARD */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-neutral-100/40 space-y-8">
+          <div className="bg-white rounded-[32px] p-6 sm:p-10 shadow-sm border border-neutral-100/60 space-y-8">
             {/* SECTION HEADER */}
             <div className="flex items-center gap-4 border-b border-neutral-100 pb-5">
               <div className="w-10 h-10 rounded-xl bg-[#7A1E1E]/5 flex items-center justify-center text-[#7A1E1E] shrink-0">
@@ -183,8 +183,8 @@ export default function AdminContactPage() {
 
             {/* INPUTS */}
             <div className="space-y-6">
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   Hero Title
                 </label>
                 <input
@@ -193,12 +193,12 @@ export default function AdminContactPage() {
                   placeholder="The Headline Statement"
                   value={formData.heroTitle}
                   onChange={handleChange}
-                  className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none py-3 transition-colors bg-transparent font-medium text-neutral-800 text-base"
+                  className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none px-4 py-3.5 rounded-xl transition-all font-medium text-neutral-800 text-sm"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   Hero Subtitle
                 </label>
                 <textarea
@@ -206,18 +206,18 @@ export default function AdminContactPage() {
                   placeholder="A brief editorial description..."
                   value={formData.heroSubtitle}
                   onChange={handleChange}
-                  className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none py-3 min-h-[100px] resize-none transition-colors bg-transparent text-neutral-600 leading-relaxed text-sm"
+                  className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none px-4 py-3.5 rounded-xl min-h-[110px] resize-none transition-all text-neutral-600 leading-relaxed text-sm"
                 />
               </div>
 
               {/* IMAGE UPLOAD */}
-              <div className="space-y-3 pt-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5 block">
+              <div className="space-y-2 pt-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1 block">
                   Cover Aspect
                 </label>
                 <label className="border border-dashed border-neutral-200 hover:border-neutral-400 transition-colors rounded-2xl p-8 flex flex-col justify-center items-center cursor-pointer bg-neutral-50/40 group">
                   <ImagePlus
-                    size={28}
+                    size={26}
                     className="text-neutral-400 group-hover:text-neutral-600 transition-colors mb-2"
                   />
                   <p className="font-medium text-xs text-neutral-700">
@@ -249,7 +249,7 @@ export default function AdminContactPage() {
           </div>
 
           {/* CONTACT INFO CARD */}
-          <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-neutral-100/40 space-y-8">
+          <div className="bg-white rounded-[32px] p-6 sm:p-10 shadow-sm border border-neutral-100/60 space-y-8">
             {/* SECTION HEADER */}
             <div className="flex items-center gap-4 border-b border-neutral-100 pb-5">
               <div className="w-10 h-10 rounded-xl bg-[#7A1E1E]/5 flex items-center justify-center text-[#7A1E1E] shrink-0">
@@ -266,16 +266,16 @@ export default function AdminContactPage() {
             </div>
 
             {/* INPUTS GRID */}
-            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-8">
+            <div className="grid sm:grid-cols-2 gap-5">
               {/* PHONE */}
-              <div className="relative space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   Primary Phone
                 </label>
-                <div className="relative flex items-center">
+                <div className="relative">
                   <Phone
-                    size={14}
-                    className="absolute left-0 text-[#7A1E1E]/60"
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
                   />
                   <input
                     type="text"
@@ -283,20 +283,20 @@ export default function AdminContactPage() {
                     placeholder="Line details"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none pl-6 py-2.5 transition-colors bg-transparent text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
                   />
                 </div>
               </div>
 
               {/* EMAIL */}
-              <div className="relative space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   Email Identity
                 </label>
-                <div className="relative flex items-center">
+                <div className="relative">
                   <Mail
-                    size={14}
-                    className="absolute left-0 text-[#7A1E1E]/60"
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
                   />
                   <input
                     type="email"
@@ -304,20 +304,20 @@ export default function AdminContactPage() {
                     placeholder="Concierge mail"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none pl-6 py-2.5 transition-colors bg-transparent text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
                   />
                 </div>
               </div>
 
-              {/* LOCATION */}
-              <div className="relative sm:col-span-2 space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              {/* LOCATION / CITY */}
+              <div className="sm:col-span-2 space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   Boutique City / Location
                 </label>
-                <div className="relative flex items-center">
+                <div className="relative">
                   <MapPin
-                    size={14}
-                    className="absolute left-0 text-[#7A1E1E]/60"
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
                   />
                   <input
                     type="text"
@@ -325,20 +325,20 @@ export default function AdminContactPage() {
                     placeholder="Maison address, City, Country"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none pl-6 py-2.5 transition-colors bg-transparent text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
                   />
                 </div>
               </div>
 
               {/* WHATSAPP */}
-              <div className="relative sm:col-span-2 space-y-1.5">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-0.5">
+              <div className="sm:col-span-2 space-y-2">
+                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
                   WhatsApp Chatline
                 </label>
-                <div className="relative flex items-center">
+                <div className="relative">
                   <MessageCircle
-                    size={14}
-                    className="absolute left-0 text-[#7A1E1E]/60"
+                    size={15}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
                   />
                   <input
                     type="text"
@@ -346,7 +346,7 @@ export default function AdminContactPage() {
                     placeholder="Direct wave linkage"
                     value={formData.whatsapp}
                     onChange={handleChange}
-                    className="w-full border-b border-neutral-200 focus:border-[#7A1E1E] outline-none pl-6 py-2.5 transition-colors bg-transparent text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
                   />
                 </div>
               </div>
