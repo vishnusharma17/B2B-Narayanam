@@ -1,23 +1,87 @@
+"use client";
+
 export default function SplashScreen() {
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#F9F6F1] flex items-center justify-center">
-      <div className="text-center">
-        <img
-          src="/logo.png"
-          alt="Narayanam"
-          className="w-32 mx-auto mb-6 animate-pulse"
-        />
+    <div className="fixed inset-0 z-[99999] bg-[#F9F6F1] overflow-hidden">
+      {/* GOLD GLOW */}
+      <div
+        className="
+          absolute
+          top-1/2
+          left-1/2
+          -translate-x-1/2
+          -translate-y-1/2
+          w-[450px]
+          h-[450px]
+          bg-[#D4AF37]/20
+          blur-[120px]
+          rounded-full
+        "
+      />
 
-        <h2 className="text-2xl tracking-[8px] font-light">
-          NARAYANAM
-        </h2>
+      {/* CONTENT */}
+      <div className="h-full flex items-center justify-center">
+        <div className="text-center relative z-10">
+          {/* LOGO */}
+          <div className="mb-8 animate-[pulse_2s_ease-in-out_infinite]">
+            <img
+              src="/logo.png"
+              alt="Narayanam"
+              className="
+                w-28
+                sm:w-36
+                mx-auto
+                object-contain
+              "
+            />
+          </div>
 
-        <p className="mt-3 text-gray-500 text-sm">
-          Luxury Ethnic Collection
-        </p>
+          {/* BRAND */}
+          <h1
+            className="
+              text-3xl
+              sm:text-5xl
+              font-light
+              tracking-[10px]
+              text-black
+            "
+          >
+            NARAYANAM
+          </h1>
 
-        <div className="w-40 h-1 bg-gray-200 rounded-full mt-6 overflow-hidden mx-auto">
-          <div className="h-full bg-[#D4AF37] animate-pulse w-full" />
+          <p
+            className="
+              mt-4
+              text-[#B68D40]
+              tracking-[5px]
+              uppercase
+              text-xs
+              sm:text-sm
+            "
+          >
+            Premium Ethnic Collection
+          </p>
+
+          {/* LOADER */}
+          <div className="mt-10 w-56 mx-auto">
+            <div className="h-[2px] bg-[#e8dfcf] overflow-hidden rounded-full">
+              <div
+                className="
+                  h-full
+                  w-full
+                  bg-gradient-to-r
+                  from-transparent
+                  via-[#D4AF37]
+                  to-transparent
+                  animate-[shimmer_1.5s_linear_infinite]
+                "
+              />
+            </div>
+          </div>
+
+          <p className="mt-5 text-gray-500 text-sm">
+            Preparing your experience...
+          </p>
         </div>
       </div>
     </div>
