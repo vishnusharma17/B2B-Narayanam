@@ -18,9 +18,15 @@ import API from "../../lib/api";
   );
 };
 function ProductCard({ product }) {
-  
-const image = optimizeImage(product.mainImage, 700);
 
+  if (!product) {
+    return null;
+  }
+
+  const image = optimizeImage(
+    product.mainImage,
+    700
+  );
   const displayPrice =
     product.price_min > 0
       ? product.price_min
@@ -123,9 +129,9 @@ const image = optimizeImage(product.mainImage, 700);
     overflow-hidden
   "
 >
-  <img
-  src={image}
-  alt={product.name}
+ <img
+  src={image || "/placeholder.jpg"}
+  alt={product?.name || "Product"}
   loading="lazy"
   decoding="async"
   fetchPriority="low"
@@ -309,4 +315,5 @@ const image = optimizeImage(product.mainImage, 700);
     </Link>
   );
 }
+
 export default memo(ProductCard);

@@ -123,7 +123,7 @@ export default function AdminCategoriesPage() {
           />
 
           {/*desktop Image */}
-          <p className="mb-2 font-medium">Desktop Banner (1920x900)</p>
+
           <input
             type="file"
             accept="image/*"
@@ -142,9 +142,9 @@ export default function AdminCategoriesPage() {
             placeholder="Upload Desktop Image"
             label="Upload Desktop Image"
           />
-
+          <p className="mb-2 font-medium">Desktop Banner (1920x900)</p>
           {/* mobile image */}
-          <p className="mb-2 font-medium">Mobile Banner (800x1200)</p>
+
           <input
             type="file"
             accept="image/*"
@@ -163,7 +163,7 @@ export default function AdminCategoriesPage() {
             placeholder="Upload Mobile Image"
             required
           />
-
+          <p className="mb-2 font-medium">Mobile Banner (800x1200)</p>
           {/* Button */}
           <button
             className="

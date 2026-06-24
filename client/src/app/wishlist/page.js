@@ -307,49 +307,15 @@ export default function WishlistPage() {
                 sm:gap-6
               "
             >
-              {wishlistItems.map((item) => (
-                <div
-                  key={item._id}
-                  className="
-                      relative
-                      group
-                    "
-                >
-                  <ProductCard product={item.productId} />
+              {wishlistItems
+                .filter((item) => item?.productId)
+                .map((item) => (
+                  <div key={item._id} className="relative group">
+                    <ProductCard product={item.productId} />
 
-                  {/* REMOVE BUTTON */}
-                  <button
-                    onClick={() => removeWishlist(item._id)}
-                    className="
-                        absolute
-                        top-2
-                        right-2
-                        sm:top-3
-                        sm:right-3
-                        bg-red-500
-                        hover:bg-red-600
-                        text-white
-                        w-8
-                        h-8
-                        sm:w-9
-                        sm:h-9
-                        rounded-full
-                        flex
-                        items-center
-                        justify-center
-                        shadow-lg
-                        transition-all
-                        duration-300
-                        opacity-100
-                        sm:opacity-0
-                        sm:group-hover:opacity-100
-                        z-20
-                      "
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+                    <button onClick={() => removeWishlist(item._id)}>✕</button>
+                  </div>
+                ))}
             </div>
           </>
         )}
