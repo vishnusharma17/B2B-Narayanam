@@ -462,12 +462,6 @@ export default function AdminEnquiriesPage() {
                       <p className="text-xs text-gray-400">Budget</p>
                       <h3 className="font-medium">{item.budget || "-"}</h3>
                     </div>
-
-                    <div className="bg-[#F8F3EC] p-4 rounded-2xl">
-                      <p className="text-xs text-gray-400">Budget</p>
-                      <h3 className="font-medium">{item.budget || "-"}</h3>
-                    </div>
-
                     <div className="grid md:grid-cols-2 gap-4 mt-4">
                       <div className="bg-[#F8F3EC] p-4 rounded-2xl">
                         <p className="text-xs text-gray-400">
