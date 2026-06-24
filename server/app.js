@@ -22,6 +22,7 @@ import dashboardRoutes from "./routes/dashboardRoutes.js";
 import enquiryRoutes from "./routes/enquiryRoutes.js";
 import fashionStoryRoutes from "./routes/fashionStoryRoutes.js";
 import footerRoutes from "./routes/footerRoutes.js";
+import healthRoutes from "./routes/health.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
@@ -49,6 +50,7 @@ app.use(
     credentials: true,
   }),
 );
+app.use("/api/health", healthRoutes);
 
 // JSON parser
 app.use(express.json());

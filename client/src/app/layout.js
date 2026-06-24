@@ -12,6 +12,7 @@ import Navbar from "../components/layout/Navbar";
 
 import "./globals.css";
 
+import LoaderProvider from "./LoaderProvider";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
@@ -29,12 +30,13 @@ export default function RootLayout({ children }) {
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}
         >
-          <Navbar />
+          <LoaderProvider>
+            <Navbar />
 
-          {children}
+            {children}
 
-          <Footer />
-
+            <Footer />
+          </LoaderProvider>
           <Toaster position="top-right" />
 
           <Script src="https://checkout.razorpay.com/v1/checkout.js" />
