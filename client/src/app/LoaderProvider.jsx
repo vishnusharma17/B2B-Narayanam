@@ -14,7 +14,7 @@ export default function LoaderProvider({ children }) {
       setLoading(false);
 
       router.push("/");
-    }, 7000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
