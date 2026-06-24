@@ -324,7 +324,7 @@ export default function WishlistPage() {
     h-9
     rounded-full
     bg-red-500
-    hover:bg-red-600
+    hover:bg-black-600
     text-white
     flex
     items-center
