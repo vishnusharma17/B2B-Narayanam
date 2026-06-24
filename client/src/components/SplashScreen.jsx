@@ -83,7 +83,7 @@ export default function SplashScreen({ onComplete }) {
         }}
       />
       
-      {/* Adaptive Mobile Side Glows (Ensures rich depth on narrow mobile displays) */}
+      {/* Adaptive Mobile Side Glows */}
       <div className="absolute top-[-10%] left-[-10%] w-[250px] sm:w-[500px] h-[250px] sm:h-[500px] blur-[80px] rounded-full pointer-events-none md:hidden opacity-50" style={{ backgroundColor: "rgba(122, 30, 30, 0.03)" }} />
       <div className="absolute bottom-[-10%] right-[-10%] w-[280px] sm:w-[500px] h-[280px] sm:h-[500px] blur-[90px] rounded-full pointer-events-none md:hidden opacity-60" style={{ backgroundColor: "rgba(212, 175, 55, 0.06)" }} />
 
@@ -108,17 +108,21 @@ export default function SplashScreen({ onComplete }) {
       {/* 4. MAX CONTROL MASTER LAYOUT */}
       <div className="text-center z-10 px-4 sm:px-6 relative w-full max-w-xl mx-auto flex flex-col items-center justify-center">
         
-        {/* RESPONSIVE EMBLEM FILIGREE */}
+        {/* RESPONSIVE EMBLEM FILIGREE (FIXED VISIBILITY) */}
         <div className="mb-6 sm:mb-10 md:mb-14 flex justify-center">
           <div className="relative w-14 h-14 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center transition-all duration-300">
-            <div className="absolute inset-0 border-[0.5px] rounded-full animate-[spin_40s_linear_infinite]" style={{ borderColor: "rgba(212, 175, 55, 0.25)" }} />
-            <div className="absolute inset-2 border-[0.5px] rotate-45 animate-[spin_24s_linear_infinite]" style={{ borderColor: "rgba(122, 30, 30, 0.08)" }} />
-            <div className="absolute inset-4 border-[0.5px] -rotate-45 animate-[spin_12s_linear_infinite]" style={{ borderColor: "rgba(212, 175, 55, 0.15)" }} />
+            {/* Outer Circle: Increased border width and solid gold color for strong contrast */}
+            <div className="absolute inset-0 border-[1px] rounded-full animate-[spin_40s_linear_infinite]" style={{ borderColor: "rgba(212, 175, 55, 0.55)", boxShadow: "0 0 6px rgba(212, 175, 55, 0.1)" }} />
+            {/* Middle Star Shape: Switched to rich maroon color with high opacity to anchor visibility */}
+            <div className="absolute inset-2 border-[1px] rotate-45 animate-[spin_24s_linear_infinite]" style={{ borderColor: "rgba(122, 30, 30, 0.35)" }} />
+            {/* Inner Circle: Tight structural gold loop */}
+            <div className="absolute inset-4 border-[1px] -rotate-45 animate-[spin_12s_linear_infinite]" style={{ borderColor: "rgba(212, 175, 55, 0.45)" }} />
+            {/* Center Core Dot */}
             <div 
               className="w-1.5 h-1.5 rounded-full" 
               style={{ 
                 background: "linear-gradient(to top right, #D4AF37, #F6E0A4, #B68D40)",
-                boxShadow: "0 0 10px rgba(212, 175, 55, 0.5)"
+                boxShadow: "0 0 10px rgba(212, 175, 55, 0.7)"
               }} 
             />
           </div>
@@ -130,7 +134,7 @@ export default function SplashScreen({ onComplete }) {
             className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-light uppercase flex justify-center items-center whitespace-nowrap"
             style={{
               letterSpacing: "0.22em",
-              paddingRight: "0.22em" // FIXES THE MOVED OFFSET CONFIGURATION (Exact optical alignment)
+              paddingRight: "0.22em"
             }}
           >
             {brandName.split("").map((letter, index) => (
@@ -161,7 +165,7 @@ export default function SplashScreen({ onComplete }) {
               backgroundImage: "linear-gradient(to right, #B68D40, #F4D068, #B68D40)",
               backgroundSize: "200% auto",
               letterSpacing: "0.3em",
-              paddingRight: "0.3em", // Optical Alignment Compensation
+              paddingRight: "0.3em",
               opacity: mounted ? 1 : 0,
               transform: mounted ? "translateY(0)" : "translateY(100%)",
               transition: "all 1200ms cubic-bezier(0.16, 1, 0.3, 1)",
@@ -174,7 +178,6 @@ export default function SplashScreen({ onComplete }) {
 
         {/* PERFECT HAIRLINE PROGRESS BAR */}
         <div className="mt-14 sm:mt-18 md:mt-24 w-24 sm:w-32 md:w-36 mx-auto relative">
-          {/* Changed to overflow-hidden so the glowing pulse core doesn't bleed out */}
           <div className="h-[1px] w-full relative overflow-hidden rounded-full" style={{ backgroundColor: "rgba(122, 30, 30, 0.08)" }}>
             <div 
               className="absolute top-0 left-0 h-full w-1/2 luxury-anim-slide" 
