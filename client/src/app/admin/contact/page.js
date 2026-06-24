@@ -184,7 +184,7 @@ export default function AdminContactPage() {
             {/* INPUTS */}
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   Hero Title
                 </label>
                 <input
@@ -193,12 +193,12 @@ export default function AdminContactPage() {
                   placeholder="The Headline Statement"
                   value={formData.heroTitle}
                   onChange={handleChange}
-                  className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none px-4 py-3.5 rounded-xl transition-all font-medium text-neutral-800 text-sm"
+                  className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none px-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   Hero Subtitle
                 </label>
                 <textarea
@@ -206,7 +206,7 @@ export default function AdminContactPage() {
                   placeholder="A brief editorial description..."
                   value={formData.heroSubtitle}
                   onChange={handleChange}
-                  className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none px-4 py-3.5 rounded-xl min-h-[110px] resize-none transition-all text-neutral-600 leading-relaxed text-sm"
+                  className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none px-4 py-3 rounded-xl min-h-[110px] resize-none transition-all duration-200 text-neutral-600 leading-relaxed text-sm placeholder-neutral-400"
                 />
               </div>
 
@@ -269,84 +269,92 @@ export default function AdminContactPage() {
             <div className="grid sm:grid-cols-2 gap-5">
               {/* PHONE */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   Primary Phone
                 </label>
-                <div className="relative">
-                  <Phone
-                    size={15}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  />
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                    <Phone
+                      size={14}
+                      className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
+                    />
+                  </div>
                   <input
                     type="text"
                     name="phone"
                     placeholder="Line details"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
                   />
                 </div>
               </div>
 
               {/* EMAIL */}
               <div className="space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   Email Identity
                 </label>
-                <div className="relative">
-                  <Mail
-                    size={15}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  />
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                    <Mail
+                      size={14}
+                      className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
+                    />
+                  </div>
                   <input
                     type="email"
                     name="email"
                     placeholder="Concierge mail"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
                   />
                 </div>
               </div>
 
               {/* LOCATION / CITY */}
               <div className="sm:col-span-2 space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   Boutique City / Location
                 </label>
-                <div className="relative">
-                  <MapPin
-                    size={15}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  />
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                    <MapPin
+                      size={14}
+                      className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
+                    />
+                  </div>
                   <input
                     type="text"
                     name="location"
                     placeholder="Maison address, City, Country"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
                   />
                 </div>
               </div>
 
               {/* WHATSAPP */}
               <div className="sm:col-span-2 space-y-2">
-                <label className="text-[10px] font-bold text-neutral-400 tracking-widest uppercase ml-1">
+                <label className="text-[10px] font-bold text-neutral-500 tracking-widest uppercase ml-1">
                   WhatsApp Chatline
                 </label>
-                <div className="relative">
-                  <MessageCircle
-                    size={15}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  />
+                <div className="relative group">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center border-r border-neutral-200 pr-2.5 transition-colors group-focus-within:border-[#7A1E1E]/40">
+                    <MessageCircle
+                      size={14}
+                      className="text-neutral-400 group-focus-within:text-[#7A1E1E] transition-colors"
+                    />
+                  </div>
                   <input
                     type="text"
                     name="whatsapp"
                     placeholder="Direct wave linkage"
                     value={formData.whatsapp}
                     onChange={handleChange}
-                    className="w-full border border-neutral-200/80 focus:border-neutral-900 focus:ring-4 focus:ring-neutral-900/5 bg-neutral-50/20 outline-none pl-11 pr-4 py-3.5 rounded-xl transition-all text-neutral-800 font-medium text-sm"
+                    className="w-full border border-neutral-200 focus:border-[#7A1E1E] focus:ring-[3px] focus:ring-[#7A1E1E]/5 bg-neutral-50/40 hover:bg-neutral-50/80 outline-none pl-12 pr-4 py-3 rounded-xl transition-all duration-200 text-neutral-800 font-normal text-sm placeholder-neutral-400"
                   />
                 </div>
               </div>
