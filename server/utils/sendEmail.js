@@ -1,39 +1,22 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendEmail = async ({ to, subject, text }) => {
-  console.log("EMAIL USER =", process.env.EMAIL_USER);
-  console.log("EMAIL PASS =", process.env.EMAIL_PASS ? "YES" : "NO");
-  console.log("TO =", to);
   try {
-    console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Missing");
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    await transporter.verify();
-
-    console.log("SMTP Connected Successfully");
-
-    const info = await transporter.sendMail({
-      from: `"Narayanam" <${process.env.EMAIL_USER}>`,
+    const response = await resend.emails.send({
+      from: "Narayanam <onboarding@resend.dev>",
       to,
       subject,
       text,
     });
 
-    console.log("MESSAGE ID:", info.messageId);
-    console.log("EMAIL SENT:", info.response);
+    console.log("EMAIL SENT:", response);
 
-    return info;
+    return response;
   } catch (error) {
-    console.log("FULL EMAIL ERROR:", error);
+    console.log("RESEND ERROR:", error);
+
     throw error;
   }
 };
