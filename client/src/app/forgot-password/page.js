@@ -42,12 +42,21 @@ export default function ForgotPassword() {
         router.push("/login");
       }, 2000);
     } catch (error) {
-      console.error("Forgot Password Error:", error.response?.data);
+      // DEBUGGING: Ab console me exact error detail milegi aur undefined nahi aayega
+      console.error("Forgot Password Raw Error:", error);
+      console.error("Forgot Password Response Data:", error.response?.data);
 
-      // Backend agar koi specific validation/error message bhej raha hai toh wo toast me dikhega
-      const errorMessage =
-        error.response?.data?.message ||
-        "Something went wrong. Please try again.";
+      let errorMessage = "Something went wrong. Please try again.";
+
+      // 1. Agar backend se error data response aaya ho (Jaise User Not Found, 400, 500)
+      if (error.response && error.response.data) {
+        errorMessage = error.response.data.message || errorMessage;
+      }
+      // 2. Agar Render server band hai ya Network issue/CORS block hai (error.response missing ho)
+      else if (error.message) {
+        errorMessage = `${error.message}. Please check if backend server is awake.`;
+      }
+
       toast.error(errorMessage);
     } finally {
       setLoading(false);
