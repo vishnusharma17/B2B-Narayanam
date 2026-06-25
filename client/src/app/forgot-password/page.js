@@ -1,31 +1,54 @@
 "use client";
 
-import { LockKeyhole, Mail } from "lucide-react";
-
+import { ArrowLeft, LockKeyhole, Mail } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-
 import toast from "react-hot-toast";
-
 import API from "../../lib/api";
 
 export default function ForgotPassword() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-
   const [loading, setLoading] = useState(false);
 
   const submit = async (e) => {
     e.preventDefault();
 
+    if (!email) {
+      return toast.error("Please enter your email address");
+    }
+
     try {
       setLoading(true);
 
-      await API.post("/auth/forgot-password", { email });
+      // Axios interceptor ko bypass karne ke liye config me headers specify kar rahe hain
+      await API.post(
+        "/auth/forgot-password",
+        { email },
+        {
+          headers: {
+            // Agar interceptor token lagata hai, toh yeh use empty karke override karega
+            Authorization: "",
+          },
+        },
+      );
 
-      toast.success("Reset link sent to email");
-
+      toast.success("Reset link sent successfully to your email!");
       setEmail("");
+
+      // 2 second baad automatic user ko login page par bhej dega
+      setTimeout(() => {
+        router.push("/login");
+      }, 2000);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong");
+      console.error("Forgot Password Error:", error.response?.data);
+
+      // Backend agar koi specific validation message bhej raha hai toh use handle karega
+      const errorMessage =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -46,14 +69,8 @@ export default function ForgotPassword() {
       "
     >
       {/* CONTAINER */}
-      <div
-        className="
-          relative
-          w-full
-          max-w-md
-        "
-      >
-        {/* GLOW */}
+      <div className="relative w-full max-w-md">
+        {/* GLOW EFFECT */}
         <div
           className="
             absolute
@@ -71,7 +88,7 @@ export default function ForgotPassword() {
           "
         />
 
-        {/* CARD */}
+        {/* CARD FORM */}
         <form
           onSubmit={submit}
           className="
@@ -109,7 +126,7 @@ export default function ForgotPassword() {
             </div>
           </div>
 
-          {/* TEXT */}
+          {/* TEXT HEADER */}
           <div className="text-center mb-8">
             <p
               className="
@@ -124,41 +141,19 @@ export default function ForgotPassword() {
               Account Recovery
             </p>
 
-            <h1
-              className="
-                text-3xl
-                sm:text-4xl
-                font-light
-                leading-tight
-              "
-            >
+            <h1 className="text-3xl sm:text-4xl font-light leading-tight">
               Forgot Password
             </h1>
 
-            <p
-              className="
-                text-gray-500
-                mt-4
-                text-sm
-                sm:text-base
-                leading-7
-              "
-            >
+            <p className="text-gray-500 mt-4 text-sm sm:text-base leading-7">
               Enter your registered email address and we’ll send you a password
               reset link.
             </p>
           </div>
 
-          {/* INPUT */}
+          {/* INPUT FIELD */}
           <div className="mb-6">
-            <label
-              className="
-                text-sm
-                text-gray-600
-                mb-3
-                block
-              "
-            >
+            <label className="text-sm text-gray-600 mb-3 block">
               Email Address
             </label>
 
@@ -176,6 +171,7 @@ export default function ForgotPassword() {
 
               <input
                 type="email"
+                name="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -199,9 +195,10 @@ export default function ForgotPassword() {
             </div>
           </div>
 
-          {/* BUTTON */}
+          {/* SUBMIT BUTTON */}
           <button
             disabled={loading}
+            type="submit"
             className="
               w-full
               bg-black
@@ -217,24 +214,32 @@ export default function ForgotPassword() {
               font-medium
               shadow-lg
               hover:scale-[1.01]
+              flex
+              justify-center
+              items-center
             "
           >
-            {loading ? "Sending..." : "Send Reset Link"}
+            {loading ? "Sending Reset Link..." : "Send Reset Link"}
           </button>
 
-          {/* FOOTER */}
-          <p
-            className="
-              text-center
-              text-gray-500
-              text-xs
-              sm:text-sm
-              mt-6
-              leading-6
-            "
-          >
-            Make sure the email address is linked with your account.
-          </p>
+          {/* BACK TO LOGIN LINK */}
+          <div className="mt-6 text-center">
+            <Link
+              href="/login"
+              className="
+                inline-flex 
+                items-center 
+                gap-2 
+                text-sm 
+                text-gray-600 
+                hover:text-black 
+                transition-colors
+              "
+            >
+              <ArrowLeft size={16} />
+              Back to Login
+            </Link>
+          </div>
         </form>
       </div>
     </div>
