@@ -7,6 +7,15 @@ const API = axios.create({
 
 API.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
+    // AGAR request me pehle se Authorization ko false ya empty kiya hai, toh token mat jodo
+    if (
+      config.headers.Authorization === false ||
+      config.headers.Authorization === ""
+    ) {
+      delete config.headers.Authorization; // Isse header clean ho jayega
+      return config;
+    }
+
     const token = localStorage.getItem("adminToken");
 
     if (token) {

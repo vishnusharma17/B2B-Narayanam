@@ -22,14 +22,14 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
 
-      // Axios interceptor ko bypass karne ke liye config me headers specify kar rahe hain
+      // Naye interceptor logic ke hisab se Authorization ko false set kar rahe hain
+      // Isse interceptor is request me token add nahi karega
       await API.post(
         "/auth/forgot-password",
         { email },
         {
           headers: {
-            // Agar interceptor token lagata hai, toh yeh use empty karke override karega
-            Authorization: "",
+            Authorization: false,
           },
         },
       );
@@ -37,14 +37,14 @@ export default function ForgotPassword() {
       toast.success("Reset link sent successfully to your email!");
       setEmail("");
 
-      // 2 second baad automatic user ko login page par bhej dega
+      // 2 second baad automatic user ko login page par redirect karega
       setTimeout(() => {
         router.push("/login");
       }, 2000);
     } catch (error) {
       console.error("Forgot Password Error:", error.response?.data);
 
-      // Backend agar koi specific validation message bhej raha hai toh use handle karega
+      // Backend agar koi specific validation/error message bhej raha hai toh wo toast me dikhega
       const errorMessage =
         error.response?.data?.message ||
         "Something went wrong. Please try again.";
