@@ -32,6 +32,8 @@ export default function ProductDetailPage() {
 
   const [relatedProducts, setRelatedProducts] = useState([]);
 
+  const [variantProducts, setVariantProducts] = useState([]);
+
   const [quantity, setQuantity] = useState(1);
 
   const [selectedSize, setSelectedSize] = useState("");
@@ -61,6 +63,19 @@ export default function ProductDetailPage() {
 
       setSelectedImage(productData.mainImage || "/placeholder-product.jpg");
 
+      // SAME DESIGN KE SABHI COLORS LOAD KARO
+      if (productData.variantGroup) {
+        try {
+          const variantRes = await API.get(
+            `/products/variants/${productData.variantGroup}`,
+          );
+
+          setVariantProducts(variantRes.data.data || []);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       if (productData.colors?.length > 0) {
         setSelectedColor(productData.colors[0]);
       }
@@ -78,7 +93,7 @@ export default function ProductDetailPage() {
         const relatedRes = await API.get(`/products/related/${categoryId}`);
 
         let filtered = (relatedRes.data.data || []).filter(
-          (item) => item._id !== productData._id
+          (item) => item._id !== productData._id,
         );
 
         if (filtered.length === 0) {
@@ -489,6 +504,44 @@ export default function ProductDetailPage() {
               </div>
             )}
 
+            {/* MORE COLORS */}
+
+            {variantProducts.length > 1 && (
+              <div className="mt-8">
+                <h3 className="font-medium mb-4">More Colors</h3>
+
+                <div className="flex gap-3 flex-wrap">
+                  {variantProducts.map((item) => (
+                    <button
+                      key={item._id}
+                      onClick={() => router.push(`/product/${item.slug}`)}
+                      className={`
+            w-20
+            h-24
+            rounded-xl
+            overflow-hidden
+            border-2
+            transition-all
+
+            ${
+              item._id === product._id
+                ? "border-black"
+                : "border-gray-200 hover:border-black"
+            }
+          `}
+                    >
+                      <img
+                        src={item.mainImage}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            
             {/* SIZES */}
             {product.sizes?.length > 0 && (
               <div className="mt-7 sm:mt-8">

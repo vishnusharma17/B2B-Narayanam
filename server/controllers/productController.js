@@ -168,6 +168,8 @@ export const createProduct = async (req, res) => {
 
       colors: req.body.colors ? JSON.parse(req.body.colors) : [],
 
+      variantGroup: req.body.variantGroup || "",
+
       isTrending: req.body.isTrending === "true",
 
       isBestSeller: req.body.isBestSeller === "true",
@@ -259,13 +261,15 @@ export const updateProduct = async (req, res) => {
           ? JSON.parse(req.body.colors)
           : existingProduct.colors,
 
+        variantGroup: req.body.variantGroup || existingProduct.variantGroup,
+
         mainImage,
 
         galleryImages,
       },
       {
         returnDocument: "after",
-      }
+      },
     );
 
     res.status(200).json({
@@ -604,6 +608,31 @@ export const getFeaturedProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
 
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+// ==========================
+// GET PRODUCTS BY VARIANT GROUP
+// ==========================
+
+export const getVariantProducts = async (req, res) => {
+  try {
+    const { group } = req.params;
+
+    const products = await Product.find({
+      variantGroup: group,
+    }).sort({ createdAt: 1 });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
     res.status(500).json({
       success: false,
       message: error.message,

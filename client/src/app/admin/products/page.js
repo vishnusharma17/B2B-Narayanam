@@ -23,6 +23,7 @@ const initialFormState = {
   name: "",
   slug: "",
   category: "",
+  variantGroup: "",
   price_min: "",
   original_price: "",
   discount_percentage: "",
@@ -191,6 +192,7 @@ export default function AdminProductsPage() {
       name: product.name || "",
       slug: product.slug || "",
       category: product.category?._id || product.category || "",
+      variantGroup: product.variantGroup || "",
       price_min: product.price_min || "",
       original_price: product.original_price || "",
       discount_percentage: product.discount_percentage || "",
@@ -333,6 +335,7 @@ export default function AdminProductsPage() {
           {[
             "name",
             "slug",
+            "variantGroup",
             "price_min",
             "original_price",
             "discount_percentage",
@@ -381,7 +384,26 @@ export default function AdminProductsPage() {
               ))}
             </select>
           </div>
+          <div className="md:col-span-2">
+            <label className="block mb-2 font-medium">Variant Group</label>
 
+            <input
+              type="text"
+              placeholder="Example: kurti-001"
+              value={formData.variantGroup}
+              onChange={(e) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  variantGroup: e.target.value,
+                }))
+              }
+              className="w-full border p-3 rounded-xl"
+            />
+
+            <p className="text-xs text-gray-500 mt-2">
+              Same design ke sabhi colors me same Variant Group rakho.
+            </p>
+          </div>
           {/* SIZES */}
           <div className="md:col-span-2">
             <label className="block mb-3 font-semibold">Select Sizes</label>

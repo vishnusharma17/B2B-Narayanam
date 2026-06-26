@@ -76,10 +76,9 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
-    colors: {
-      type: [String],
-      default: [],
+    variants: {
+     type: String,
+      default:"",
     },
     isBestSeller: {
       type: Boolean,
