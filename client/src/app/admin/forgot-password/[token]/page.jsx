@@ -113,6 +113,6 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-"use client";
+
 
 
