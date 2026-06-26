@@ -1,7 +1,7 @@
 "use client";
 
 import { Eye, EyeOff } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import API from "../../../lib/api";
@@ -9,7 +9,8 @@ import API from "../../../lib/api";
 export default function ResetPasswordPage() {
   const params = useParams();
   const router = useRouter();
-
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
   const [showPassword, setShowPassword] = useState(false);
 
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -35,7 +36,13 @@ export default function ResetPasswordPage() {
 
       toast.success("Password reset successful");
 
-      router.push("/login");
+      setTimeout(() => {
+        if (type === "admin") {
+          router.push("/admin/login");
+        } else {
+          router.push("/login");
+        }
+      }, 1500);
     } catch (error) {
       toast.error(error.response?.data?.message || "Reset failed");
     } finally {
