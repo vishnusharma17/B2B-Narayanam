@@ -236,10 +236,12 @@ export const forgotPassword = async (req, res) => {
 
     // GENERATE TOKEN
     console.log("User Found");
-
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     console.log("Token Generated");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
     await user.save();
 
