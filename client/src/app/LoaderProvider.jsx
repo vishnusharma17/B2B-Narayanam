@@ -1,22 +1,24 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import SplashScreen from "../components/SplashScreen";
 
 export default function LoaderProvider({ children }) {
-  const [loading, setLoading] = useState(true);
-
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
+    const splashShown = sessionStorage.getItem("splashShown");
 
-      router.push("/");
-    }, 4000);
+    if (!splashShown) {
+      setLoading(true);
 
-    return () => clearTimeout(timer);
+      const timer = setTimeout(() => {
+        sessionStorage.setItem("splashShown", "true");
+        setLoading(false);
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   if (loading) {
