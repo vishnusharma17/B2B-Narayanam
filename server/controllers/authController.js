@@ -222,7 +222,7 @@ export const login = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email ,isAdmin} = req.body;
 
     const user = await User.findOne({
       email,
@@ -247,7 +247,9 @@ export const forgotPassword = async (req, res) => {
 
     console.log("User Saved");
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = isAdmin
+      ? `${process.env.FRONTEND_URL}/admin/reset-password/${resetToken}`
+      : `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
     await sendEmail({
       to: user.email,
       subject: "Password Reset - Narayanam",

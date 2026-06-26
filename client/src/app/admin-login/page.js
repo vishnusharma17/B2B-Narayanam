@@ -99,6 +99,21 @@ export default function AdminLoginPage() {
             >
               {loading ? "Logging In..." : "Login"}
             </button>
+            <div className="mt-5 text-center">
+              <button
+                type="button"
+                onClick={() => router.push("/admin/forgot-password")}
+                className="
+      text-sm
+      text-[#7A1E1E]
+      hover:text-[#C9A227]
+      transition
+      underline
+    "
+              >
+                Forgot Password?
+              </button>
+            </div>
           </form>
         </div>
       </div>
