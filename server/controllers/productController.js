@@ -249,8 +249,8 @@ export const createProduct = async (req, res) => {
 
       moreColors.push({
         color: data.color,
-        thumbnail: thumbnailUpload.secure_url,
-        mainImage: mainUpload.secure_url,
+        thumbnail,
+        mainImage,
         galleryImages: gallery,
       });
     }
