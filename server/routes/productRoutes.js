@@ -85,21 +85,16 @@ router.post(
 // ==========================
 router.put(
   "/:id",
+  (req, res, next) => {
+    console.log("UPDATE ROUTE HIT");
+    next();
+  },
   protect,
   isAdmin,
   upload.fields([
-    {
-      name: "mainImage",
-      maxCount: 1,
-    },
-    {
-      name: "galleryImages",
-      maxCount: 10,
-    },
-    {
-      name: "moreColors",
-      maxCount: 20,
-    },
+    { name: "mainImage", maxCount: 1 },
+    { name: "galleryImages", maxCount: 10 },
+    { name: "moreColors", maxCount: 20 },
   ]),
   updateProduct,
 );

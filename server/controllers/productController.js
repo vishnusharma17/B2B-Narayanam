@@ -274,9 +274,13 @@ export const createProduct = async (req, res) => {
 // ==========================
 
 export const updateProduct = async (req, res) => {
+  console.log("UPDATE PRODUCT START");
   try {
     const existingProduct = await Product.findById(req.params.id);
     const moreColorFiles = req.files?.moreColors || [];
+    console.log(req.body);
+    console.log(req.files);
+    console.log("More Color Files:", moreColorFiles.length);
 
     if (!existingProduct) {
       return res.status(404).json({
