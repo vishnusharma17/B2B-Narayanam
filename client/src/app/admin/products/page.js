@@ -701,40 +701,43 @@ export default function AdminProductsPage() {
                 onChange={(e) => updateMoreGallery(index, e.target.files)}
                 className="w-full border p-3 rounded-xl"
               />
+
+              {item.galleryImages.length > 0 && (
+                <div className="flex flex-wrap gap-3 mt-4">
+                  {item.galleryImages.map((img, imgIndex) => (
+                    <div key={imgIndex} className="relative">
+                      <img
+                        src={
+                          img instanceof File ? URL.createObjectURL(img) : img
+                        }
+                        className="w-24 h-24 object-cover rounded-xl border"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const updated = [...formData.moreColors];
+
+                          updated[index].galleryImages = updated[
+                            index
+                          ].galleryImages.filter((_, i) => i !== imgIndex);
+
+                          setFormData({
+                            ...formData,
+                            moreColors: updated,
+                          });
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
 
-          {item.galleryImages.length > 0 && (
-            <div className="flex flex-wrap gap-3 mt-4">
-              {item.galleryImages.map((img, imgIndex) => (
-                <div key={imgIndex} className="relative">
-                  <img
-                    src={img instanceof File ? URL.createObjectURL(img) : img}
-                    alt=""
-                    className="w-24 h-24 object-cover rounded-xl border"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const updated = [...formData.moreColors];
-                      updated[index].galleryImages = updated[
-                        index
-                      ].galleryImages.filter((_, i) => i !== imgIndex);
-
-                      setFormData({
-                        ...formData,
-                        moreColors: updated,
-                      });
-                    }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6"
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
           {/* DESCRIPTION */}
           <div className="md:col-span-2">
             <label className="block mb-2 font-medium">
