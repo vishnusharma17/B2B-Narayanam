@@ -313,12 +313,13 @@ export default function AdminProductsPage() {
         // MORE COLORS
         else if (key === "moreColors") {
           formData.moreColors.forEach((item, index) => {
-            formPayload.append(
-              `moreColorsData`,
-              JSON.stringify({
-                color: item.color,
-              }),
-            );
+           formPayload.append(
+             "moreColorsData",
+             JSON.stringify({
+               color: item.color,
+               galleryCount: item.galleryImages.length,
+             }),
+           );
 
             if (item.thumbnail) {
               formPayload.append("moreColors", item.thumbnail);

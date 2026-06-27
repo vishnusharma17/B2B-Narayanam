@@ -196,10 +196,7 @@ export const createProduct = async (req, res) => {
       // Remaining Gallery Images
       const gallery = [];
 
-      while (
-        fileIndex < moreColorFiles.length &&
-        moreColorFiles[fileIndex].fieldname === "moreColors"
-      ) {
+      for (let i = 0; i < data.galleryCount; i++) {
         const upload = await cloudinary.uploader.upload(
           moreColorFiles[fileIndex].path,
           {
@@ -391,7 +388,9 @@ export const updateProduct = async (req, res) => {
       data: updatedProduct,
     });
   } catch (error) {
-    console.log(error);
+    console.error("UPDATE PRODUCT ERROR");
+    console.error(error);
+    console.error(error.stack);
 
     res.status(500).json({
       success: false,
