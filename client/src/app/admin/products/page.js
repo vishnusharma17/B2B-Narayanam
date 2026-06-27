@@ -317,20 +317,26 @@ export default function AdminProductsPage() {
               "moreColorsData",
               JSON.stringify({
                 color: item.color,
-                galleryCount: item.galleryImages.length,
+                galleryCount: item.galleryImages.filter(
+                  (img) => img instanceof File,
+                ).length,
+                hasThumbnail: item.thumbnail instanceof File,
+                hasMainImage: item.mainImage instanceof File,
               }),
             );
 
-            if (item.thumbnail) {
+            if (item.thumbnail instanceof File) {
               formPayload.append("moreColors", item.thumbnail);
             }
 
-            if (item.mainImage) {
+            if (item.mainImage instanceof File) {
               formPayload.append("moreColors", item.mainImage);
             }
 
             item.galleryImages.forEach((img) => {
-              formPayload.append("moreColors", img);
+              if (img instanceof File) {
+                formPayload.append("moreColors", img);
+              }
             });
           });
         }
