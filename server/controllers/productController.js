@@ -115,55 +115,55 @@ export const getProducts = async (req, res) => {
 // ==========================
 // CREATE PRODUCT
 // ==========================
-export const createProduct = async (req, res) => {
-  console.log("files rescived", req.files);
 
-  console.log("===== NEW CLOUDINARY CODE RUNNING =====");
-  console.log("CLOUD NAME =", process.env.CLOUD_NAME);
-  console.log("MAIN IMAGE FILE =", req.files?.mainImage?.[0]);
+export const createProduct = async (req, res) => {
   try {
     console.log("BODY =>", req.body);
     console.log("FILES =>", req.files);
 
     const mainImageFile = req.files?.mainImage?.[0];
-    const moreColorFiles = req.files?.moreColors || [];
     const galleryFiles = req.files?.galleryImages || [];
-    // MAIN IMAGE UPLOAD
+    const moreColorFiles = req.files?.moreColors || [];
+
+    // ======================
+    // 1. MAIN IMAGE
+    // ======================
     let mainImage = "";
 
     if (mainImageFile) {
-      const uploadResult = await cloudinary.uploader.upload(
-        mainImageFile.path,
-        {
-          folder: "narayanam/products",
-        },
-      );
+      const upload = await cloudinary.uploader.upload(mainImageFile.path, {
+        folder: "narayanam/products",
+      });
 
-      mainImage = uploadResult.secure_url;
+      mainImage = upload.secure_url;
 
       if (fs.existsSync(mainImageFile.path)) {
         fs.unlinkSync(mainImageFile.path);
       }
     }
 
-    // GALLERY IMAGES UPLOAD
+    // ======================
+    // 2. GALLERY
+    // ======================
     const galleryImages = [];
 
-    for (const file of galleryFiles) {
-      const uploadResult = await cloudinary.uploader.upload(file.path, {
-        folder: "narayanam/products",
-      });
+    if (galleryFiles.length > 0) {
+      for (const file of galleryFiles) {
+        const upload = await cloudinary.uploader.upload(file.path, {
+          folder: "narayanam/products",
+        });
 
-      galleryImages.push(uploadResult.secure_url);
+        galleryImages.push(upload.secure_url);
 
-      if (fs.existsSync(file.path)) {
-        fs.unlinkSync(file.path);
+        if (fs.existsSync(file.path)) {
+          fs.unlinkSync(file.path);
+        }
       }
     }
-    // ======================
-    // MORE COLORS
-    // ======================
 
+    // ======================
+    // 3. MORE COLORS
+    // ======================
     const moreColors = [];
 
     const moreColorsData = req.body.moreColorsData
@@ -177,72 +177,56 @@ export const createProduct = async (req, res) => {
     for (const item of moreColorsData) {
       const data = JSON.parse(item);
 
-      // Thumbnail
-
+      // --- Thumbnail ---
       let thumbnail = "";
 
       if (moreColorFiles[fileIndex]) {
-        const upload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
+        const file = moreColorFiles[fileIndex];
+        const upload = await cloudinary.uploader.upload(file.path, {
+          folder: "narayanam/products/more-colors",
+        });
 
         thumbnail = upload.secure_url;
-        fileIndex++;
-      }
-      if (moreColorFiles[fileIndex]) {
-        const upload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
 
-        thumbnail = upload.secure_url;
+        // FIX: Added exists check to prevent ENOENT crashes
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+
         fileIndex++;
       }
 
-      // Main Image
-      let mainImage = "";
+      // --- Main Image ---
+      let colorMainImage = "";
 
       if (moreColorFiles[fileIndex]) {
-        const upload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
+        const file = moreColorFiles[fileIndex];
+        const upload = await cloudinary.uploader.upload(file.path, {
+          folder: "narayanam/products/more-colors",
+        });
 
-        mainImage = upload.secure_url;
+        colorMainImage = upload.secure_url;
+
+        // FIX: Added exists check
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+
         fileIndex++;
       }
 
-      if (moreColorFiles[fileIndex]) {
-        const upload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
-
-        mainImage = upload.secure_url;
-        fileIndex++;
-      }
-
-      // Remaining Gallery Images
+      // --- Gallery ---
       const gallery = [];
+      const galleryCount = data.galleryCount || 0;
 
-      for (let i = 0; i < data.galleryCount; i++) {
-        const upload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
+      for (let i = 0; i < galleryCount; i++) {
+        if (!moreColorFiles[fileIndex]) break;
+
+        const file = moreColorFiles[fileIndex];
+        const upload = await cloudinary.uploader.upload(file.path, {
+          folder: "narayanam/products/more-colors",
+        });
 
         gallery.push(upload.secure_url);
+
+        // FIX: Added exists check
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
 
         fileIndex++;
       }
@@ -250,26 +234,22 @@ export const createProduct = async (req, res) => {
       moreColors.push({
         color: data.color,
         thumbnail,
-        mainImage,
+        mainImage: colorMainImage,
         galleryImages: gallery,
       });
     }
 
+    // ======================
+    // 4. CREATE PRODUCT
+    // ======================
     const product = await Product.create({
       ...req.body,
-
       sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
-
       colors: req.body.colors ? JSON.parse(req.body.colors) : [],
-
       isTrending: req.body.isTrending === "true",
-
       isBestSeller: req.body.isBestSeller === "true",
-
       isLimitedStock: req.body.isLimitedStock === "true",
-
       mainImage,
-
       galleryImages,
       moreColors,
     });
@@ -280,7 +260,7 @@ export const createProduct = async (req, res) => {
       data: product,
     });
   } catch (error) {
-    console.log("CREATE PRODUCT ERROR =>", error);
+    console.error("CREATE PRODUCT ERROR:", error);
 
     res.status(500).json({
       success: false,
@@ -292,6 +272,7 @@ export const createProduct = async (req, res) => {
 // ==========================
 // UPDATE PRODUCT
 // ==========================
+
 export const updateProduct = async (req, res) => {
   try {
     const existingProduct = await Product.findById(req.params.id);
@@ -304,7 +285,9 @@ export const updateProduct = async (req, res) => {
       });
     }
 
-    // MAIN IMAGE
+    // ======================
+    // 1. MAIN IMAGE
+    // ======================
     let mainImage = existingProduct.mainImage;
 
     if (req.files?.mainImage?.[0]) {
@@ -316,12 +299,12 @@ export const updateProduct = async (req, res) => {
 
       mainImage = uploadResult.secure_url;
 
-      if (fs.existsSync(file.path)) {
-        fs.unlinkSync(file.path);
-      }
+      if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
     }
 
-    // GALLERY IMAGES
+    // ======================
+    // 2. GALLERY IMAGES
+    // ======================
     let galleryImages = existingProduct.galleryImages || [];
 
     if (req.files?.galleryImages?.length > 0) {
@@ -334,21 +317,19 @@ export const updateProduct = async (req, res) => {
 
         newGalleryImages.push(uploadResult.secure_url);
 
-        if (fs.existsSync(file.path)) {
-          fs.unlinkSync(file.path);
-        }
+        if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
       }
 
       galleryImages = [...galleryImages, ...newGalleryImages];
     }
-    // ======================
-    // MORE COLORS
-    // ======================
 
+    // ======================
+    // 3. MORE COLORS
+    // ======================
     let moreColors = existingProduct.moreColors || [];
 
     if (req.body.moreColorsData) {
-      moreColors = [];
+      moreColors = []; // Reset to rebuild cleanly
 
       const moreColorsData = Array.isArray(req.body.moreColorsData)
         ? req.body.moreColorsData
@@ -358,91 +339,89 @@ export const updateProduct = async (req, res) => {
 
       for (const item of moreColorsData) {
         const data = JSON.parse(item);
+        const currentIndex = moreColors.length; // Maps cleanly to the existing array
 
-        // Thumbnail
+        // --- Thumbnail ---
         let thumbnail =
-          existingProduct.moreColors?.[moreColors.length]?.thumbnail || "";
+          existingProduct.moreColors?.[currentIndex]?.thumbnail || "";
 
         if (moreColorFiles[fileIndex]) {
-          const upload = await cloudinary.uploader.upload(
-            moreColorFiles[fileIndex].path,
-            {
-              folder: "narayanam/products/more-colors",
-            },
-          );
-
-          thumbnail = upload.secure_url;
-          fileIndex++;
-        }
-
-        // Main Image
-        let colorMainImage =
-          existingProduct.moreColors?.[moreColors.length]?.mainImage || "";
-
-        if (moreColorFiles[fileIndex]) {
-          const upload = await cloudinary.uploader.upload(
-            moreColorFiles[fileIndex].path,
-            {
-              folder: "narayanam/products/more-colors",
-            },
-          );
-
-          colorMainImage = upload.secure_url;
-          fileIndex++;
-        }
-
-        const mainUpload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex++].path,
-          {
+          const file = moreColorFiles[fileIndex];
+          const upload = await cloudinary.uploader.upload(file.path, {
             folder: "narayanam/products/more-colors",
-          },
-        );
-        const gallery = [];
+          });
+          thumbnail = upload.secure_url;
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // FIX: Added missing cleanup
+          fileIndex++;
+        }
 
-        for (let i = 0; i < (data.galleryCount || 0); i++) {
+        // --- Main Image ---
+        let colorMainImage =
+          existingProduct.moreColors?.[currentIndex]?.mainImage || "";
+
+        if (moreColorFiles[fileIndex]) {
+          const file = moreColorFiles[fileIndex];
+          const upload = await cloudinary.uploader.upload(file.path, {
+            folder: "narayanam/products/more-colors",
+          });
+          colorMainImage = upload.secure_url;
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // FIX: Added missing cleanup
+          fileIndex++;
+        }
+
+        // FIX: Removed the rogue, unused 'mainUpload' block that was breaking the file index.
+
+        // --- Gallery Images ---
+        const gallery = [];
+        const galleryCount = data.galleryCount || 0;
+
+        for (let i = 0; i < galleryCount; i++) {
           if (!moreColorFiles[fileIndex]) break;
 
-          const upload = await cloudinary.uploader.upload(
-            moreColorFiles[fileIndex].path,
-            {
-              folder: "narayanam/products/more-colors",
-            },
-          );
+          const file = moreColorFiles[fileIndex];
+          const upload = await cloudinary.uploader.upload(file.path, {
+            folder: "narayanam/products/more-colors",
+          });
 
           gallery.push(upload.secure_url);
-
+          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // FIX: Added missing cleanup
           fileIndex++;
         }
+
+        // FIX: Fallback to existing gallery images if no new ones are provided for this iteration
+        const finalGalleryImages =
+          gallery.length > 0
+            ? gallery
+            : existingProduct.moreColors?.[currentIndex]?.galleryImages || [];
 
         moreColors.push({
           color: data.color,
           thumbnail,
           mainImage: colorMainImage,
-          galleryImages: gallery,
+          galleryImages: finalGalleryImages,
         });
       }
     }
 
+    // ======================
+    // 4. UPDATE DATABASE
+    // ======================
     const updatedProduct = await Product.findByIdAndUpdate(
       req.params.id,
       {
         ...req.body,
-
         sizes: req.body.sizes
           ? JSON.parse(req.body.sizes)
           : existingProduct.sizes,
-
         colors: req.body.colors
           ? JSON.parse(req.body.colors)
           : existingProduct.colors,
-
         mainImage,
-
         galleryImages,
         moreColors,
       },
       {
-        returnDocument: "after",
+        new: true, // Mongoose standard for returning the updated document
       },
     );
 
@@ -452,9 +431,7 @@ export const updateProduct = async (req, res) => {
       data: updatedProduct,
     });
   } catch (error) {
-    console.error("UPDATE PRODUCT ERROR");
-    console.error(error);
-    console.error(error.stack);
+    console.error("UPDATE PRODUCT ERROR:", error);
 
     res.status(500).json({
       success: false,
