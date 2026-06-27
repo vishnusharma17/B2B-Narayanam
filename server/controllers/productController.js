@@ -349,13 +349,17 @@ export const updateProduct = async (req, res) => {
         let thumbnail =
           existingProduct.moreColors?.[currentIndex]?.thumbnail || "";
 
-        if (moreColorFiles[fileIndex]) {
+        if (data.hasThumbnail) {
           const file = moreColorFiles[fileIndex];
+
           const upload = await cloudinary.uploader.upload(file.path, {
             folder: "narayanam/products/more-colors",
           });
+
           thumbnail = upload.secure_url;
-          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // FIX: Added missing cleanup
+
+          fs.unlinkSync(file.path);
+
           fileIndex++;
         }
 
@@ -363,23 +367,34 @@ export const updateProduct = async (req, res) => {
         let colorMainImage =
           existingProduct.moreColors?.[currentIndex]?.mainImage || "";
 
-        if (moreColorFiles[fileIndex]) {
+        if (data.hasMainImage) {
           const file = moreColorFiles[fileIndex];
+
           const upload = await cloudinary.uploader.upload(file.path, {
             folder: "narayanam/products/more-colors",
           });
+
           colorMainImage = upload.secure_url;
-          if (fs.existsSync(file.path)) fs.unlinkSync(file.path); // FIX: Added missing cleanup
+
+          if (fs.existsSync(file.path)) {
+            fs.unlinkSync(file.path);
+          }
+
           fileIndex++;
         }
 
-        // FIX: Removed the rogue, unused 'mainUpload' block that was breaking the file index.
-
         // --- Gallery Images ---
+        console.log("Processing Color:", data.color);
+        console.log("Gallery Count:", data.galleryCount);
+        console.log("Current File Index:", fileIndex);
         const gallery = [];
         const galleryCount = data.galleryCount || 0;
 
         for (let i = 0; i < galleryCount; i++) {
+          console.log(
+            "Uploading Gallery File:",
+            moreColorFiles[fileIndex]?.originalname,
+          );
           if (!moreColorFiles[fileIndex]) break;
 
           const file = moreColorFiles[fileIndex];
