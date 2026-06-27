@@ -14,7 +14,6 @@ import {
   searchProducts,
   updateProduct,
   updateProductViews,
-  getVariantProducts
 } from "../controllers/productController.js";
 
 import { isAdmin, protect } from "../middleware/authMiddleware.js";
@@ -48,7 +47,6 @@ router.get("/limited-stock", getLimitedStockProducts);
 // MOST VIEWED PRODUCTS
 router.get("/most-viewed", getMostViewedProducts);
 
-router.get("/variants/:group", getVariantProducts);
 // PRODUCT BY SLUG
 router.get("/slug/:slug", getProductBySlug);
 
@@ -72,7 +70,11 @@ router.post(
     },
     {
       name: "galleryImages",
-      maxCount: 3,
+      maxCount: 10,
+    },
+    {
+      name: "moreColors",
+      maxCount: 20,
     },
   ]),
   createProduct,
@@ -92,7 +94,11 @@ router.put(
     },
     {
       name: "galleryImages",
-      maxCount: 3,
+      maxCount: 10,
+    },
+    {
+      name: "moreColors",
+      maxCount: 20,
     },
   ]),
   updateProduct,
@@ -102,6 +108,5 @@ router.put(
 // DELETE PRODUCT
 // ==========================
 router.delete("/:id", protect, isAdmin, deleteProduct);
-
 
 export default router;

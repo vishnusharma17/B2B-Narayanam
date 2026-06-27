@@ -30,9 +30,10 @@ export default function ProductDetailPage() {
 
   const [selectedImage, setSelectedImage] = useState("");
 
+
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  const [variantProducts, setVariantProducts] = useState([]);
+  const [currentColorData, setCurrentColorData] = useState(null);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -61,20 +62,11 @@ export default function ProductDetailPage() {
       // Product turant show karo
       setProduct(productData);
 
+      setCurrentColorData({
+        mainImage: productData.mainImage,
+        galleryImages: productData.galleryImages || [],
+      });
       setSelectedImage(productData.mainImage || "/placeholder-product.jpg");
-
-      // SAME DESIGN KE SABHI COLORS LOAD KARO
-      if (productData.variantGroup) {
-        try {
-          const variantRes = await API.get(
-            `/products/variants/${productData.variantGroup}`,
-          );
-
-          setVariantProducts(variantRes.data.data || []);
-        } catch (err) {
-          console.log(err);
-        }
-      }
 
       if (productData.colors?.length > 0) {
         setSelectedColor(productData.colors[0]);
@@ -212,7 +204,7 @@ export default function ProductDetailPage() {
     }
 
     router.push(
-      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`
+      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`,
     );
   };
 
@@ -232,11 +224,10 @@ export default function ProductDetailPage() {
   // IMAGES
   // =========================
 
-  const thumbnailImages = [
-    product.mainImage,
-    ...(product.galleryImages || []),
-  ].filter((img, index, self) => img && self.indexOf(img) === index);
-
+ const thumbnailImages = [
+   currentColorData?.mainImage || product.mainImage,
+   ...(currentColorData?.galleryImages || product.galleryImages || []),
+ ].filter((img, index, self) => img && self.indexOf(img) === index);
   return (
     <div className="bg-[#faf7f2] min-h-screen pt-20 sm:pt-24">
       {/* BREADCRUMB */}
@@ -506,34 +497,30 @@ export default function ProductDetailPage() {
 
             {/* MORE COLORS */}
 
-            {variantProducts.length > 1 && (
+            {product.moreColors?.length > 0 && (
               <div className="mt-8">
                 <h3 className="font-medium mb-4">More Colors</h3>
 
                 <div className="flex gap-3 flex-wrap">
-                  {variantProducts.map((item) => (
+                  {product.moreColors.map((item, index) => (
                     <button
-                      key={item._id}
-                      onClick={() => router.push(`/product/${item.slug}`)}
-                      className={`
-            w-20
-            h-24
-            rounded-xl
-            overflow-hidden
-            border-2
-            transition-all
+                      key={index}
+                      onClick={() => {
+                        setSelectedColor(item.color);
 
-            ${
-              item._id === product._id
-                ? "border-black"
-                : "border-gray-200 hover:border-black"
-            }
-          `}
+                        setCurrentColorData({
+                          mainImage: item.mainImage,
+                          galleryImages: item.galleryImages || [],
+                        });
+
+                        setSelectedImage(item.mainImage);
+                      }}
+                      className="w-20 h-24 rounded-xl overflow-hidden border hover:border-black"
                     >
                       <img
-                        src={item.mainImage}
-                        alt={item.name}
+                        src={item.thumbnail}
                         className="w-full h-full object-cover"
+                        alt={item.color}
                       />
                     </button>
                   ))}
@@ -541,7 +528,6 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            
             {/* SIZES */}
             {product.sizes?.length > 0 && (
               <div className="mt-7 sm:mt-8">

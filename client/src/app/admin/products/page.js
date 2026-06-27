@@ -23,7 +23,6 @@ const initialFormState = {
   name: "",
   slug: "",
   category: "",
-  variantGroup: "",
   price_min: "",
   original_price: "",
   discount_percentage: "",
@@ -35,6 +34,7 @@ const initialFormState = {
   sizes: [],
   mainImage: null,
   galleryImages: [],
+  moreColors: [],
   isTrending: false,
   isBestSeller: false,
   isLimitedStock: false,
@@ -144,6 +144,48 @@ export default function AdminProductsPage() {
     }));
   };
 
+  const addMoreColor = () => {
+    setFormData((prev) => ({
+      ...prev,
+      moreColors: [
+        ...prev.moreColors,
+        {
+          color: "",
+          thumbnail: null,
+          mainImage: null,
+          galleryImages: [],
+        },
+      ],
+    }));
+  };
+
+  const removeMoreColor = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      moreColors: prev.moreColors.filter((_, i) => i !== index),
+    }));
+  };
+
+  const updateMoreColor = (index, field, value) => {
+    const updated = [...formData.moreColors];
+    updated[index][field] = value;
+
+    setFormData((prev) => ({
+      ...prev,
+      moreColors: updated,
+    }));
+  };
+
+  const updateMoreGallery = (index, files) => {
+    const updated = [...formData.moreColors];
+
+    updated[index].galleryImages = Array.from(files);
+
+    setFormData((prev) => ({
+      ...prev,
+      moreColors: updated,
+    }));
+  };
   // =========================
   // SIZE TOGGLE
   // =========================
@@ -192,7 +234,6 @@ export default function AdminProductsPage() {
       name: product.name || "",
       slug: product.slug || "",
       category: product.category?._id || product.category || "",
-      variantGroup: product.variantGroup || "",
       price_min: product.price_min || "",
       original_price: product.original_price || "",
       discount_percentage: product.discount_percentage || "",
@@ -204,6 +245,13 @@ export default function AdminProductsPage() {
       sizes: product.sizes || [],
       mainImage: product.mainImage || null,
       galleryImages: product.galleryImages || [],
+      moreColors:
+        product.moreColors?.map((item) => ({
+          color: item.color,
+          thumbnail: item.thumbnail,
+          mainImage: item.mainImage,
+          galleryImages: item.galleryImages || [],
+        })) || [],
       isTrending: product.isTrending || false,
       isBestSeller: product.isBestSeller || false,
       isLimitedStock: product.isLimitedStock || false,
@@ -262,6 +310,29 @@ export default function AdminProductsPage() {
           });
         }
 
+        // MORE COLORS
+        else if (key === "moreColors") {
+          formData.moreColors.forEach((item, index) => {
+            formPayload.append(
+              `moreColorsData`,
+              JSON.stringify({
+                color: item.color,
+              }),
+            );
+
+            if (item.thumbnail) {
+              formPayload.append("moreColors", item.thumbnail);
+            }
+
+            if (item.mainImage) {
+              formPayload.append("moreColors", item.mainImage);
+            }
+
+            item.galleryImages.forEach((img) => {
+              formPayload.append("moreColors", img);
+            });
+          });
+        }
         // ARRAYS
         else if (Array.isArray(formData[key])) {
           formPayload.append(key, JSON.stringify(formData[key]));
@@ -335,7 +406,6 @@ export default function AdminProductsPage() {
           {[
             "name",
             "slug",
-            "variantGroup",
             "price_min",
             "original_price",
             "discount_percentage",
@@ -383,26 +453,6 @@ export default function AdminProductsPage() {
                 </option>
               ))}
             </select>
-          </div>
-          <div className="md:col-span-2">
-            <label className="block mb-2 font-medium">Variant Group</label>
-
-            <input
-              type="text"
-              placeholder="Example: kurti-001"
-              value={formData.variantGroup}
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  variantGroup: e.target.value,
-                }))
-              }
-              className="w-full border p-3 rounded-xl"
-            />
-
-            <p className="text-xs text-gray-500 mt-2">
-              Same design ke sabhi colors me same Variant Group rakho.
-            </p>
           </div>
           {/* SIZES */}
           <div className="md:col-span-2">
@@ -556,6 +606,135 @@ export default function AdminProductsPage() {
             />
           </div>
 
+          <div className="md:col-span-2">
+            <button
+              type="button"
+              onClick={addMoreColor}
+              className="bg-black text-white px-6 py-3 rounded-xl"
+            >
+              + Add More Color
+            </button>
+          </div>
+
+          {formData.moreColors.map((item, index) => (
+            <div
+              key={index}
+              className="md:col-span-2 border rounded-2xl p-5 mt-4 bg-gray-50"
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">
+                  More Color #{index + 1}
+                </h3>
+
+                <button
+                  type="button"
+                  onClick={() => removeMoreColor(index)}
+                  className="text-red-500"
+                >
+                  Remove
+                </button>
+              </div>
+
+              {/* Color Name */}
+              <input
+                type="text"
+                placeholder="Color Name"
+                value={item.color}
+                onChange={(e) =>
+                  updateMoreColor(index, "color", e.target.value)
+                }
+                className="w-full border p-3 rounded-xl mb-4"
+              />
+
+              {/* Thumbnail */}
+
+              {item.thumbnail && (
+                <img
+                  src={
+                    item.thumbnail instanceof File
+                      ? URL.createObjectURL(item.thumbnail)
+                      : item.thumbnail
+                  }
+                  alt="Thumbnail"
+                  className="w-24 h-24 object-cover rounded-xl mb-3 border"
+                />
+              )}
+              <label className="block mb-2 font-medium">Thumbnail Image</label>
+
+              <input
+                type="file"
+                onChange={(e) =>
+                  updateMoreColor(index, "thumbnail", e.target.files[0])
+                }
+                className="w-full border p-3 rounded-xl mb-4"
+              />
+
+              {/* Main Image */}
+
+              {item.mainImage && (
+                <img
+                  src={
+                    item.mainImage instanceof File
+                      ? URL.createObjectURL(item.mainImage)
+                      : item.mainImage
+                  }
+                  alt="Main"
+                  className="w-32 h-40 object-cover rounded-xl mb-3 border"
+                />
+              )}
+              <label className="block mb-2 font-medium">Main Image</label>
+
+              <input
+                type="file"
+                onChange={(e) =>
+                  updateMoreColor(index, "mainImage", e.target.files[0])
+                }
+                className="w-full border p-3 rounded-xl mb-4"
+              />
+
+              {/* Gallery */}
+              <label className="block mb-2 font-medium">Gallery Images</label>
+
+              <input
+                type="file"
+                multiple
+                onChange={(e) => updateMoreGallery(index, e.target.files)}
+                className="w-full border p-3 rounded-xl"
+              />
+            </div>
+          ))}
+
+          {item.galleryImages.length > 0 && (
+            <div className="flex flex-wrap gap-3 mt-4">
+              {item.galleryImages.map((img, imgIndex) => (
+                <div key={imgIndex} className="relative">
+                  <img
+                    src={img instanceof File ? URL.createObjectURL(img) : img}
+                    alt=""
+                    className="w-24 h-24 object-cover rounded-xl border"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = [...formData.moreColors];
+                      updated[index].galleryImages = updated[
+                        index
+                      ].galleryImages.filter((_, i) => i !== imgIndex);
+
+                      setFormData({
+                        ...formData,
+                        moreColors: updated,
+                      });
+                    }}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           {/* DESCRIPTION */}
           <div className="md:col-span-2">
             <label className="block mb-2 font-medium">

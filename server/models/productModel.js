@@ -62,7 +62,30 @@ const productSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    moreColors: [
+      {
+        color: {
+          type: String,
+          required: true,
+        },
 
+        thumbnail: {
+          type: String,
+          default: "",
+        },
+
+        mainImage: {
+          type: String,
+          default: "",
+        },
+
+        galleryImages: [
+          {
+            type: String,
+          },
+        ],
+      },
+    ],
     brand: {
       type: String,
       default: "Narayanam",
@@ -76,10 +99,7 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    variants: {
-     type: String,
-      default:"",
-    },
+
     isBestSeller: {
       type: Boolean,
       default: false,
