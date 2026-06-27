@@ -178,20 +178,58 @@ export const createProduct = async (req, res) => {
       const data = JSON.parse(item);
 
       // Thumbnail
-      const thumbnailUpload = await cloudinary.uploader.upload(
-        moreColorFiles[fileIndex++].path,
-        {
-          folder: "narayanam/products/more-colors",
-        },
-      );
+
+      let thumbnail = "";
+
+      if (moreColorFiles[fileIndex]) {
+        const upload = await cloudinary.uploader.upload(
+          moreColorFiles[fileIndex].path,
+          {
+            folder: "narayanam/products/more-colors",
+          },
+        );
+
+        thumbnail = upload.secure_url;
+        fileIndex++;
+      }
+      if (moreColorFiles[fileIndex]) {
+        const upload = await cloudinary.uploader.upload(
+          moreColorFiles[fileIndex].path,
+          {
+            folder: "narayanam/products/more-colors",
+          },
+        );
+
+        thumbnail = upload.secure_url;
+        fileIndex++;
+      }
 
       // Main Image
-      const mainUpload = await cloudinary.uploader.upload(
-        moreColorFiles[fileIndex++].path,
-        {
-          folder: "narayanam/products/more-colors",
-        },
-      );
+      let mainImage = "";
+
+      if (moreColorFiles[fileIndex]) {
+        const upload = await cloudinary.uploader.upload(
+          moreColorFiles[fileIndex].path,
+          {
+            folder: "narayanam/products/more-colors",
+          },
+        );
+
+        mainImage = upload.secure_url;
+        fileIndex++;
+      }
+
+      if (moreColorFiles[fileIndex]) {
+        const upload = await cloudinary.uploader.upload(
+          moreColorFiles[fileIndex].path,
+          {
+            folder: "narayanam/products/more-colors",
+          },
+        );
+
+        mainImage = upload.secure_url;
+        fileIndex++;
+      }
 
       // Remaining Gallery Images
       const gallery = [];
@@ -321,12 +359,37 @@ export const updateProduct = async (req, res) => {
       for (const item of moreColorsData) {
         const data = JSON.parse(item);
 
-        const thumbnailUpload = await cloudinary.uploader.upload(
-          moreColorFiles[fileIndex++].path,
-          {
-            folder: "narayanam/products/more-colors",
-          },
-        );
+        // Thumbnail
+        let thumbnail =
+          existingProduct.moreColors?.[moreColors.length]?.thumbnail || "";
+
+        if (moreColorFiles[fileIndex]) {
+          const upload = await cloudinary.uploader.upload(
+            moreColorFiles[fileIndex].path,
+            {
+              folder: "narayanam/products/more-colors",
+            },
+          );
+
+          thumbnail = upload.secure_url;
+          fileIndex++;
+        }
+
+        // Main Image
+        let colorMainImage =
+          existingProduct.moreColors?.[moreColors.length]?.mainImage || "";
+
+        if (moreColorFiles[fileIndex]) {
+          const upload = await cloudinary.uploader.upload(
+            moreColorFiles[fileIndex].path,
+            {
+              folder: "narayanam/products/more-colors",
+            },
+          );
+
+          colorMainImage = upload.secure_url;
+          fileIndex++;
+        }
 
         const mainUpload = await cloudinary.uploader.upload(
           moreColorFiles[fileIndex++].path,
@@ -334,10 +397,11 @@ export const updateProduct = async (req, res) => {
             folder: "narayanam/products/more-colors",
           },
         );
-
         const gallery = [];
 
-        while (fileIndex < moreColorFiles.length) {
+        for (let i = 0; i < (data.galleryCount || 0); i++) {
+          if (!moreColorFiles[fileIndex]) break;
+
           const upload = await cloudinary.uploader.upload(
             moreColorFiles[fileIndex].path,
             {
@@ -352,8 +416,8 @@ export const updateProduct = async (req, res) => {
 
         moreColors.push({
           color: data.color,
-          thumbnail: thumbnailUpload.secure_url,
-          mainImage: mainUpload.secure_url,
+          thumbnail,
+          mainImage: colorMainImage,
           galleryImages: gallery,
         });
       }
