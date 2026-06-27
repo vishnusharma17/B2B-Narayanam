@@ -44,6 +44,10 @@ const productSchema = new mongoose.Schema(
       default: 1,
     },
 
+    shippingDays: {
+      type: Number,
+      default: 7,
+    },
     sku: {
       type: String,
     },

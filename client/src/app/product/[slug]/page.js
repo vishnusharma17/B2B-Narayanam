@@ -30,7 +30,6 @@ export default function ProductDetailPage() {
 
   const [selectedImage, setSelectedImage] = useState("");
 
-
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   const [currentColorData, setCurrentColorData] = useState(null);
@@ -224,10 +223,10 @@ export default function ProductDetailPage() {
   // IMAGES
   // =========================
 
- const thumbnailImages = [
-   currentColorData?.mainImage || product.mainImage,
-   ...(currentColorData?.galleryImages || product.galleryImages || []),
- ].filter((img, index, self) => img && self.indexOf(img) === index);
+  const thumbnailImages = [
+    currentColorData?.mainImage || product.mainImage,
+    ...(currentColorData?.galleryImages || product.galleryImages || []),
+  ].filter((img, index, self) => img && self.indexOf(img) === index);
   return (
     <div className="bg-[#faf7f2] min-h-screen pt-20 sm:pt-24">
       {/* BREADCRUMB */}
@@ -440,6 +439,13 @@ export default function ProductDetailPage() {
                   Out of Stock
                 </span>
               )}
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-gray-700 mt-2">
+              <span>🚚</span>
+              <span>
+                Ships in <strong>{product.shippingDays} Days</strong>
+              </span>
             </div>
 
             {/* DESCRIPTION */}

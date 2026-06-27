@@ -247,8 +247,13 @@ export const createProduct = async (req, res) => {
       sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
       colors: req.body.colors ? JSON.parse(req.body.colors) : [],
       isTrending: req.body.isTrending === "true",
+
       isBestSeller: req.body.isBestSeller === "true",
+
       isLimitedStock: req.body.isLimitedStock === "true",
+
+      shippingDays: Number(req.body.shippingDays) || 10,
+
       mainImage,
       galleryImages,
       moreColors,
@@ -435,6 +440,8 @@ export const updateProduct = async (req, res) => {
         colors: req.body.colors
           ? JSON.parse(req.body.colors)
           : existingProduct.colors,
+        shippingDays:
+          Number(req.body.shippingDays) || existingProduct.shippingDays,
         mainImage,
         galleryImages,
         moreColors,

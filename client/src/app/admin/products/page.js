@@ -29,6 +29,7 @@ const initialFormState = {
   stock: "",
   moq: "",
   sku: "",
+  shippingDays: "",
   description: "",
   colors: [],
   sizes: [],
@@ -240,6 +241,7 @@ export default function AdminProductsPage() {
       stock: product.stock || "",
       moq: product.moq || "",
       sku: product.sku || "",
+      shippingDays: product.shippingDays || 10,
       description: product.description || "",
       colors: product.colors || [],
       sizes: product.sizes || [],
@@ -431,6 +433,7 @@ export default function AdminProductsPage() {
             "stock",
             "moq",
             "sku",
+            "shippingDays",
           ].map((field) => (
             <input
               key={field}
