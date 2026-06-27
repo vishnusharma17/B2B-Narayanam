@@ -313,13 +313,13 @@ export default function AdminProductsPage() {
         // MORE COLORS
         else if (key === "moreColors") {
           formData.moreColors.forEach((item, index) => {
-           formPayload.append(
-             "moreColorsData",
-             JSON.stringify({
-               color: item.color,
-               galleryCount: item.galleryImages.length,
-             }),
-           );
+            formPayload.append(
+              "moreColorsData",
+              JSON.stringify({
+                color: item.color,
+                galleryCount: item.galleryImages.length,
+              }),
+            );
 
             if (item.thumbnail) {
               formPayload.append("moreColors", item.thumbnail);
@@ -359,6 +359,12 @@ export default function AdminProductsPage() {
 
       // UPDATE
       if (editingId) {
+        console.log("========== FORMDATA ==========");
+
+        for (const pair of formPayload.entries()) {
+          console.log(pair[0], pair[1]);
+        }
+
         await API.put(`/products/${editingId}`, formPayload, getAuthHeaders());
 
         toast.success("Product updated successfully");
@@ -366,6 +372,12 @@ export default function AdminProductsPage() {
 
       // CREATE
       else {
+        console.log("========== FORMDATA ==========");
+
+        for (const pair of formPayload.entries()) {
+          console.log(pair[0], pair[1]);
+        }
+
         await API.post("/products", formPayload, getAuthHeaders());
 
         toast.success("Product created successfully");
