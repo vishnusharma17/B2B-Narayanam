@@ -141,6 +141,9 @@ export default function ProductDetailPage() {
         quantity,
         size: selectedSize,
         color: selectedColor,
+
+        colorImage: currentColorData?.mainImage || product.mainImage,
+
         sessionId,
       });
 
@@ -203,7 +206,9 @@ export default function ProductDetailPage() {
     }
 
     router.push(
-      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}`,
+      `/checkout?productId=${product._id}&quantity=${quantity}&size=${selectedSize}&color=${selectedColor}&colorImage=${encodeURIComponent(
+        currentColorData?.mainImage || product.mainImage,
+      )}`,
     );
   };
 

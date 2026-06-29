@@ -1,6 +1,6 @@
+import axios from "axios";
 import PDFDocument from "pdfkit";
 import Order from "../models/orderModel.js";
-
 export const generateInvoice = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate(
@@ -43,12 +43,43 @@ export const generateInvoice = async (req, res) => {
     doc.moveDown();
 
     doc.text("Products:");
-
-    order.products.forEach((item) => {
-      doc.text(`${item.productId?.name} - Qty: ${item.quantity}`);
-    });
-
     doc.moveDown();
+
+    for (const [index, item] of order.products.entries()) {
+      doc.fontSize(14).text(`${index + 1}. ${item.productId?.name}`);
+
+      // Product Image
+      if (item.selectedColorImage) {
+        try {
+          const response = await axios.get(item.selectedColorImage, {
+            responseType: "arraybuffer",
+          });
+
+          doc.image(Buffer.from(response.data), {
+            fit: [80, 100],
+            align: "left",
+          });
+        } catch (err) {
+          console.log("Image load failed");
+        }
+      }
+
+      doc.fontSize(11).text(`Quantity : ${item.quantity}`);
+
+      if (item.size) {
+        doc.text(`Size : ${item.size}`);
+      }
+
+      if (item.selectedColor) {
+        doc.text(`Color : ${item.selectedColor}`);
+      }
+
+      doc.text(
+        `Price : ₹${item.productId?.price_min || item.productId?.price || 0}`,
+      );
+
+      doc.moveDown(2);
+    }
 
     doc.text(`Total Amount: ₹${order.totalAmount}`);
 

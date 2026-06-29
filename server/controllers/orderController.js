@@ -36,7 +36,23 @@ export const createOrder = async (req, res) => {
 
     // STEP 2 → Create order
     // Order create
-    const order = await Order.create(req.body);
+    const products = await Promise.all(
+      req.body.products.map(async (item) => {
+        const product = await Product.findById(item.productId);
+
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          size: item.size || "",
+          color: item.color || "",
+          colorImage: item.colorImage || product.mainImage,
+        };
+      }),
+    );
+    const order = await Order.create({
+      ...req.body,
+      products,
+    });
 
     // FRONTEND KO TURANT RESPONSE
     res.status(201).json({
@@ -160,7 +176,7 @@ export const requestReturn = async (req, res) => {
     }
 
     const days = Math.floor(
-      (new Date() - new Date(order.deliveredAt)) / (1000 * 60 * 60 * 24)
+      (new Date() - new Date(order.deliveredAt)) / (1000 * 60 * 60 * 24),
     );
 
     if (days > 3) {

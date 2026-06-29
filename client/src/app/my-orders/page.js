@@ -30,7 +30,7 @@ export default function MyOrdersPage() {
       const res = await API.get("/orders");
 
       const myOrders = res.data.data.filter(
-        (order) => order.email === user.email
+        (order) => order.email === user.email,
       );
 
       setOrders(myOrders);
@@ -132,7 +132,7 @@ export default function MyOrdersPage() {
                   <div className="flex flex-col items-end gap-2">
                     <span
                       className={`px-4 py-2 rounded-full text-sm ${getStatusColor(
-                        order.status
+                        order.status,
                       )}`}
                     >
                       {order.status}
@@ -189,7 +189,11 @@ export default function MyOrdersPage() {
                     >
                       <div className="flex items-center gap-4">
                         <img
-                          src={item.productId?.mainImage}
+                          src={
+                            item.selectedColorImage ||
+                            item.productId?.mainImage ||
+                            "/placeholder-product.jpg"
+                          }
                           alt={item.productId?.name}
                           className="w-20 h-20 object-cover rounded-xl"
                         />
@@ -199,10 +203,20 @@ export default function MyOrdersPage() {
                             {item.productId?.name}
                           </h3>
 
-                          <p className="text-gray-500">Qty: {item.quantity}</p>
+                          {item.selectedColor && (
+                            <p className="text-gray-500">
+                              Color:{" "}
+                              <span className="font-medium">
+                                {item.selectedColor}
+                              </span>
+                            </p>
+                          )}
 
                           {item.size && (
-                            <p className="text-gray-500">Size: {item.size}</p>
+                            <p className="text-gray-500">
+                              Size:{" "}
+                              <span className="font-medium">{item.size}</span>
+                            </p>
                           )}
                         </div>
                       </div>

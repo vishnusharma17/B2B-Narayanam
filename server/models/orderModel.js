@@ -16,7 +16,6 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
     companyName: {
       type: String,
       default: "",
@@ -62,6 +61,16 @@ const orderSchema = new mongoose.Schema(
         },
 
         size: {
+          type: String,
+          default: "",
+        },
+
+        color: {
+          type: String,
+          default: "",
+        },
+
+        colorImage: {
           type: String,
           default: "",
         },

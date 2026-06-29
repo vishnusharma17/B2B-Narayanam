@@ -95,7 +95,7 @@ function CheckoutContent() {
         const res = await API.get("/products");
 
         const product = (res.data.data || []).find(
-          (item) => item._id === productId
+          (item) => item._id === productId,
         );
 
         if (product) {
@@ -105,7 +105,11 @@ function CheckoutContent() {
               name: product.name,
               price: product.price_min,
               quantity: quantityParam,
-              size: "",
+              size: searchParams.get("size") || "",
+              color: searchParams.get("color") || "",
+              colorImage: decodeURIComponent(
+                searchParams.get("colorImage") || product.mainImage,
+              ),
             },
           ]);
         }
@@ -151,7 +155,7 @@ function CheckoutContent() {
 
   const totalAmount = products.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
   // =========================
@@ -182,11 +186,12 @@ ${selectedAddress.city},
 ${selectedAddress.state},
 ${selectedAddress.pincode}
           `,
-
         products: products.map((item) => ({
           productId: item._id,
           quantity: Number(item.quantity) || 1,
           size: item.size || "",
+          color: item.color || "",
+          colorImage: item.colorImage || "",
         })),
 
         totalAmount: Number(totalAmount),

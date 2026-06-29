@@ -4,7 +4,14 @@ import Product from "../models/productModel.js";
 // ADD TO CART
 export const addToCart = async (req, res) => {
   try {
-    const { productId, quantity, sessionId } = req.body;
+    const {
+      productId,
+      quantity,
+      sessionId,
+      selectedColor,
+      selectedColorImage,
+      selectedSize,
+    } = req.body;
 
     const product = await Product.findById(productId);
 
@@ -18,6 +25,8 @@ export const addToCart = async (req, res) => {
     const existingCart = await Cart.findOne({
       product: productId,
       sessionId,
+      selectedColor,
+      selectedSize,
     });
 
     if (existingCart) {
@@ -36,6 +45,9 @@ export const addToCart = async (req, res) => {
       product: productId,
       quantity,
       sessionId,
+      selectedColor,
+      selectedColorImage,
+      selectedSize,
     });
 
     res.status(201).json({

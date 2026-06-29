@@ -521,6 +521,7 @@ export default function AdminOrdersPage() {
                     <div className="flex items-center gap-4">
                       <img
                         src={
+                          item.colorImage ||
                           item.productId?.mainImage ||
                           item.productId?.galleryImages?.[0] ||
                           "/placeholder-product.jpg"
@@ -550,9 +551,21 @@ export default function AdminOrdersPage() {
                           {item.productId?.name}
                         </h3>
 
-                        <p className="text-gray-500 text-sm mt-1">
-                          Qty: {item.quantity}
-                        </p>
+                        <div className="text-gray-500 text-sm mt-1 space-y-1">
+                          <p>Qty: {item.quantity}</p>
+
+                          {item.size && (
+                            <p>
+                              Size: <strong>{item.size}</strong>
+                            </p>
+                          )}
+
+                          {item.color && (
+                            <p>
+                              Color: <strong>{item.color}</strong>
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
