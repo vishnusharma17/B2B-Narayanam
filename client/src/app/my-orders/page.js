@@ -33,6 +33,8 @@ export default function MyOrdersPage() {
         (order) => order.email === user.email,
       );
 
+      console.log(myOrders);
+
       setOrders(myOrders);
     } catch (error) {
       console.log(error);
