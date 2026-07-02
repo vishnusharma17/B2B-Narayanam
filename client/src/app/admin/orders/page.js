@@ -752,7 +752,7 @@ export default function AdminOrdersPage() {
 
                 {/* INVOICE */}
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL}/api/invoice/${order._id}`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/invoice/${order._id}`}
                   target="_blank"
                   className="
                       w-full
