@@ -301,10 +301,7 @@ export default function MyOrdersPage() {
                     Reorder
                   </button>
 
-                  <a
-                    href={`${BASE_URL}/api/invoice/${order._id}`}
-                    target="_blank"
-                  >
+                  <a href={`${BASE_URL}/invoice/${order._id}`} target="_blank">
                     <button className="bg-black text-white px-6 py-3 rounded-xl">
                       Download Invoice
                     </button>
