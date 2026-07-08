@@ -625,21 +625,22 @@ export default function OrderDetailsPage() {
                 <div className="flex items-center gap-4">
                   <img
                     src={
+                      item.colorImage ||
+                      item.selectedColorImage ||
                       item.productId?.mainImage ||
-                      item.productId?.images?.[0] ||
                       "/placeholder-product.jpg"
                     }
-                    alt=""
+                    alt={item.productId?.name}
                     className="
-                        w-20
-                        h-20
-                        sm:w-24
-                        sm:h-24
-                        object-cover
-                        rounded-2xl
-                        bg-[#f5f5f5]
-                        shrink-0
-                      "
+    w-20
+    h-20
+    sm:w-24
+    sm:h-24
+    object-cover
+    rounded-2xl
+    bg-[#f5f5f5]
+    shrink-0
+  "
                   />
 
                   <div>
@@ -657,6 +658,19 @@ export default function OrderDetailsPage() {
                     <p className="text-gray-500 mt-2">
                       Quantity: {item.quantity}
                     </p>
+
+                    {item.size && (
+                      <p className="text-gray-500">
+                        Size: <strong>{item.size}</strong>
+                      </p>
+                    )}
+
+                    {(item.color || item.selectedColor) && (
+                      <p className="text-gray-500">
+                        Color:{" "}
+                        <strong>{item.color || item.selectedColor}</strong>
+                      </p>
+                    )}
                   </div>
                 </div>
 
