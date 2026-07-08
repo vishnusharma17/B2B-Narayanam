@@ -192,7 +192,7 @@ export default function MyOrdersPage() {
                       <div className="flex items-center gap-4">
                         <img
                           src={
-                            item.selectedColorImage ||
+                            item.colorImage ||
                             item.productId?.mainImage ||
                             "/placeholder-product.jpg"
                           }
@@ -205,12 +205,10 @@ export default function MyOrdersPage() {
                             {item.productId?.name}
                           </h3>
 
-                          {item.selectedColor && (
+                          {item.color && (
                             <p className="text-gray-500">
                               Color:{" "}
-                              <span className="font-medium">
-                                {item.selectedColor}
-                              </span>
+                              <span className="font-medium">{item.color}</span>
                             </p>
                           )}
 
