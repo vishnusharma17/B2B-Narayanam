@@ -10,14 +10,18 @@ export const generateInvoice = async (req, res) => {
 
     if (!order) {
       return res.status(404).json({
+        success: false,
         message: "Order not found",
       });
     }
 
-    // Initialize document with A4 size and margins
-    const doc = new PDFDocument({ size: "A4", margin: 50 });
+    const doc = new PDFDocument({
+      size: "A4",
+      margin: 40,
+    });
 
     res.setHeader("Content-Type", "application/pdf");
+
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=invoice-${order._id}.pdf`,
@@ -25,205 +29,450 @@ export const generateInvoice = async (req, res) => {
 
     doc.pipe(res);
 
-    // --- COLORS & STYLES ---
-    const primaryColor = "#2C3E50"; // Dark Blue/Grey for primary text
-    const secondaryColor = "#7F8C8D"; // Lighter Grey for secondary text
-    const accentColor = "#2980B9"; // Blue for highlights
-    const currency = "₹"; // Note: Standard PDFKit fonts may need a custom .ttf for the ₹ symbol. Use 'INR' if it renders as a box.
+    const PRIMARY = "#7A1E1E";
+    const GOLD = "#D4AF37";
+    const GRAY = "#666666";
+    const LIGHT = "#F8F3EC";
 
-    // --- 1. HEADER SECTION ---
+    const currency = "Rs. ";
+
+    // =========================
+    // LOGO
+    // =========================
+
+    try {
+      const logo = await axios.get(
+        "https://res.cloudinary.com/dpvzakvb4/image/upload/v1750000000/narayanam/logo.png",
+        {
+          responseType: "arraybuffer",
+        },
+      );
+
+      doc.image(Buffer.from(logo.data), 40, 35, {
+        width: 90,
+      });
+    } catch (err) {
+      doc
+        .fontSize(28)
+        .fillColor(PRIMARY)
+        .font("Helvetica-Bold")
+        .text("NARAYANAM", 40, 45);
+    }
+
+    // =========================
+    // INVOICE TITLE
+    // =========================
+
     doc
-      .fillColor(primaryColor)
+      .fillColor(PRIMARY)
+      .font("Helvetica-Bold")
       .fontSize(26)
-      .font("Helvetica-Bold")
-      .text("NARAYANAM", 50, 50);
+      .text("TAX INVOICE", 330, 45);
 
-    doc.fontSize(10).fillColor(secondaryColor).font("Helvetica");
-    doc.text("123 Business Road, City, State, 12345", 50, 85);
-    doc.text("Email: support@narayanam.com | Phone: +91 12345 67890", 50, 100);
+    doc.fontSize(11).fillColor(GRAY).font("Helvetica");
 
-    // Invoice Title & Meta Data (Right Aligned)
-    doc
-      .fillColor(accentColor)
-      .fontSize(20)
-      .font("Helvetica-Bold")
-      .text("INVOICE", 400, 50, { align: "right" });
-    doc.fillColor(primaryColor).fontSize(10).font("Helvetica-Bold");
-
-    const shortOrderId = order._id.toString().substring(0, 8).toUpperCase();
-    doc.text(`Invoice No: INV-${shortOrderId}`, 400, 75, { align: "right" });
-
-    doc.font("Helvetica").fillColor(secondaryColor);
-    const orderDate = order.createdAt
-      ? new Date(order.createdAt).toLocaleDateString()
-      : new Date().toLocaleDateString();
-    doc.text(`Date: ${orderDate}`, 400, 90, { align: "right" });
-
-    // Divider Line
-    doc
-      .moveTo(50, 130)
-      .lineTo(545, 130)
-      .lineWidth(1)
-      .strokeColor("#EEEEEE")
-      .stroke();
-
-    // --- 2. BILLING & ORDER INFO ---
-    const infoStartY = 150;
-
-    // Customer Info (Left)
-    doc
-      .fontSize(12)
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text("Billed To:", 50, infoStartY);
-    doc.font("Helvetica").fontSize(10).fillColor(secondaryColor);
-    doc.text(order.customerName || "N/A", 50, infoStartY + 15);
-    doc.text(order.address || "N/A", 50, infoStartY + 30);
-    doc.text(`Email: ${order.email || "N/A"}`, 50, infoStartY + 45);
-    doc.text(`Phone: ${order.phone || "N/A"}`, 50, infoStartY + 60);
-
-    // Order Details (Right)
-    doc
-      .fontSize(12)
-      .font("Helvetica-Bold")
-      .fillColor(primaryColor)
-      .text("Order Details:", 350, infoStartY);
-    doc.font("Helvetica").fontSize(10).fillColor(secondaryColor);
-    doc.text(`Order ID: ${order._id}`, 350, infoStartY + 15);
     doc.text(
-      `Payment Status: ${order.paymentStatus || "Pending"}`,
-      350,
-      infoStartY + 30,
-    );
-    doc.text(
-      `Order Status: ${order.status || "Processing"}`,
-      350,
-      infoStartY + 45,
+      `Invoice No : INV-${order._id.toString().slice(-8).toUpperCase()}`,
+      330,
+      78,
     );
 
-    // --- 3. TABLE HEADER ---
-    const tableTop = 250;
-    doc.rect(50, tableTop, 495, 25).fill("#F8F9FA"); // Light grey background for table header
+    doc.text(`Order ID : ${order._id.toString().slice(-10)}`, 330, 94);
 
-    doc.fillColor(primaryColor).font("Helvetica-Bold").fontSize(10);
-    doc.text("Item", 60, tableTop + 8);
-    doc.text("Description", 150, tableTop + 8);
-    doc.text("Qty", 350, tableTop + 8);
-    doc.text("Unit Price", 400, tableTop + 8);
-    doc.text("Total", 480, tableTop + 8);
+    doc.text(
+      `Date : ${new Date(order.createdAt).toLocaleDateString()}`,
+      330,
+      110,
+    );
 
-    // --- 4. TABLE ROWS (PRODUCTS) ---
-    let currentY = tableTop + 35;
+    // =========================
+    // COMPANY DETAILS
+    // =========================
+
+    doc.roundedRect(40, 150, 250, 135, 10).fill(LIGHT);
+
+    doc
+      .fillColor(PRIMARY)
+      .fontSize(14)
+      .font("Helvetica-Bold")
+      .text("Sold By", 55, 165);
+
+    doc.font("Helvetica").fontSize(11).fillColor("#444");
+
+    doc.text("Narayanam", 55, 190);
+
+    doc.text("Jaipur, Rajasthan", 55, 208);
+
+    doc.text("support@narayanam.com", 55, 226);
+
+    doc.text("+91 XXXXX XXXXX", 55, 244);
+
+    doc.text("GST : XXXXXXXX", 55, 262);
+
+    // =========================
+    // CUSTOMER DETAILS
+    // =========================
+
+    doc.roundedRect(305, 150, 250, 135, 10).fill("#FFF9EF");
+
+    doc
+      .fillColor(PRIMARY)
+      .font("Helvetica-Bold")
+      .fontSize(14)
+      .text("Bill To", 320, 165);
+
+    doc.fillColor("#444").font("Helvetica").fontSize(11);
+
+    doc.text(order.customerName || "-", 320, 190);
+
+    doc.text(order.phone || "-", 320, 208);
+
+    doc.text(order.email || "-", 320, 226, {
+      width: 210,
+    });
+
+    doc.text(order.address || "-", 320, 244, {
+      width: 210,
+    });
+
+    // =========================
+    // PAYMENT STATUS BADGE
+    // =========================
+
+    const paymentColor = order.paymentStatus === "paid" ? "#27AE60" : "#F39C12";
+
+    doc.roundedRect(40, 305, 120, 26, 6).fill(paymentColor);
+
+    doc
+      .fillColor("white")
+      .fontSize(10)
+      .font("Helvetica-Bold")
+      .text(order.paymentStatus.toUpperCase(), 67, 313);
+
+    // =========================
+    // ORDER STATUS BADGE
+    // =========================
+
+    let statusColor = "#F39C12";
+
+    if (order.status === "confirmed") statusColor = "#3498DB";
+    if (order.status === "shipped") statusColor = "#8E44AD";
+    if (order.status === "delivered") statusColor = "#27AE60";
+    if (order.status === "cancelled") statusColor = "#E74C3C";
+
+    doc.roundedRect(180, 305, 120, 26, 6).fill(statusColor);
+
+    doc
+      .fillColor("white")
+      .fontSize(10)
+      .font("Helvetica-Bold")
+      .text(order.status.toUpperCase(), 205, 313);
+
+    // =========================
+    // TABLE HEADER
+    // =========================
+
+    const tableY = 355;
+
+    doc.rect(40, tableY, 515, 30).fill(PRIMARY);
+
+    doc.fillColor("white").font("Helvetica-Bold").fontSize(10);
+
+    doc.text("IMAGE", 50, tableY + 10);
+    doc.text("PRODUCT", 120, tableY + 10);
+    doc.text("COLOR", 275, tableY + 10);
+    doc.text("SIZE", 345, tableY + 10);
+    doc.text("QTY", 405, tableY + 10);
+    doc.text("PRICE", 455, tableY + 10);
+
+    let currentY = tableY + 45;
+
+    // =========================
+    // PRODUCTS
+    // =========================
 
     for (const item of order.products) {
-      // Pagination Check: If we are close to the bottom of the page, add a new one
-      if (currentY > 700) {
-        doc.addPage();
-        currentY = 50; // Reset Y for the new page
-      }
-
       const price = item.productId?.price_min || item.productId?.price || 0;
-      const rowTotal = price * item.quantity;
+      const total = price * item.quantity;
+
+      // Row Background
+      doc.roundedRect(40, currentY - 8, 515, 90, 8).fill("#FFFFFF");
 
       // Product Image
-      if (item.selectedColorImage) {
+      const image =
+        item.selectedColorImage || item.colorImage || item.productId?.mainImage;
+
+      if (image) {
         try {
-          const response = await axios.get(item.selectedColorImage, {
+          const response = await axios.get(image, {
             responseType: "arraybuffer",
           });
-          // Made the image slightly smaller to fit tabular layout better
-          doc.image(Buffer.from(response.data), 60, currentY, {
-            width: 50,
-            height: 60,
+
+          doc.image(Buffer.from(response.data), 48, currentY, {
+            width: 55,
+            height: 70,
           });
         } catch (err) {
-          console.error("Image load failed for product:", item.productId?.name);
           doc
-            .fillColor(secondaryColor)
-            .font("Helvetica-Oblique")
-            .text("No Image", 60, currentY + 25);
+            .fillColor("#999")
+            .fontSize(9)
+            .text("No Image", 55, currentY + 25);
         }
       }
 
-      // Product Name & Variations
+      // Product Name
       doc
-        .fillColor(primaryColor)
+        .fillColor("#111")
         .font("Helvetica-Bold")
-        .text(item.productId?.name || "Product Name", 150, currentY);
-      doc.fillColor(secondaryColor).font("Helvetica").fontSize(9);
+        .fontSize(11)
+        .text(item.productId?.name || "Product", 120, currentY, {
+          width: 140,
+        });
 
-      let detailsY = currentY + 15;
-      if (item.size) {
-        doc.text(`Size: ${item.size}`, 150, detailsY);
-        detailsY += 12;
-      }
-      if (item.selectedColor) {
-        doc.text(`Color: ${item.selectedColor}`, 150, detailsY);
-      }
-
-      // Quantity, Price, and Total (Aligned to columns)
-      doc.fontSize(10).fillColor(primaryColor);
-      doc.text(item.quantity.toString(), 350, currentY);
-      doc.text(`${currency}${price.toFixed(2)}`, 400, currentY);
-      doc.text(`${currency}${rowTotal.toFixed(2)}`, 480, currentY);
-
-      // Increment Y coordinate for the next row and draw a bottom border
-      currentY += 75;
+      // SKU
       doc
-        .moveTo(50, currentY - 10)
-        .lineTo(545, currentY - 10)
-        .lineWidth(0.5)
-        .strokeColor("#EEEEEE")
+        .fillColor("#777")
+        .font("Helvetica")
+        .fontSize(9)
+        .text(`SKU : ${item.productId?.sku || "-"}`, 120, currentY + 18);
+
+      // MOQ
+      doc.text(`MOQ : ${item.productId?.moq || "-"}`, 120, currentY + 32);
+
+      // Color
+      doc
+        .fillColor("#333")
+        .fontSize(10)
+        .text(item.selectedColor || item.color || "-", 275, currentY + 15);
+
+      // Size
+      doc.text(item.size || "-", 345, currentY + 15);
+
+      // Qty
+      doc.text(item.quantity.toString(), 405, currentY + 15);
+
+      // Price
+      doc.text(`${currency}${price.toFixed(2)}`, 455, currentY + 15);
+
+      // Line
+      doc
+        .moveTo(40, currentY + 85)
+        .lineTo(555, currentY + 85)
+        .strokeColor("#ECECEC")
         .stroke();
+
+      currentY += 95;
+
+      // New Page
+      if (currentY > 650) {
+        doc.addPage();
+        currentY = 60;
+      }
     }
 
-    // --- 5. TOTALS SECTION ---
-    currentY += 10;
+    // =========================
+    // TOTALS
+    // =========================
 
-    // Pagination Check for totals
-    if (currentY > 700) {
-      doc.addPage();
-      currentY = 50;
-    }
+    currentY += 15;
 
-    doc.font("Helvetica-Bold").fillColor(primaryColor).fontSize(12);
-    doc.text("Total Amount:", 380, currentY);
+    doc.roundedRect(325, currentY, 230, 120, 10).fill("#FFF9EF");
+
+    doc.fillColor("#333").font("Helvetica").fontSize(11);
+
+    doc.text("Subtotal", 340, currentY + 18);
+
+    doc.text(`${currency}${order.totalAmount.toFixed(2)}`, 470, currentY + 18);
+
+    doc.text("Shipping", 340, currentY + 42);
+
+    doc.text("FREE", 470, currentY + 42);
+
+    doc.text("Discount", 340, currentY + 66);
+
+    doc.text(`${currency}0.00`, 470, currentY + 66);
+
+    // Divider
+
     doc
-      .fillColor(accentColor)
-      .fontSize(14)
-      .text(`${currency}${order.totalAmount.toFixed(2)}`, 480, currentY - 1);
-
-    // --- 6. FOOTER ---
-    const footerY = doc.page.height - 80;
-    doc
-      .moveTo(50, footerY)
-      .lineTo(545, footerY)
-      .lineWidth(1)
-      .strokeColor("#EEEEEE")
+      .moveTo(340, currentY + 88)
+      .lineTo(535, currentY + 88)
+      .strokeColor("#DDD")
       .stroke();
+
+    // Grand Total
+
+    doc.fillColor("#7A1E1E").font("Helvetica-Bold").fontSize(14);
+
+    doc.text("Grand Total", 340, currentY + 98);
+
+    doc.text(`${currency}${order.totalAmount.toFixed(2)}`, 455, currentY + 98);
+
+    currentY += 150;
+    // =========================
+    // PAYMENT DETAILS
+    // =========================
+
+    if (currentY > 620) {
+      doc.addPage();
+      currentY = 60;
+    }
+
+    doc.roundedRect(40, currentY, 245, 140, 10).fill("#F8F3EC");
+
     doc
+      .fillColor(PRIMARY)
       .font("Helvetica-Bold")
-      .fontSize(10)
-      .fillColor(primaryColor)
-      .text("Thank you for shopping with Narayanam!", 50, footerY + 15, {
+      .fontSize(14)
+      .text("Payment Details", 55, currentY + 15);
+
+    doc.fillColor("#444").font("Helvetica").fontSize(11);
+
+    doc.text(
+      `Payment Method : ${order.paymentMethod || "-"}`,
+      55,
+      currentY + 45,
+    );
+
+    doc.text(
+      `Payment Status : ${order.paymentStatus || "-"}`,
+      55,
+      currentY + 68,
+    );
+
+    doc.text(`Payment ID : ${order.paymentId || "-"}`, 55, currentY + 91);
+
+    doc.text(`Order Status : ${order.status}`, 55, currentY + 114);
+
+    // =========================
+    // SHIPPING DETAILS
+    // =========================
+
+    doc.roundedRect(310, currentY, 245, 140, 10).fill("#FFF9EF");
+
+    doc
+      .fillColor(PRIMARY)
+      .font("Helvetica-Bold")
+      .fontSize(14)
+      .text("Shipping Details", 325, currentY + 15);
+
+    doc.fillColor("#444").font("Helvetica").fontSize(11);
+
+    doc.text(
+      `Courier : ${order.courierName || "Not Assigned"}`,
+      325,
+      currentY + 45,
+    );
+
+    doc.text(`Tracking ID : ${order.trackingId || "-"}`, 325, currentY + 68, {
+      width: 190,
+    });
+
+    doc.text(
+      `Tracking : ${order.trackingLink || "Not Available"}`,
+      325,
+      currentY + 91,
+      {
+        width: 190,
+      },
+    );
+
+    // =========================
+    // THANK YOU BOX
+    // =========================
+
+    currentY += 170;
+
+    if (currentY > 690) {
+      doc.addPage();
+      currentY = 60;
+    }
+
+    doc.roundedRect(40, currentY, 515, 90, 10).fill(PRIMARY);
+
+    doc
+      .fillColor("white")
+      .font("Helvetica-Bold")
+      .fontSize(18)
+      .text("Thank You For Shopping With Narayanam ❤️", 40, currentY + 18, {
         align: "center",
       });
+
     doc
       .font("Helvetica")
-      .fillColor(secondaryColor)
+      .fontSize(11)
       .text(
-        "If you have any questions regarding this invoice, please contact us.",
-        50,
-        footerY + 30,
-        { align: "center" },
+        "We truly appreciate your trust in us. We hope you enjoy your purchase.",
+        40,
+        currentY + 48,
+        {
+          align: "center",
+        },
       );
 
-    // Finalize the PDF
+    // =========================
+    // TERMS
+    // =========================
+
+    currentY += 115;
+
+    doc
+      .fillColor(PRIMARY)
+      .font("Helvetica-Bold")
+      .fontSize(13)
+      .text("Terms & Conditions", 40, currentY);
+
+    doc.fillColor("#666").font("Helvetica").fontSize(10);
+
+    doc.text(
+      "• Goods once sold are subject to our return policy.",
+      50,
+      currentY + 22,
+    );
+
+    doc.text("• Keep this invoice for future reference.", 50, currentY + 38);
+
+    doc.text(
+      "• Product colors may slightly vary because of screen settings.",
+      50,
+      currentY + 54,
+    );
+
+    doc.text("• For support contact support@narayanam.com", 50, currentY + 70);
+
+    // =========================
+    // FOOTER
+    // =========================
+
+    const footerY = doc.page.height - 60;
+
+    doc
+      .moveTo(40, footerY)
+      .lineTo(555, footerY)
+      .strokeColor("#DDDDDD")
+      .stroke();
+
+    doc
+      .fillColor("#666")
+      .fontSize(9)
+      .font("Helvetica")
+      .text(
+        "This is a computer generated invoice and does not require a signature.",
+        40,
+        footerY + 12,
+        {
+          align: "center",
+        },
+      );
+
     doc.end();
   } catch (error) {
-    console.error("PDF Generation Error:", error);
-    res.status(500).json({
-      message: error.message,
-    });
+    console.error("Error generating invoice:", error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error while generating invoice",
+      });
+    }
   }
 };
