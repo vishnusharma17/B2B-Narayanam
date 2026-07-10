@@ -11,6 +11,7 @@ const AVAILABLE_SIZES = [
   "L",
   "XL",
   "XXL",
+  "2XL",
   "3XL",
   "4XL",
   "5XL",
@@ -66,7 +67,7 @@ export default function AdminProductsPage() {
   }, []);
 
   // =========================
-  // SLUG
+  // SLUG GENERATOR
   // =========================
   const generateSlug = (text) => {
     return text
@@ -74,6 +75,18 @@ export default function AdminProductsPage() {
       .trim()
       .replace(/\s+/g, "-")
       .replace(/[^\w-]+/g, "");
+  };
+
+  // =========================
+  // SKU GENERATOR (6 DIGIT ALPHANUMERIC)
+  // =========================
+  const generateSKU = () => {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let autoSku = "";
+    for (let i = 0; i < 6; i++) {
+      autoSku += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return autoSku;
   };
 
   // =========================
@@ -95,7 +108,6 @@ export default function AdminProductsPage() {
     try {
       setLoading(true);
       const res = await API.get("/products");
-      console.log(res.data.data);
       setProducts(res.data?.data || []);
     } catch (error) {
       toast.error("Failed to load products");
@@ -328,17 +340,9 @@ export default function AdminProductsPage() {
       }
 
       if (editingId) {
-        console.log("========== FORMDATA ==========");
-        for (const pair of formPayload.entries()) {
-          console.log(pair[0], pair[1]);
-        }
         await API.put(`/products/${editingId}`, formPayload, getAuthHeaders());
         toast.success("Product updated successfully");
       } else {
-        console.log("========== FORMDATA ==========");
-        for (const pair of formPayload.entries()) {
-          console.log(pair[0], pair[1]);
-        }
         await API.post("/products", formPayload, getAuthHeaders());
         toast.success("Product created successfully");
       }
@@ -410,18 +414,48 @@ export default function AdminProductsPage() {
                 type: "number",
               },
             ].map((field) => (
-              <div key={field.id} className="flex flex-col space-y-1.5">
-                <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {field.label}
-                </label>
+              <div
+                key={field.id}
+                className="flex flex-col space-y-1.5 relative"
+              >
+                {/* LABEL & AUTO GENERATE BUTTON FOR SKU */}
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    {field.label}
+                  </label>
+                  {field.id === "sku" && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, sku: generateSKU() }))
+                      }
+                      className="text-[10px] font-bold text-blue-600 hover:text-blue-800 uppercase tracking-wider transition"
+                    >
+                      🎲 Auto Generate
+                    </button>
+                  )}
+                </div>
+
                 <input
                   type={field.type}
                   placeholder={`Enter ${field.label.toLowerCase()}`}
                   className="w-full bg-gray-50/50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:bg-white transition"
                   value={formData[field.id]}
-                  // ✨ AUTO DISCOUNT LOGIC ADDED HERE ✨
+                  // Force uppercase visually for SKU field while typing
+                  onInput={(e) => {
+                    if (field.id === "sku") {
+                      e.target.value = e.target.value.toUpperCase();
+                    }
+                  }}
+                  // Limit max length to 6 digits for SKU
+                  maxLength={field.id === "sku" ? 6 : undefined}
                   onChange={(e) => {
-                    const value = e.target.value;
+                    let value = e.target.value;
+
+                    // Force uppercase in state for SKU
+                    if (field.id === "sku") {
+                      value = value.toUpperCase();
+                    }
 
                     setFormData((prev) => {
                       const updatedData = {
@@ -429,10 +463,16 @@ export default function AdminProductsPage() {
                         [field.id]: value,
                       };
 
+                      // Name change behavior
                       if (field.id === "name") {
                         updatedData.slug = generateSlug(value);
+                        // SKU Auto Generator when typing Name
+                        if (!prev.sku) {
+                          updatedData.sku = generateSKU();
+                        }
                       }
 
+                      // Auto Discount Logic
                       if (
                         field.id === "price_min" ||
                         field.id === "original_price"
@@ -852,9 +892,16 @@ export default function AdminProductsPage() {
                 )}
 
                 <div className="space-y-1 flex-1">
-                  <h3 className="font-bold text-lg text-gray-900 tracking-tight leading-snug">
-                    {product.name}
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-lg text-gray-900 tracking-tight leading-snug">
+                      {product.name}
+                    </h3>
+                    {product.sku && (
+                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-[10px] font-mono border border-gray-200">
+                        SKU: {product.sku}
+                      </span>
+                    )}
+                  </div>
                   <div className="text-xl font-extrabold text-black">
                     ₹{product.price_min}
                   </div>
