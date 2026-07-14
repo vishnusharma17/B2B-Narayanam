@@ -8,7 +8,7 @@ import {
   Search,
   ShoppingBag,
   User,
-  X
+  X,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -23,9 +23,6 @@ import toast from "react-hot-toast";
 import API from "../../lib/api";
 
 export default function Navbar() {
-  const [mounted, setMounted] =
-    useState(false);
-
   const [menuOpen, setMenuOpen] =
     useState(false);
 
@@ -50,8 +47,6 @@ export default function Navbar() {
   // =========================
 
   useEffect(() => {
-    setMounted(true);
-
     checkUser();
 
     window.addEventListener(
@@ -68,16 +63,22 @@ export default function Navbar() {
   }, []);
 
   const checkUser = () => {
-    const user =
-      localStorage.getItem(
-        "userData",
-      );
+    try {
+      const user =
+        localStorage.getItem(
+          "userData",
+        );
 
-    if (user) {
-      setUserData(
-        JSON.parse(user),
-      );
-    } else {
+      if (user) {
+        setUserData(
+          JSON.parse(user),
+        );
+      } else {
+        setUserData(null);
+      }
+    } catch (error) {
+      console.log(error);
+
       setUserData(null);
     }
   };
@@ -154,10 +155,6 @@ export default function Navbar() {
       clearTimeout(timer);
   }, [search]);
 
-  if (!mounted) {
-    return null;
-  }
-
   const links = [
     {
       name: "Home",
@@ -184,12 +181,32 @@ export default function Navbar() {
   return (
     <>
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-black/85 backdrop-blur-xl border-b border-[#D4AF37]/20 text-white">
+
+      <nav
+        className="
+          fixed
+          top-0
+          left-0
+          w-full
+          z-50
+          bg-black/85
+          backdrop-blur-xl
+          border-b
+          border-[#D4AF37]/20
+          text-white
+        "
+        aria-label="Main navigation"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
           {/* DESKTOP */}
+
           <div className="hidden lg:flex items-center justify-between h-[85px]">
+
             {/* LEFT */}
+
             <div className="flex items-center gap-6">
+
               {links
                 .slice(0, 2)
                 .map((link) => (
@@ -207,33 +224,46 @@ export default function Navbar() {
                     }
                   </Link>
                 ))}
+
             </div>
 
             {/* LOGO */}
-            <Link href="/">
+
+            <Link
+              href="/"
+              aria-label="Narayanam home"
+            >
               <div className="text-center">
-                <h1 className="text-3xl tracking-[8px] font-light text-[#D4AF37]">
+
+                <div className="text-3xl tracking-[8px] font-light text-[#D4AF37]">
                   NARAYANAM
-                </h1>
+                </div>
 
                 <p className="text-[10px] tracking-[4px] text-gray-400 uppercase mt-1">
                   Luxury Ethnic
                   House
                 </p>
+
               </div>
             </Link>
 
             {/* RIGHT */}
+
             <div className="flex items-center gap-5">
+
               {/* SEARCH */}
+
               <div className="relative hidden xl:block">
+
                 <Search
                   size={18}
+                  aria-hidden="true"
                   className="absolute left-4 top-3.5 text-gray-400"
                 />
 
                 <input
                   type="text"
+                  aria-label="Search products"
                   placeholder="Search products..."
                   value={search}
                   onChange={(e) =>
@@ -246,9 +276,11 @@ export default function Navbar() {
                 />
 
                 {/* SEARCH DROPDOWN */}
+
                 {search.length >
                   0 && (
                   <div className="absolute top-[60px] left-0 w-full bg-white text-black rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[450px] overflow-y-auto">
+
                     {searchLoading ? (
                       <div className="p-5 text-center text-sm">
                         Searching...
@@ -280,6 +312,7 @@ export default function Navbar() {
                             }}
                           >
                             <div className="flex items-center gap-4 p-4 hover:bg-gray-100 transition border-b">
+
                               <img
                                 src={
                                   item.mainImage
@@ -287,10 +320,15 @@ export default function Navbar() {
                                 alt={
                                   item.name
                                 }
+                                width="64"
+                                height="64"
+                                loading="lazy"
+                                decoding="async"
                                 className="w-16 h-16 object-cover rounded-xl"
                               />
 
                               <div>
+
                                 <h3 className="font-medium line-clamp-1">
                                   {
                                     item.name
@@ -303,17 +341,22 @@ export default function Navbar() {
                                     item.price_min
                                   }
                                 </p>
+
                               </div>
+
                             </div>
                           </Link>
                         ),
                       )
                     )}
+
                   </div>
                 )}
+
               </div>
 
               {/* LINKS */}
+
               {links
                 .slice(2)
                 .map((link) => (
@@ -333,42 +376,47 @@ export default function Navbar() {
                 ))}
 
               {/* USER AREA */}
+
               {userData ? (
                 <div className="flex items-center gap-5 ml-2">
-                  <Link href="/wishlist">
+
+                  <Link
+                    href="/wishlist"
+                    aria-label="Wishlist"
+                  >
                     <Heart
                       size={20}
+                      aria-hidden="true"
                       className="hover:text-[#D4AF37] transition"
                     />
                   </Link>
 
-                  <Link href="/cart">
+                  <Link
+                    href="/cart"
+                    aria-label="Shopping cart"
+                  >
                     <ShoppingBag
                       size={20}
+                      aria-hidden="true"
                       className="hover:text-[#D4AF37] transition"
                     />
                   </Link>
 
-                  <Link href="/profile">
+                  <Link
+                    href="/profile"
+                    aria-label="Profile"
+                  >
                     <User
                       size={20}
+                      aria-hidden="true"
                       className="hover:text-[#D4AF37] transition"
                     />
                   </Link>
 
-                  {/* <button
-                    onClick={
-                      handleLogout
-                    }
-                    className="hover:text-red-400 transition"
-                  >
-                    <LogOut
-                      size={20}
-                    />
-                  </button> */}
                 </div>
               ) : (
                 <div className="flex gap-4 uppercase tracking-[2px] text-sm">
+
                   <Link
                     href="/login"
                     className="hover:text-[#D4AF37]"
@@ -382,37 +430,58 @@ export default function Navbar() {
                   >
                     Register
                   </Link>
+
                 </div>
               )}
+
             </div>
+
           </div>
 
           {/* MOBILE */}
+
           <div className="lg:hidden flex items-center justify-between h-[75px]">
-            <Link href="/">
-              <h1 className="text-2xl tracking-[5px] font-light text-[#D4AF37]">
+
+            <Link
+              href="/"
+              aria-label="Narayanam home"
+            >
+              <div className="text-2xl tracking-[5px] font-light text-[#D4AF37]">
                 NARAYANAM
-              </h1>
+              </div>
             </Link>
 
             <div className="flex items-center gap-4">
+
               {userData && (
                 <>
-                  <Link href="/wishlist">
+
+                  <Link
+                    href="/wishlist"
+                    aria-label="Wishlist"
+                  >
                     <Heart
                       size={20}
+                      aria-hidden="true"
                     />
                   </Link>
 
-                  <Link href="/cart">
+                  <Link
+                    href="/cart"
+                    aria-label="Shopping cart"
+                  >
                     <ShoppingBag
                       size={22}
+                      aria-hidden="true"
                     />
                   </Link>
+
                 </>
               )}
 
               <button
+                type="button"
+                aria-label="Open menu"
                 onClick={() =>
                   setMenuOpen(
                     true,
@@ -421,14 +490,20 @@ export default function Navbar() {
               >
                 <Menu
                   size={28}
+                  aria-hidden="true"
                 />
               </button>
+
             </div>
+
           </div>
+
         </div>
+
       </nav>
 
       {/* MOBILE MENU */}
+
       <div
         className={`fixed inset-0 z-[60] transition-all duration-300 ${
           menuOpen
@@ -436,6 +511,7 @@ export default function Navbar() {
             : "invisible opacity-0"
         }`}
       >
+
         <div
           onClick={() =>
             setMenuOpen(
@@ -452,12 +528,16 @@ export default function Navbar() {
               : "translate-x-full"
           }`}
         >
+
           <div className="flex items-center justify-between mb-8">
+
             <h2 className="text-xl font-semibold">
               Menu
             </h2>
 
             <button
+              type="button"
+              aria-label="Close menu"
               onClick={() =>
                 setMenuOpen(
                   false,
@@ -466,19 +546,25 @@ export default function Navbar() {
             >
               <X
                 size={28}
+                aria-hidden="true"
               />
             </button>
+
           </div>
 
           {/* MOBILE SEARCH */}
+
           <div className="relative mb-8">
+
             <Search
               size={18}
+              aria-hidden="true"
               className="absolute left-4 top-3.5 text-gray-400"
             />
 
             <input
               type="text"
+              aria-label="Search products"
               placeholder="Search..."
               value={search}
               onChange={(e) =>
@@ -489,10 +575,13 @@ export default function Navbar() {
               }
               className="w-full bg-white/10 border border-white/10 rounded-full py-3 pl-11 pr-4 text-sm outline-none"
             />
+
           </div>
 
           {/* MOBILE LINKS */}
+
           <div className="flex flex-col gap-5 uppercase tracking-[3px] text-sm">
+
             {links.map(
               (link) => (
                 <Link
@@ -518,6 +607,7 @@ export default function Navbar() {
 
             {userData ? (
               <>
+
                 <Link href="/wishlist">
                   Wishlist
                 </Link>
@@ -531,6 +621,7 @@ export default function Navbar() {
                 </Link>
 
                 <button
+                  type="button"
                   onClick={
                     handleLogout
                   }
@@ -538,9 +629,11 @@ export default function Navbar() {
                 >
                   Logout
                 </button>
+
               </>
             ) : (
               <>
+
                 <Link href="/login">
                   Login
                 </Link>
@@ -548,10 +641,14 @@ export default function Navbar() {
                 <Link href="/register">
                   Register
                 </Link>
+
               </>
             )}
+
           </div>
+
         </div>
+
       </div>
     </>
   );
