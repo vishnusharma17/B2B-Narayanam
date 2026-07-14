@@ -2,7 +2,7 @@
 
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 
 import API from "../../lib/api";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
 
   const [showPassword, setShowPassword] = useState(false);
@@ -47,6 +47,7 @@ export default function LoginPage() {
       localStorage.setItem("userData", JSON.stringify(res.data.user));
 
       // NAVBAR REFRESH
+
       window.dispatchEvent(new Event("storage"));
 
       toast.success("Login successful");
@@ -56,6 +57,32 @@ export default function LoginPage() {
       toast.error(error.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // =========================
+  // GOOGLE LOGIN
+  // =========================
+
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      const res = await API.post("/auth/google-login", {
+        credential: credentialResponse.credential,
+      });
+
+      localStorage.setItem("userToken", res.data.token);
+
+      localStorage.setItem("userData", JSON.stringify(res.data.user));
+
+      window.dispatchEvent(new Event("storage"));
+
+      toast.success("Google Login Successful");
+
+      router.push("/profile");
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Google login failed");
     }
   };
 
@@ -77,6 +104,7 @@ export default function LoginPage() {
       "
     >
       {/* MAIN CONTAINER */}
+
       <div
         className="
           relative
@@ -85,6 +113,7 @@ export default function LoginPage() {
         "
       >
         {/* GLOW */}
+
         <div
           className="
             absolute
@@ -103,6 +132,7 @@ export default function LoginPage() {
         />
 
         {/* CARD */}
+
         <div
           className="
             relative
@@ -118,6 +148,7 @@ export default function LoginPage() {
           "
         >
           {/* TOP */}
+
           <div
             className="
               px-6
@@ -128,6 +159,7 @@ export default function LoginPage() {
             "
           >
             {/* ICON */}
+
             <div className="flex justify-center mb-6">
               <div
                 className="
@@ -144,11 +176,12 @@ export default function LoginPage() {
                   shadow-sm
                 "
               >
-                <LockKeyhole size={34} />
+                <LockKeyhole size={34} aria-hidden="true" />
               </div>
             </div>
 
             {/* SMALL TAG */}
+
             <p
               className="
                 uppercase
@@ -163,6 +196,7 @@ export default function LoginPage() {
             </p>
 
             {/* TITLE */}
+
             <h1
               className="
                 text-3xl
@@ -175,6 +209,7 @@ export default function LoginPage() {
             </h1>
 
             {/* SUBTITLE */}
+
             <p
               className="
                 text-gray-500
@@ -189,6 +224,7 @@ export default function LoginPage() {
           </div>
 
           {/* FORM */}
+
           <form
             onSubmit={handleLogin}
             className="
@@ -200,8 +236,10 @@ export default function LoginPage() {
             "
           >
             {/* EMAIL */}
+
             <div>
               <label
+                htmlFor="email"
                 className="
                   text-sm
                   text-gray-600
@@ -215,6 +253,7 @@ export default function LoginPage() {
               <div className="relative">
                 <Mail
                   size={18}
+                  aria-hidden="true"
                   className="
                     absolute
                     left-4
@@ -225,12 +264,15 @@ export default function LoginPage() {
                 />
 
                 <input
+                  id="email"
                   type="email"
                   placeholder="Enter Email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(e) =>
                     setForm({
                       ...form,
+
                       email: e.target.value,
                     })
                   }
@@ -254,8 +296,10 @@ export default function LoginPage() {
             </div>
 
             {/* PASSWORD */}
+
             <div>
               <label
+                htmlFor="password"
                 className="
                   text-sm
                   text-gray-600
@@ -269,6 +313,7 @@ export default function LoginPage() {
               <div className="relative">
                 <LockKeyhole
                   size={18}
+                  aria-hidden="true"
                   className="
                     absolute
                     left-4
@@ -279,12 +324,15 @@ export default function LoginPage() {
                 />
 
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Password"
+                  autoComplete="current-password"
                   value={form.password}
                   onChange={(e) =>
                     setForm({
                       ...form,
+
                       password: e.target.value,
                     })
                   }
@@ -307,6 +355,7 @@ export default function LoginPage() {
 
                 <button
                   type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="
                     absolute
                     right-4
@@ -318,12 +367,17 @@ export default function LoginPage() {
                   "
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? (
+                    <EyeOff size={20} aria-hidden="true" />
+                  ) : (
+                    <Eye size={20} aria-hidden="true" />
+                  )}
                 </button>
               </div>
             </div>
 
             {/* FORGOT PASSWORD */}
+
             <div className="text-right">
               <Link
                 href="/forgot-password"
@@ -338,6 +392,7 @@ export default function LoginPage() {
             </div>
 
             {/* LOGIN BUTTON */}
+
             <button
               type="submit"
               disabled={loading}
@@ -363,6 +418,7 @@ export default function LoginPage() {
           </form>
 
           {/* FOOTER */}
+
           <div
             className="
               border-t
@@ -375,32 +431,10 @@ export default function LoginPage() {
             "
           >
             {/* GOOGLE LOGIN */}
+
             <div className="mb-5 flex justify-center">
               <GoogleLogin
-                onSuccess={async (credentialResponse) => {
-                  try {
-                    const res = await API.post("/auth/google-login", {
-                      credential: credentialResponse.credential,
-                    });
-
-                    localStorage.setItem("userToken", res.data.token);
-
-                    localStorage.setItem(
-                      "userData",
-                      JSON.stringify(res.data.user),
-                    );
-
-                    window.dispatchEvent(new Event("storage"));
-
-                    toast.success("Google Login Successful");
-
-                    router.push("/profile");
-                  } catch (error) {
-                    console.log(error);
-
-                    toast.error("Google login failed");
-                  }
-                }}
+                onSuccess={handleGoogleLogin}
                 onError={() => {
                   toast.error("Google Login Failed");
                 }}
@@ -408,6 +442,7 @@ export default function LoginPage() {
             </div>
 
             {/* REGISTER */}
+
             <p
               className="
                 text-gray-600
@@ -431,5 +466,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// =========================
+// GOOGLE PROVIDER ONLY HERE
+// =========================
+
+export default function LoginPage() {
+  return (
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+      <LoginContent />
+    </GoogleOAuthProvider>
   );
 }
