@@ -11,6 +11,55 @@ import toast from "react-hot-toast";
 import API from "../../lib/api";
 
 // =========================
+// LOAD RAZORPAY ONLY WHEN NEEDED
+// =========================
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    // Razorpay already loaded
+    if (window.Razorpay) {
+      resolve(true);
+
+      return;
+    }
+
+    // Prevent duplicate scripts
+    const existingScript = document.querySelector(
+      'script[src="https://checkout.razorpay.com/v1/checkout.js"]'
+    );
+
+    if (existingScript) {
+      existingScript.onload = () => {
+        resolve(true);
+      };
+
+      existingScript.onerror = () => {
+        resolve(false);
+      };
+
+      return;
+    }
+
+    // Create Razorpay script
+    const script = document.createElement("script");
+
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+
+    script.async = true;
+
+    script.onload = () => {
+      resolve(true);
+    };
+
+    script.onerror = () => {
+      resolve(false);
+    };
+
+    document.body.appendChild(script);
+  });
+};
+
+// =========================
 // MAIN CONTENT
 // =========================
 
@@ -47,6 +96,7 @@ function CheckoutContent() {
     localStorage.removeItem("lastPaymentId");
 
     // LOCAL STORAGE ADDRESS
+
     const localAddresses =
       JSON.parse(localStorage.getItem("userAddresses")) || [];
 
@@ -72,6 +122,7 @@ function CheckoutContent() {
       const quantityParam = Number(searchParams.get("quantity")) || 1;
 
       // CART PRODUCTS
+
       if (type === "cart") {
         const sessionId = localStorage.getItem("sessionId");
 
@@ -81,9 +132,13 @@ function CheckoutContent() {
 
         const formattedProducts = (res.data.data || []).map((item) => ({
           _id: item.product?._id,
+
           name: item.product?.name,
+
           price: item.product?.price_min || 0,
+
           quantity: item.quantity,
+
           size: item.size || "",
         }));
 
@@ -95,20 +150,26 @@ function CheckoutContent() {
         const res = await API.get("/products");
 
         const product = (res.data.data || []).find(
-          (item) => item._id === productId,
+          (item) => item._id === productId
         );
 
         if (product) {
           setProducts([
             {
               _id: product._id,
+
               name: product.name,
+
               price: product.price_min,
+
               quantity: quantityParam,
+
               size: searchParams.get("size") || "",
+
               color: searchParams.get("color") || "",
+
               colorImage: decodeURIComponent(
-                searchParams.get("colorImage") || product.mainImage,
+                searchParams.get("colorImage") || product.mainImage
               ),
             },
           ]);
@@ -142,7 +203,11 @@ function CheckoutContent() {
 
         setSelectedAddress(fetchedAddresses[0]);
 
-        localStorage.setItem("userAddresses", JSON.stringify(fetchedAddresses));
+        localStorage.setItem(
+          "userAddresses",
+
+          JSON.stringify(fetchedAddresses)
+        );
       }
     } catch (error) {
       console.log("ADDRESS ERROR:", error);
@@ -155,7 +220,8 @@ function CheckoutContent() {
 
   const totalAmount = products.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0,
+
+    0
   );
 
   // =========================
@@ -186,11 +252,16 @@ ${selectedAddress.city},
 ${selectedAddress.state},
 ${selectedAddress.pincode}
           `,
+
         products: products.map((item) => ({
           productId: item._id,
+
           quantity: Number(item.quantity) || 1,
+
           size: item.size || "",
+
           color: item.color || "",
+
           colorImage: item.colorImage || "",
         })),
 
@@ -218,6 +289,17 @@ ${selectedAddress.pincode}
       // =========================
 
       if (paymentMethod === "Online Payment") {
+        // Load Razorpay only
+        // when payment is required
+
+        const razorpayLoaded = await loadRazorpayScript();
+
+        if (!razorpayLoaded) {
+          toast.error("Payment service load nahi ho payi. Please try again.");
+
+          return;
+        }
+
         const res = await API.post("/payment/create-order", {
           amount: totalAmount,
         });
@@ -239,11 +321,17 @@ ${selectedAddress.pincode}
             try {
               const finalPayload = {
                 ...payload,
+
                 paymentStatus: "paid",
+
                 paymentId: response.razorpay_payment_id,
               };
 
-              await API.post("/orders", finalPayload);
+              await API.post(
+                "/orders",
+
+                finalPayload
+              );
 
               toast.success("Payment successful & order placed");
 
@@ -257,7 +345,9 @@ ${selectedAddress.pincode}
 
           prefill: {
             name: user.name,
+
             email: user.email,
+
             contact: selectedAddress.phone,
           },
 
@@ -272,6 +362,7 @@ ${selectedAddress.pincode}
       }
     } catch (error) {
       console.log("CHECKOUT ERROR:", error);
+
       console.log("RESPONSE", error.response?.data);
 
       toast.error(error.response?.data?.message || error.message);
@@ -289,8 +380,10 @@ ${selectedAddress.pincode}
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* LEFT */}
+
           <div className="lg:col-span-2 space-y-8">
             {/* ADDRESS */}
+
             <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md">
               <h2 className="text-2xl mb-6 flex items-center gap-2">
                 <MapPin />
@@ -299,6 +392,7 @@ ${selectedAddress.pincode}
 
               {addresses.length === 0 ? (
                 <button
+                  type="button"
                   onClick={() => router.push("/profile/address")}
                   className="bg-black text-white px-6 py-3 rounded-xl"
                 >
@@ -337,6 +431,7 @@ ${selectedAddress.pincode}
             </div>
 
             {/* PAYMENT */}
+
             <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md">
               <h2 className="text-2xl mb-6 flex items-center gap-2">
                 <CreditCard />
@@ -356,6 +451,7 @@ ${selectedAddress.pincode}
           </div>
 
           {/* RIGHT */}
+
           <div className="bg-white p-5 sm:p-8 rounded-3xl shadow-md h-fit">
             <h2 className="text-2xl mb-6">Order Summary</h2>
 
@@ -389,6 +485,7 @@ ${selectedAddress.pincode}
             </div>
 
             <button
+              type="button"
               onClick={placeOrder}
               disabled={loading || !selectedAddress}
               className={`w-full mt-8 py-4 rounded-full transition ${
@@ -405,6 +502,7 @@ ${selectedAddress.pincode}
     </div>
   );
 }
+
 // =========================
 // SUSPENSE WRAPPER
 // =========================
