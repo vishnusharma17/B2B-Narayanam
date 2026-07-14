@@ -40,17 +40,17 @@ export default function WhyChooseSection() {
         {/* Heading */}
         <div className="text-center mb-8 sm:mb-12">
 
-          <p className="uppercase tracking-[3px] sm:tracking-[5px] text-[#b68d40] text-[10px] sm:text-xs mb-2">
+          <p className="uppercase tracking-[3px] sm:tracking-[5px] text-[#b68d40] text-[10px] sm:text-xs mb-2 min-h-[15px] sm:min-h-[18px]">
             Why Choose Narayanam
           </p>
 
-          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-light leading-tight">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-light leading-tight min-h-[58px] sm:min-h-[96px] lg:min-h-[116px]">
             Trusted By Fashion
             <br className="hidden sm:block" />
             Retailers Across India
           </h2>
 
-          <p className="text-gray-600 mt-4 sm:mt-5 max-w-2xl mx-auto leading-6 sm:leading-8 text-xs sm:text-sm lg:text-base px-2">
+          <p className="text-gray-600 mt-4 sm:mt-5 max-w-2xl mx-auto leading-6 sm:leading-8 text-xs sm:text-sm lg:text-base px-2 min-h-[72px] sm:min-h-[64px]">
             We help boutiques, wholesalers and fashion retailers
             source premium ethnic collections with unmatched quality,
             flexible ordering and fast delivery.
@@ -80,6 +80,8 @@ export default function WhyChooseSection() {
                   border
                   border-transparent
                   hover:border-[#d6b36a]
+                  min-h-[235px]
+                  sm:min-h-[285px]
                 "
               >
 
@@ -92,6 +94,7 @@ export default function WhyChooseSection() {
                     sm:h-14
                     lg:w-16
                     lg:h-16
+                    shrink-0
                     rounded-2xl
                     bg-[#f8f3ec]
                     flex
@@ -116,7 +119,7 @@ export default function WhyChooseSection() {
                 </div>
 
                 {/* Title */}
-                <h3 className="text-sm sm:text-xl font-medium mb-2 sm:mb-4 leading-snug">
+                <h3 className="text-sm sm:text-xl font-medium mb-2 sm:mb-4 leading-snug min-h-[40px] sm:min-h-[56px]">
                   {item.title}
                 </h3>
 

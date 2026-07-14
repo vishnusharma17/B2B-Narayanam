@@ -17,12 +17,22 @@ import LoaderProvider from "./LoaderProvider";
 const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
+  display: "swap",
 });
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
 });
+
+/* SEO — website title and description */
+export const metadata = {
+  title: "Narayanam | Premium Women's Ethnic Wear",
+
+  description:
+    "Explore premium women's ethnic wear at Narayanam. Shop stylish sarees, suits, kurtis, blouses and traditional fashion collections.",
+};
 
 export default function RootLayout({ children }) {
   return (
@@ -38,9 +48,13 @@ export default function RootLayout({ children }) {
 
             <Footer />
           </LoaderProvider>
+
           <Toaster position="top-right" />
 
-          <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+          <Script
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            strategy="lazyOnload"
+          />
         </GoogleOAuthProvider>
       </body>
     </html>
