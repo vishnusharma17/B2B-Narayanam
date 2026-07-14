@@ -1,5 +1,7 @@
 "use client";
+
 import Link from "next/link";
+
 import {
   useEffect,
   useState,
@@ -14,20 +16,58 @@ export default function HeroSection() {
   const [current, setCurrent] =
     useState(0);
 
+  const [isMobile, setIsMobile] =
+    useState(false);
 
+  // =========================
+  // DEVICE WIDTH
+  // =========================
 
-    const optimizeImage = (url, width = 1920) => {
-  if (!url) return "";
+  useEffect(() => {
+    const checkDevice = () => {
+      setIsMobile(
+        window.innerWidth < 768
+      );
+    };
 
-  if (!url.includes("/upload/")) {
-    return url;
-  }
+    checkDevice();
 
-  return url.replace(
-    "/upload/",
-    `/upload/f_auto,q_auto,w_${width}/`
-  );
-};
+    window.addEventListener(
+      "resize",
+      checkDevice
+    );
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        checkDevice
+      );
+    };
+  }, []);
+
+  // =========================
+  // OPTIMIZE CLOUDINARY IMAGE
+  // =========================
+
+  const optimizeImage = (
+    url,
+    width = 1600
+  ) => {
+    if (!url) return "";
+
+    if (
+      !url.includes(
+        "/upload/"
+      )
+    ) {
+      return url;
+    }
+
+    return url.replace(
+      "/upload/",
+      `/upload/f_auto,q_auto:eco,w_${width}/`
+    );
+  };
 
   // =========================
   // FETCH BANNERS
@@ -58,7 +98,8 @@ export default function HeroSection() {
   // =========================
 
   useEffect(() => {
-    if (!slides.length) return;
+    if (!slides.length)
+      return;
 
     const interval =
       setInterval(() => {
@@ -104,8 +145,23 @@ export default function HeroSection() {
   // LOADING
   // =========================
 
-  if (slides.length === 0) {
-    return null;
+  if (
+    slides.length === 0
+  ) {
+    return (
+      <section
+        className="
+          relative
+          mt-[80px]
+          h-[70vh]
+          sm:h-[85vh]
+          lg:h-[92vh]
+          overflow-hidden
+          bg-black
+        "
+        aria-label="Loading banner"
+      />
+    );
   }
 
   return (
@@ -120,7 +176,9 @@ export default function HeroSection() {
         bg-black
       "
     >
+
       {/* SLIDES */}
+
       <div className="absolute inset-0">
 
         {slides.map(
@@ -129,7 +187,10 @@ export default function HeroSection() {
             index
           ) => (
             <div
-              key={index}
+              key={
+                slide._id ||
+                index
+              }
               className={`
                 absolute
                 inset-0
@@ -145,22 +206,56 @@ export default function HeroSection() {
             >
 
               {/* IMAGE */}
-<img
-src={
-  optimizeImage(
-    window.innerWidth < 768
-      ? slide.mobileImage
-      : slide.desktopImage,
-    window.innerWidth < 768 ? 768 : 1920
-  )
-}
-  alt={slide.title || "Banner"}
-  loading={index === 0 ? "eager" : "lazy"}
-  fetchPriority={index === 0 ? "high" : "low"}
-  className="w-full h-full object-cover object-center"
-/>
+
+              <img
+                src={
+                  optimizeImage(
+                    isMobile
+                      ? slide.mobileImage ||
+                          slide.desktopImage
+                      : slide.desktopImage ||
+                          slide.mobileImage,
+
+                    isMobile
+                      ? 600
+                      : 1600
+                  )
+                }
+                alt={
+                  slide.title ||
+                  "Narayanam Banner"
+                }
+                width={
+                  isMobile
+                    ? 600
+                    : 1600
+                }
+                height={
+                  isMobile
+                    ? 900
+                    : 900
+                }
+                loading={
+                  index === 0
+                    ? "eager"
+                    : "lazy"
+                }
+                decoding="async"
+                fetchPriority={
+                  index === 0
+                    ? "high"
+                    : "low"
+                }
+                className="
+                  w-full
+                  h-full
+                  object-cover
+                  object-center
+                "
+              />
 
               {/* OVERLAY */}
+
               <div
                 className="
                   absolute
@@ -173,6 +268,7 @@ src={
               />
 
               {/* BOTTOM FADE */}
+
               <div
                 className="
                   absolute
@@ -184,12 +280,15 @@ src={
                   to-transparent
                 "
               />
+
             </div>
           )
         )}
+
       </div>
 
       {/* CONTENT */}
+
       <div
         className="
           relative
@@ -199,6 +298,7 @@ src={
           items-center
         "
       >
+
         <div
           className="
             max-w-7xl
@@ -209,6 +309,7 @@ src={
             lg:px-10
           "
         >
+
           <div
             className="
               max-w-2xl
@@ -216,9 +317,8 @@ src={
             "
           >
 
-            
-
             {/* TITLE */}
+
             <h1
               className="
                 text-3xl
@@ -237,6 +337,7 @@ src={
             </h1>
 
             {/* SUBTITLE */}
+
             <p
               className="
                 text-sm
@@ -255,6 +356,7 @@ src={
             </p>
 
             {/* BUTTONS */}
+
             <div
               className="
                 flex
@@ -266,6 +368,7 @@ src={
             >
 
               {/* PRIMARY */}
+
               <Link
                 href={
                   slides[current]
@@ -273,7 +376,9 @@ src={
                   "/products"
                 }
               >
+
                 <button
+                  type="button"
                   className="
                     w-auto
                     bg-[#D4AF37]
@@ -293,11 +398,15 @@ src={
                 >
                   Shop Collection
                 </button>
+
               </Link>
 
               {/* SECONDARY */}
+
               <Link href="/contact">
+
                 <button
+                  type="button"
                   className="
                     w-auto
                     border
@@ -320,79 +429,19 @@ src={
                 >
                   Bulk Inquiry
                 </button>
+
               </Link>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
-      {/* LEFT ARROW */}
-      {/* <button
-        onClick={prevSlide}
-        className="
-          absolute
-          left-3
-          sm:left-5
-          top-1/2
-          -translate-y-1/2
-          z-30
-          w-10
-          h-10
-          sm:w-12
-          sm:h-12
-          rounded-full
-          bg-black/40
-          backdrop-blur-md
-          border
-          border-white/10
-          text-white
-          flex
-          items-center
-          justify-center
-          hover:bg-white
-          hover:text-black
-          transition
-        "
-      >
-        <ChevronLeft
-          size={22}
-        />
-      </button> */}
-
-      {/* RIGHT ARROW */}
-      {/* <button
-        onClick={nextSlide}
-        className="
-          absolute
-          right-3
-          sm:right-5
-          top-1/2
-          -translate-y-1/2
-          z-30
-          w-10
-          h-10
-          sm:w-12
-          sm:h-12
-          rounded-full
-          bg-black/40
-          backdrop-blur-md
-          border
-          border-white/10
-          text-white
-          flex
-          items-center
-          justify-center
-          hover:bg-white
-          hover:text-black
-          transition
-        "
-      >
-        <ChevronRight
-          size={22}
-        />
-      </button> */}
-
       {/* DOTS */}
+
       <div
         className="
           absolute
@@ -413,11 +462,17 @@ src={
             index
           ) => (
             <button
+              type="button"
               key={index}
               onClick={() =>
                 setCurrent(
                   index
                 )
+              }
+              aria-label={
+                `Show banner ${
+                  index + 1
+                }`
               }
               className={`
                 transition-all
@@ -432,7 +487,10 @@ src={
             />
           )
         )}
+
       </div>
+
     </section>
   );
 }
+
