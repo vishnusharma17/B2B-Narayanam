@@ -1,7 +1,5 @@
 import { Inter, Playfair_Display } from "next/font/google";
 
-import Script from "next/script";
-
 import { Toaster } from "react-hot-toast";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -44,17 +42,12 @@ export default function RootLayout({ children }) {
           <LoaderProvider>
             <Navbar />
 
-            {children}
+            <main>{children}</main>
 
             <Footer />
           </LoaderProvider>
 
           <Toaster position="top-right" />
-
-          <Script
-            src="https://checkout.razorpay.com/v1/checkout.js"
-            strategy="lazyOnload"
-          />
         </GoogleOAuthProvider>
       </body>
     </html>
