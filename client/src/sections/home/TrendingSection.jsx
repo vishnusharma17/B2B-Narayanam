@@ -35,7 +35,117 @@ export default function TrendingSection() {
 
   // Loading state
   if (loading) {
-    return null;
+    return (
+      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* HEADING SKELETON */}
+          <div className="text-center mb-8 sm:mb-12">
+
+            <div
+              className="
+                w-28
+                h-3
+                bg-gray-200
+                rounded-full
+                animate-pulse
+                mx-auto
+                mb-4
+              "
+            ></div>
+
+            <div
+              className="
+                w-48
+                sm:w-64
+                h-8
+                sm:h-12
+                bg-gray-200
+                rounded-lg
+                animate-pulse
+                mx-auto
+              "
+            ></div>
+
+            <div
+              className="
+                w-full
+                max-w-md
+                h-4
+                bg-gray-200
+                rounded-full
+                animate-pulse
+                mx-auto
+                mt-5
+              "
+            ></div>
+
+          </div>
+
+          {/* PRODUCT CARD SKELETON */}
+          <div
+            className="
+              grid
+              grid-cols-2
+              sm:grid-cols-2
+              lg:grid-cols-3
+              xl:grid-cols-4
+              2xl:grid-cols-5
+              gap-3
+              sm:gap-5
+              lg:gap-6
+            "
+          >
+
+            {[1, 2, 3, 4].map(
+              (item) => (
+                <div
+                  key={item}
+                  className="
+                    bg-[#faf7f2]
+                    rounded-3xl
+                    overflow-hidden
+                    border
+                    border-[#f1ece4]
+                    animate-pulse
+                  "
+                >
+
+                  <div
+                    className="
+                      w-full
+                      h-[260px]
+                      sm:h-[320px]
+                      md:h-[360px]
+                      lg:h-[400px]
+                      xl:h-[430px]
+                      bg-gray-200
+                    "
+                  ></div>
+
+                  <div className="p-4 sm:p-5">
+
+                    <div className="w-20 h-3 bg-gray-200 rounded-full mb-4"></div>
+
+                    <div className="w-full h-4 bg-gray-200 rounded-full mb-2"></div>
+
+                    <div className="w-3/4 h-4 bg-gray-200 rounded-full"></div>
+
+                    <div className="w-24 h-6 bg-gray-200 rounded-full mt-6"></div>
+
+                  </div>
+
+                </div>
+              )
+            )}
+
+          </div>
+
+        </div>
+
+      </section>
+    );
   }
 
   // No products
@@ -131,3 +241,4 @@ export default function TrendingSection() {
     </section>
   );
 }
+

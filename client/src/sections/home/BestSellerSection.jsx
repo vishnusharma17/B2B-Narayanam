@@ -38,7 +38,16 @@ export default function BestSellerSection() {
 
   if (loading) {
     return (
-      <section className="py-12 sm:py-16 bg-[#f8f3ec]">
+      <section
+        className="
+          py-12
+          sm:py-16
+          bg-[#f8f3ec]
+          min-h-[760px]
+          sm:min-h-[900px]
+          lg:min-h-[1050px]
+        "
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           <div className="text-center">
@@ -154,6 +163,7 @@ export default function BestSellerSection() {
 
           <Link href="/products">
             <button
+              type="button"
               className="
                 w-full
                 sm:w-auto
@@ -181,3 +191,4 @@ export default function BestSellerSection() {
     </section>
   );
 }
+

@@ -36,7 +36,17 @@ export default function LimitedStockSection() {
   // LOADING
   if (loading) {
     return (
-      <section className="py-12 sm:py-16 bg-[#111] text-white">
+      <section
+        className="
+          py-12
+          sm:py-16
+          bg-[#111]
+          text-white
+          min-h-[750px]
+          sm:min-h-[900px]
+          lg:min-h-[1050px]
+        "
+      >
 
         <div className="text-center">
 
@@ -145,3 +155,4 @@ export default function LimitedStockSection() {
     </section>
   );
 }
+

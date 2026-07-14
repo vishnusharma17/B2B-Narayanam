@@ -1,39 +1,60 @@
 "use client";
+
 import { Heart, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
 import toast from "react-hot-toast";
 
 import API from "../../lib/api";
- const optimizeImage = (url, width = 700) => {
+
+/* CLOUDINARY IMAGE OPTIMIZATION */
+const optimizeImage = (url, width = 400) => {
   if (!url) return "";
 
   if (!url.includes("/upload/")) {
     return url;
   }
 
+  /*
+    Prevent duplicate Cloudinary transformations
+    if the URL is processed more than once.
+  */
+  if (
+    url.includes("/upload/f_auto") ||
+    url.includes("/upload/q_auto")
+  ) {
+    return url;
+  }
+
   return url.replace(
     "/upload/",
-    `/upload/f_auto,q_auto,w_${width}/`
+    `/upload/f_auto,q_auto:eco,w_${width},dpr_auto/`
   );
 };
-function ProductCard({ product }) {
 
+function ProductCard({ product }) {
   if (!product) {
     return null;
   }
 
+  /*
+    Earlier: 700px image
+    Now: 400px optimized image
+
+    Product cards normally display around 220–350px,
+    so downloading a 700px image was unnecessary.
+  */
   const image = optimizeImage(
     product.mainImage,
-    700
+    400
   );
+
   const displayPrice =
     product.price_min > 0
       ? product.price_min
       : product.price_max > 0
       ? product.price_max
       : null;
-
 
   // WISHLIST
   const handleWishlist = async (e) => {
@@ -45,9 +66,14 @@ function ProductCard({ product }) {
       let sessionId = localStorage.getItem("sessionId");
 
       if (!sessionId) {
-        sessionId = Math.random().toString(36).substring(2);
+        sessionId = Math.random()
+          .toString(36)
+          .substring(2);
 
-        localStorage.setItem("sessionId", sessionId);
+        localStorage.setItem(
+          "sessionId",
+          sessionId
+        );
       }
 
       await API.post("/wishlist", {
@@ -73,9 +99,14 @@ function ProductCard({ product }) {
       let sessionId = localStorage.getItem("sessionId");
 
       if (!sessionId) {
-        sessionId = Math.random().toString(36).substring(2);
+        sessionId = Math.random()
+          .toString(36)
+          .substring(2);
 
-        localStorage.setItem("sessionId", sessionId);
+        localStorage.setItem(
+          "sessionId",
+          sessionId
+        );
       }
 
       await API.post("/cart", {
@@ -104,49 +135,53 @@ function ProductCard({ product }) {
           duration-500
           hover:shadow-lg
           hover:-translate-y-0.5
-          duration-300
           h-full
           flex
           flex-col
           border
           border-[#f1ece4]
         "
-        
       >
         {/* IMAGE SECTION */}
         <div className="relative bg-[#faf7f2] overflow-hidden">
+
           {/* IMAGE SLIDER */}
-        
-<div
-  className="
-    relative
-    w-full
-    h-[260px]
-    sm:h-[320px]
-    md:h-[360px]
-    lg:h-[400px]
-    xl:h-[430px]
-    overflow-hidden
-  "
->
- <img
-  src={image || "/placeholder.jpg"}
-  alt={product?.name || "Product"}
-  loading="lazy"
-  decoding="async"
-  fetchPriority="low"
-  className="
-    w-full
-    h-full
-    object-contain
-    p-4
-    transition-transform
-    duration-700
-    transform-gpu
-    group-hover:scale-[1.03]
-  "
-/>
-</div>
+          <div
+            className="
+              relative
+              w-full
+              h-[260px]
+              sm:h-[320px]
+              md:h-[360px]
+              lg:h-[400px]
+              xl:h-[430px]
+              overflow-hidden
+            "
+          >
+            <img
+              src={image || "/placeholder.jpg"}
+              alt={
+                product?.name ||
+                "Narayanam Product"
+              }
+              width="400"
+              height="600"
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+              className="
+                w-full
+                h-full
+                object-contain
+                p-4
+                transition-transform
+                duration-700
+                transform-gpu
+                group-hover:scale-[1.03]
+              "
+            />
+          </div>
+
           {/* DISCOUNT */}
           {product.discount_percentage > 0 && (
             <div
@@ -170,25 +205,28 @@ function ProductCard({ product }) {
 
           {/* HOVER BUTTONS */}
           <div
-  className="
-    absolute
-    top-20
-    right-6
-    flex
-    flex-col
-    gap-3
-    z-30
-    opacity-0
-    translate-x-4
-    group-hover:opacity-100
-    group-hover:translate-x-0
-    transition-all
-    duration-500
-  "
->
+            className="
+              absolute
+              top-20
+              right-6
+              flex
+              flex-col
+              gap-3
+              z-30
+              opacity-0
+              translate-x-4
+              group-hover:opacity-100
+              group-hover:translate-x-0
+              transition-all
+              duration-500
+            "
+          >
             {/* WISHLIST */}
             <button
+              type="button"
               onClick={handleWishlist}
+              aria-label={`Add ${product.name} to wishlist`}
+              title="Add to wishlist"
               className="
                 bg-white
                 text-black
@@ -207,12 +245,18 @@ function ProductCard({ product }) {
                 duration-300
               "
             >
-              <Heart size={18} />
+              <Heart
+                size={18}
+                aria-hidden="true"
+              />
             </button>
 
             {/* CART */}
             <button
+              type="button"
               onClick={handleAddToCart}
+              aria-label={`Add ${product.name} to cart`}
+              title="Add to cart"
               className="
                 bg-black
                 text-white
@@ -231,7 +275,10 @@ function ProductCard({ product }) {
                 duration-300
               "
             >
-              <ShoppingBag size={18} />
+              <ShoppingBag
+                size={18}
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
@@ -292,7 +339,8 @@ function ProductCard({ product }) {
                   ₹{displayPrice}
                 </span>
 
-                {product.original_price > displayPrice && (
+                {product.original_price >
+                  displayPrice && (
                   <span
                     className="
                       text-sm
@@ -317,3 +365,4 @@ function ProductCard({ product }) {
 }
 
 export default memo(ProductCard);
+
