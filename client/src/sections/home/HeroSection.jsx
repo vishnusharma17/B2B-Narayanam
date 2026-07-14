@@ -9,6 +9,30 @@ import {
 
 import API from "../../lib/api";
 
+// =========================
+// OPTIMIZE CLOUDINARY IMAGE
+// =========================
+
+const optimizeImage = (
+  url,
+  width = 1600
+) => {
+  if (!url) return "";
+
+  if (
+    !url.includes(
+      "/upload/"
+    )
+  ) {
+    return url;
+  }
+
+  return url.replace(
+    "/upload/",
+    `/upload/f_auto,q_auto:eco,w_${width}/`
+  );
+};
+
 export default function HeroSection() {
   const [slides, setSlides] =
     useState([]);
@@ -16,61 +40,8 @@ export default function HeroSection() {
   const [current, setCurrent] =
     useState(0);
 
-  const [isMobile, setIsMobile] =
-    useState(false);
-
   // =========================
-  // DEVICE WIDTH
-  // =========================
-
-  useEffect(() => {
-    const checkDevice = () => {
-      setIsMobile(
-        window.innerWidth < 768
-      );
-    };
-
-    checkDevice();
-
-    window.addEventListener(
-      "resize",
-      checkDevice
-    );
-
-    return () => {
-      window.removeEventListener(
-        "resize",
-        checkDevice
-      );
-    };
-  }, []);
-
-  // =========================
-  // OPTIMIZE CLOUDINARY IMAGE
-  // =========================
-
-  const optimizeImage = (
-    url,
-    width = 1600
-  ) => {
-    if (!url) return "";
-
-    if (
-      !url.includes(
-        "/upload/"
-      )
-    ) {
-      return url;
-    }
-
-    return url.replace(
-      "/upload/",
-      `/upload/f_auto,q_auto:eco,w_${width}/`
-    );
-  };
-
-  // =========================
-  // FETCH BANNERS
+  // FETCH DYNAMIC BANNERS
   // =========================
 
   useEffect(() => {
@@ -86,7 +57,10 @@ export default function HeroSection() {
             res.data.data || []
           );
         } catch (error) {
-          console.log(error);
+          console.log(
+            "BANNER FETCH ERROR:",
+            error
+          );
         }
       };
 
@@ -98,8 +72,11 @@ export default function HeroSection() {
   // =========================
 
   useEffect(() => {
-    if (!slides.length)
+    if (
+      slides.length <= 1
+    ) {
       return;
+    }
 
     const interval =
       setInterval(() => {
@@ -110,39 +87,15 @@ export default function HeroSection() {
         );
       }, 5000);
 
-    return () =>
+    return () => {
       clearInterval(
         interval
       );
-  }, [slides]);
+    };
+  }, [slides.length]);
 
   // =========================
-  // NEXT
-  // =========================
-
-  const nextSlide = () => {
-    setCurrent(
-      (prev) =>
-        (prev + 1) %
-        slides.length
-    );
-  };
-
-  // =========================
-  // PREV
-  // =========================
-
-  const prevSlide = () => {
-    setCurrent(
-      (prev) =>
-        prev === 0
-          ? slides.length - 1
-          : prev - 1
-    );
-  };
-
-  // =========================
-  // LOADING
+  // LOADING PLACEHOLDER
   // =========================
 
   if (
@@ -175,119 +128,150 @@ export default function HeroSection() {
         overflow-hidden
         bg-black
       "
+      aria-label="Featured collections"
     >
 
-      {/* SLIDES */}
+      {/* =====================
+          DYNAMIC SLIDES
+      ====================== */}
 
-      <div className="absolute inset-0">
+      <div
+        className="
+          absolute
+          inset-0
+        "
+      >
 
         {slides.map(
           (
             slide,
             index
-          ) => (
-            <div
-              key={
-                slide._id ||
-                index
-              }
-              className={`
-                absolute
-                inset-0
-                transition-opacity
-                duration-1000
-                ${
-                  current ===
-                  index
-                    ? "opacity-100 z-10"
-                    : "opacity-0 z-0"
-                }
-              `}
-            >
+          ) => {
+            const mobileImage =
+              optimizeImage(
+                slide.mobileImage ||
+                  slide.desktopImage,
+                600
+              );
 
-              {/* IMAGE */}
+            const desktopImage =
+              optimizeImage(
+                slide.desktopImage ||
+                  slide.mobileImage,
+                1600
+              );
 
-              <img
-                src={
-                  optimizeImage(
-                    isMobile
-                      ? slide.mobileImage ||
-                          slide.desktopImage
-                      : slide.desktopImage ||
-                          slide.mobileImage,
-
-                    isMobile
-                      ? 600
-                      : 1600
-                  )
-                }
-                alt={
-                  slide.title ||
-                  "Narayanam Banner"
-                }
-                width={
-                  isMobile
-                    ? 600
-                    : 1600
-                }
-                height={
-                  isMobile
-                    ? 900
-                    : 900
-                }
-                loading={
-                  index === 0
-                    ? "eager"
-                    : "lazy"
-                }
-                decoding="async"
-                fetchPriority={
-                  index === 0
-                    ? "high"
-                    : "low"
-                }
-                className="
-                  w-full
-                  h-full
-                  object-cover
-                  object-center
-                "
-              />
-
-              {/* OVERLAY */}
-
+            return (
               <div
-                className="
+                key={
+                  slide._id ||
+                  index
+                }
+                aria-hidden={
+                  current !==
+                  index
+                }
+                className={`
                   absolute
                   inset-0
-                  bg-gradient-to-r
-                  from-black/70
-                  via-black/30
-                  to-black/10
-                "
-              />
+                  transition-opacity
+                  duration-700
+                  ${
+                    current ===
+                    index
+                      ? "opacity-100 z-10"
+                      : "opacity-0 z-0 pointer-events-none"
+                  }
+                `}
+              >
 
-              {/* BOTTOM FADE */}
+                {/* =====================
+                    RESPONSIVE IMAGE
+                ====================== */}
 
-              <div
-                className="
-                  absolute
-                  inset-x-0
-                  bottom-0
-                  h-40
-                  bg-gradient-to-t
-                  from-black/80
-                  to-transparent
-                "
-              />
+                <picture>
 
-            </div>
-          )
+                  <source
+                    media="(max-width: 767px)"
+                    srcSet={
+                      mobileImage
+                    }
+                  />
+
+                  <img
+                    src={
+                      desktopImage
+                    }
+                    alt={
+                      slide.title ||
+                      "Narayanam collection banner"
+                    }
+                    width="1600"
+                    height="900"
+                    loading={
+                      index === 0
+                        ? "eager"
+                        : "lazy"
+                    }
+                    fetchPriority={
+                      index === 0
+                        ? "high"
+                        : "low"
+                    }
+                    decoding={
+                      index === 0
+                        ? "sync"
+                        : "async"
+                    }
+                    className="
+                      absolute
+                      inset-0
+                      w-full
+                      h-full
+                      object-cover
+                      object-center
+                    "
+                  />
+
+                </picture>
+
+                {/* OVERLAY */}
+
+                <div
+                  className="
+                    absolute
+                    inset-0
+                    bg-gradient-to-r
+                    from-black/70
+                    via-black/30
+                    to-black/10
+                  "
+                />
+
+                {/* BOTTOM FADE */}
+
+                <div
+                  className="
+                    absolute
+                    inset-x-0
+                    bottom-0
+                    h-40
+                    bg-gradient-to-t
+                    from-black/80
+                    to-transparent
+                  "
+                />
+
+              </div>
+            );
+          }
         )}
 
       </div>
 
-      {/* CONTENT */}
+      {/* =====================
+          DYNAMIC CONTENT
+      ====================== */}
 
       <div
         className="
@@ -375,61 +359,57 @@ export default function HeroSection() {
                     ?.link ||
                   "/products"
                 }
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  w-auto
+                  bg-[#D4AF37]
+                  hover:bg-white
+                  transition-all
+                  duration-300
+                  text-black
+                  px-5
+                  sm:px-8
+                  py-2.5
+                  sm:py-4
+                  rounded-full
+                  font-semibold
+                  text-sm
+                  sm:text-base
+                "
               >
-
-                <button
-                  type="button"
-                  className="
-                    w-auto
-                    bg-[#D4AF37]
-                    hover:bg-white
-                    transition-all
-                    duration-300
-                    text-black
-                    px-5
-                    sm:px-8
-                    py-2.5
-                    sm:py-4
-                    rounded-full
-                    font-semibold
-                    text-sm
-                    sm:text-base
-                  "
-                >
-                  Shop Collection
-                </button>
-
+                Shop Collection
               </Link>
 
               {/* SECONDARY */}
 
-              <Link href="/contact">
-
-                <button
-                  type="button"
-                  className="
-                    w-auto
-                    border
-                    border-white/20
-                    bg-white/10
-                    backdrop-blur-md
-                    hover:bg-white
-                    hover:text-black
-                    transition-all
-                    duration-300
-                    px-5
-                    sm:px-8
-                    py-2.5
-                    sm:py-4
-                    rounded-full
-                    font-medium
-                    text-sm
-                    sm:text-base
-                  "
-                >
-                  Bulk Inquiry
-                </button>
-
+              <Link
+                href="/contact"
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  w-auto
+                  border
+                  border-white/20
+                  bg-white/10
+                  backdrop-blur-md
+                  hover:bg-white
+                  hover:text-black
+                  transition-all
+                  duration-300
+                  px-5
+                  sm:px-8
+                  py-2.5
+                  sm:py-4
+                  rounded-full
+                  font-medium
+                  text-sm
+                  sm:text-base
+                "
+              >
+                Bulk Inquiry
               </Link>
 
             </div>
@@ -440,55 +420,68 @@ export default function HeroSection() {
 
       </div>
 
-      {/* DOTS */}
+      {/* =====================
+          SLIDER DOTS
+      ====================== */}
 
-      <div
-        className="
-          absolute
-          bottom-5
-          sm:bottom-7
-          left-1/2
-          -translate-x-1/2
-          z-30
-          flex
-          items-center
-          gap-3
-        "
-      >
+      {slides.length > 1 && (
+        <div
+          className="
+            absolute
+            bottom-5
+            sm:bottom-7
+            left-1/2
+            -translate-x-1/2
+            z-30
+            flex
+            items-center
+            gap-3
+          "
+        >
 
-        {slides.map(
-          (
-            _,
-            index
-          ) => (
-            <button
-              type="button"
-              key={index}
-              onClick={() =>
-                setCurrent(
+          {slides.map(
+            (
+              slide,
+              index
+            ) => (
+              <button
+                type="button"
+                key={
+                  slide._id ||
                   index
-                )
-              }
-              aria-label={
-                `Show banner ${
-                  index + 1
-                }`
-              }
-              className={`
-                transition-all
-                duration-300
-                ${
+                }
+                onClick={() =>
+                  setCurrent(
+                    index
+                  )
+                }
+                aria-label={
+                  `Show banner ${
+                    index + 1
+                  }`
+                }
+                aria-current={
                   current ===
                   index
-                    ? "w-8 h-[3px] rounded-full bg-[#D4AF37]"
-                    : "w-2.5 h-2.5 rounded-full bg-white/50"
+                    ? "true"
+                    : undefined
                 }
-              `}
-            />
-          )
-        )}
+                className={`
+                  transition-all
+                  duration-300
+                  ${
+                    current ===
+                    index
+                      ? "w-8 h-[3px] rounded-full bg-[#D4AF37]"
+                      : "w-2.5 h-2.5 rounded-full bg-white/70"
+                  }
+                `}
+              />
+            )
+          )}
 
-      </div>
+        </div>
+      )}
 
     </section>
   );
