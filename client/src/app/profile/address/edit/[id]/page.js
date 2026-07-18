@@ -1,16 +1,18 @@
 "use client";
 
 import { ArrowLeft, MapPin, Save } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import API from "../../../../../lib/api";
 
 export default function EditAddressPage() {
-  const router = useRouter();
-  const params = useParams();
-  const id = params.id;
+const router = useRouter();
+const params = useParams();
+const searchParams = useSearchParams();
 
+const id = params.id;
+const returnUrl = searchParams.get("return");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -72,7 +74,8 @@ export default function EditAddressPage() {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Address Updated Successfully");
-      router.push("/profile/address");
+
+      router.push(returnUrl || "/profile/address");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to update address");
     } finally {
@@ -173,7 +176,7 @@ export default function EditAddressPage() {
 
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               <button
-                onClick={() => router.push("/profile/address")}
+                onClick={() => router.push(returnUrl || "/profile/address")}
                 className="flex-1 border border-gray-300 py-4 rounded-2xl hover:bg-gray-100 transition"
               >
                 Cancel

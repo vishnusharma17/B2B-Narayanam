@@ -259,7 +259,11 @@ function CheckoutContent() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            router.push(`/profile/address/edit/${address._id}`);
+                            router.push(
+                              `/profile/address/edit/${
+                                address._id
+                              }?return=/checkout?${searchParams.toString()}`
+                            );
                           }}
                           className="text-gray-400 hover:text-black"
                         >
