@@ -5,25 +5,21 @@ const API = axios.create({
   timeout: 300000,
 });
 
-API.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    // AGAR request me pehle se Authorization ko false ya empty kiya hai, toh token mat jodo
-    if (
-      config.headers.Authorization === false ||
-      config.headers.Authorization === ""
-    ) {
-      delete config.headers.Authorization; // Isse header clean ho jayega
-      return config;
+API.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("userData");
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
     }
 
-    const token = localStorage.getItem("adminToken");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    return Promise.reject(error);
   }
-
-  return config;
-});
+);
 
 export default API;
