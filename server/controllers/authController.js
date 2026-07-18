@@ -65,8 +65,8 @@ export const googleLogin = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "7d",
-      },
+        expiresIn: "30d",
+      }
     );
 
     res.status(200).json({
@@ -137,8 +137,8 @@ export const register = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "7d",
-      },
+        expiresIn: "30d",
+      }
     );
 
     res.json({
@@ -193,8 +193,8 @@ export const login = async (req, res) => {
       },
       process.env.JWT_SECRET,
       {
-        expiresIn: "7d",
-      },
+        expiresIn: "30d",
+      }
     );
 
     res.json({
@@ -222,7 +222,7 @@ export const login = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   try {
-    const { email ,isAdmin} = req.body;
+    const { email, isAdmin } = req.body;
 
     const user = await User.findOne({
       email,
@@ -355,7 +355,7 @@ export const updateProfile = async (req, res) => {
       },
       {
         new: true,
-      },
+      }
     );
 
     // RESPONSE
