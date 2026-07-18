@@ -60,6 +60,75 @@ export const getAddresses = async (req, res) => {
     });
   }
 };
+// GET SINGLE ADDRESS
+export const getSingleAddress = async (req, res) => {
+  try {
+    const address = await Address.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!address) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: address,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// UPDATE ADDRESS
+export const updateAddress = async (req, res) => {
+  try {
+    const address = await Address.findOne({
+      _id: req.params.id,
+      user: req.user._id,
+    });
+
+    if (!address) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    address.fullName = req.body.fullName;
+    address.phone = req.body.phone;
+    address.pincode = req.body.pincode;
+    address.house = req.body.house;
+    address.landmark = req.body.landmark;
+    address.city = req.body.city;
+    address.state = req.body.state;
+    address.type = req.body.type;
+
+    await address.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Address updated successfully",
+      data: address,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 // DELETE ADDRESS
 export const deleteAddress = async (req, res) => {
