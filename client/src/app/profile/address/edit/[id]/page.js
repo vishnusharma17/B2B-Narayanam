@@ -31,7 +31,7 @@ export default function EditAddressPage() {
   const fetchAddress = async () => {
     try {
       const token = localStorage.getItem("userToken");
-      const res = await API.get(`/address/edit/${id}`, {
+      const res = await API.get(`/address/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const address = res.data.data;
